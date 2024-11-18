@@ -11,14 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('leaderboards', function (Blueprint $table) {
+        Schema::create('learning_materials', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('member_id')->constrained()->onDelete('cascade');
-            $table->integer('score');
-            $table->integer('completion_time'); // Waktu dalam detik
             $table->timestamps();
         });
-        
     }
 
     /**
@@ -26,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('leaderboards');
+        Schema::dropIfExists('learning_materials');
     }
 };

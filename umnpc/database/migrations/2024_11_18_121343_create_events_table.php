@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('members', function (Blueprint $table) {
+        Schema::create('events', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('profile_picture')->nullable();
-            $table->text('achievements')->nullable();
+            $table->string('title');
+            $table->text('description');
+            $table->dateTime('date');
+            $table->string('location');
+            $table->integer('max_participants');
             $table->timestamps();
         });
-        
     }
 
     /**
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('members');
+        Schema::dropIfExists('events');
     }
 };

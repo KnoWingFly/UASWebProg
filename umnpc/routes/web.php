@@ -1,36 +1,27 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\{MemberController, EventController, RegistrationController, LeaderboardController, DiscussionController, LearningMaterialController, CertificateController, AdminController};
 
-//controller
-use App\Http\Controllers\Admin\UserApprovalController;
-
-//middleware
-use App\Http\Middleware\CheckApproval;
-use App\Http\Middleware\EnsureAdmin;
-
+// Public Routes
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/approval-notice', function () {
-    return view('auth.approval-notice');
-})->name('approval.notice');
-
-// Dashboard dengan middleware auth dan approved
-Route::middleware(['auth', CheckApproval::class])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+// Member Routes
+Route::middleware(['auth:sanctum', 'verified', 'approved'])->group(function () {
+    Route::get('/dashboard', [MemberController::class, 'index'])->name('dashboard');
+    Route::resource('events', EventController::class);
+    Route::resource('leaderboards', LeaderboardController::class);
+    Route::resource('discussions', DiscussionController::class);
+    Route::resource('learning-materials', LearningMaterialController::class);
+    Route::resource('certificates', CertificateController::class);
+    Route::post('register-event/{id}', [RegistrationController::class, 'store'])->name('register.event');
 });
 
-Route::post('/logout', function () {
-    \Illuminate\Support\Facades\Auth::logout();
-    return redirect('/');
-})->name('logout');
-
-// Admin route dengan middleware auth dan admin
-Route::middleware(['auth', EnsureAdmin::class])->group(function () {
-    Route::get('/admin/user-approval', [UserApprovalController::class, 'index'])->name('admin.user-approval');
-    Route::post('/admin/user-approval/{id}/approve', [UserApprovalController::class, 'approve'])->name('admin.approve-user');
+Route::middleware(['auth:sanctum', 'verified', 'role:admin', 'approved'])->group(function () {
+    Route::resource('admin/events', AdminController::class);
+    Route::resource('admin/members', AdminController::class);
+    Route::post('/admin/approve-user/{id}', [AdminController::class, 'approveUser'])->name('admin.approve-user');
 });
+
