@@ -1,27 +1,27 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{MemberController, EventController, RegistrationController, LeaderboardController, DiscussionController, LearningMaterialController, CertificateController, AdminController};
+use App\Http\Controllers\Admin\UserController;
 
-// Public Routes
+// Public route
 Route::get('/', function () {
     return view('welcome');
 });
 
-// Member Routes
-Route::middleware(['auth:sanctum', 'verified', 'approved'])->group(function () {
-    Route::get('/dashboard', [MemberController::class, 'index'])->name('dashboard');
-    Route::resource('events', EventController::class);
-    Route::resource('leaderboards', LeaderboardController::class);
-    Route::resource('discussions', DiscussionController::class);
-    Route::resource('learning-materials', LearningMaterialController::class);
-    Route::resource('certificates', CertificateController::class);
-    Route::post('register-event/{id}', [RegistrationController::class, 'store'])->name('register.event');
-});
+Route::get('/not-approved', function () {
+    return view('not-approved');
+})->name('not-approved');
 
-Route::middleware(['auth:sanctum', 'verified', 'role:admin', 'approved'])->group(function () {
-    Route::resource('admin/events', AdminController::class);
-    Route::resource('admin/members', AdminController::class);
-    Route::post('/admin/approve-user/{id}', [AdminController::class, 'approveUser'])->name('admin.approve-user');
-});
+// Routes for authenticated users (both admins and regular users)
+Route::middleware(['auth', 'approval'])->group(function () {
+    // Single dashboard view for both admin and user roles
+    Route::get('/dashboard', function () {
+        return view('dashboard'); // Pointing to views/dashboard.blade.php
+    })->name('dashboard');
 
+    // Admin-only routes
+    Route::middleware(['admin'])->group(function () {
+        Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users.index');
+        Route::post('/admin/users/{id}/approve', [UserController::class, 'approve'])->name('admin.users.approve');
+    });
+});

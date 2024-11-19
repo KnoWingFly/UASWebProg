@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Middleware\CheckApproval;
-use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -14,8 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->alias([ 
-            'approved' => CheckApproval::class,
+        $middleware->alias([
+            'admin' => \App\Http\Middleware\EnsureAdmin::class,
+            'approval' => \App\Http\Middleware\CheckUserApproval::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
