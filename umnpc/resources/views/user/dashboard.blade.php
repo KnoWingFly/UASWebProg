@@ -1,33 +1,30 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Admin Dashboard') }}
-        </h2>
-    </x-slot>
+<!-- resources/views/user/dashboard.blade.php -->
+@extends('layouts.app')  <!-- Pastikan ini merujuk ke layout utama aplikasi -->
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white shadow-xl rounded-lg p-6">
-                <h3 class="text-lg font-semibold text-gray-700 mb-4">Welcome, {{ Auth::user()->name }}</h3>
+@section('title', 'User Dashboard')
 
-                <!-- Admin Navigation -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Manage Users -->
-                    <a href="{{ route('admin.users.index') }}"
-                       class="block bg-blue-600 text-white text-center font-medium py-3 px-4 rounded-lg hover:bg-blue-700">
-                        Manage Users
-                    </a>
-
-                    <!-- Logout -->
-                    <form method="POST" action="{{ route('logout') }}" class="block">
-                        @csrf
-                        <button type="submit"
-                                class="w-full bg-red-600 text-white text-center font-medium py-3 px-4 rounded-lg hover:bg-red-700">
-                            Logout
-                        </button>
-                    </form>
+@section('content')
+    <div class="container mx-auto mt-8">
+        <h1 class="text-3xl font-semibold mb-4">Welcome, {{ $user->name }}!</h1>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-medium mb-4">Your Information</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <p class="text-lg"><strong>Email:</strong> {{ $user->email }}</p>
+                    <p class="text-lg"><strong>Status:</strong> {{ $user->is_approved ? 'Approved' : 'Not Approved' }}</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <p class="text-lg"><strong>Role:</strong> {{ ucfirst($user->roles) }}</p>
+                    <p class="text-lg"><strong>Member Since:</strong> {{ $user->created_at->format('d M Y') }}</p>
                 </div>
             </div>
         </div>
+
+        <div class="mt-8">
+            <h2 class="text-2xl font-medium mb-4">Recent Activities</h2>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <p class="text-lg">You haven't completed any activities yet. Check out some options to get started!</p>
+            </div>
+        </div>
     </div>
-</x-app-layout>
+@endsection

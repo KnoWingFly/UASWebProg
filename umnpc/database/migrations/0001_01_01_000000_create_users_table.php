@@ -16,9 +16,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->boolean('is_approved')->default(false);
             $table->string('password');
-            $table->
+            $table->boolean('is_approved')->default(false);
+            $table->enum('roles', ['user', 'admin'])->default('user');
             $table->rememberToken();
             $table->foreignId('current_team_id')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();

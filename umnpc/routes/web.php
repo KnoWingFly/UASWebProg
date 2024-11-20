@@ -1,35 +1,33 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\UserController;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AdminDash;
 
-// Public route
-Route::get('/', function () {
-    return view('welcome');
+// Welcome Route
+Route::get('/', [AuthController::class, 'welcome'])->name('welcome');
+
+// Authentication Routes
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login')->middleware('guest');
+Route::post('/login', [AuthController::class, 'login']);
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Not Approved Route (without 'auth' middleware)
+Route::get('/not-approved', [AuthController::class, 'notApproved'])->name('not-approved');
+
+// Authenticated and Approved Routes
+Route::middleware(['auth', 'approve'])->group(function () {
+    Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('user.dashboard');
+    
+    // Admin-specific Routes
+    Route::middleware(['admin'])->prefix('admin')->group(function () {
+        Route::get('/dashboard', [AdminDash::class, 'index'])->name('admin.dashboard');
+        Route::get('/users', [AdminDash::class, 'manageUsers'])->name('admin.users');
+        Route::get('/approvals', [AdminDash::class, 'userApprovals'])->name('admin.approvals');
+        Route::get('/settings', [AdminDash::class, 'settings'])->name('admin.settings');
+        Route::post('/users/{user}/approve', [AdminDash::class, 'approveUser'])->name('admin.users.approve');
+    });
 });
 
-Route::get('/not-approved', function () {
-    return view('not-approved');
-})->name('not-approved');
-
-// Routes for admin-only access
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard'); // Admin dashboard
-    })->name('admin.dashboard');
-
-    Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users.index');
-    Route::post('/admin/users/{id}/approve', [UserController::class, 'approve'])->name('admin.users.approve');
-});
-
-// Routes for authenticated users (both admins and regular users)
-Route::middleware(['auth', 'approval'])->group(function () {
-    Route::get('/dashboard', function () {
-        $user = Auth::user();
-        if ($user && $user->isAdmin()) {
-            return redirect()->route('admin.dashboard');
-        }
-        return view('user.dashboard');
-    })->name('dashboard');
-});
+// Fallback Route for undefined paths
+Route::fallback([AuthController::class, 'fallback']);

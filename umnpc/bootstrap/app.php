@@ -12,9 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->alias([
-            'admin' => \App\Http\Middleware\EnsureAdmin::class,
-            'approval' => \App\Http\Middleware\CheckUserApproval::class,
+        $middleware-> alias([
+            'approve' => \App\Http\Middleware\approve::class,
+            'admin' => \App\Http\Middleware\adminacc::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

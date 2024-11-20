@@ -30,6 +30,7 @@ class User extends Authenticatable
         'email',
         'password',
         'is_approved',
+        'roles',
     ];
 
     /**
@@ -66,8 +67,13 @@ class User extends Authenticatable
         ];
     }
 
+    public function isApproved()
+    {
+        return $this->is_approved == true;
+    }
+
     public function isAdmin()
     {
-        return $this->role === 'admin'; 
-    }    
+        return $this->roles === 'admin';
+    }
 }

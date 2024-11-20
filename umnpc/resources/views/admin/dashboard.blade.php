@@ -1,33 +1,64 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Admin Dashboard') }}
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white shadow-xl rounded-lg p-6">
-                <h3 class="text-lg font-semibold text-gray-700 mb-4">Welcome, {{ Auth::user()->name }}</h3>
-
-                <!-- Admin Navigation -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Manage Users -->
-                    <a href="{{ route('admin.users.users') }}"
-                       class="block bg-blue-600 text-white text-center font-medium py-3 px-4 rounded-lg hover:bg-blue-700">
-                        Manage Users
-                    </a>
-
-                    <!-- Logout -->
-                    <form method="POST" action="{{ route('logout') }}" class="block">
-                        @csrf
-                        <button type="submit"
-                                class="w-full bg-red-600 text-white text-center font-medium py-3 px-4 rounded-lg hover:bg-red-700">
-                            Logout
-                        </button>
-                    </form>
+@section('content')
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">Admin Menu</div>
+                <div class="card-body">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.users') }}">Manage Users</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.approvals') }}">Approve Accounts</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.settings') }}">System Settings</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-9">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card text-white bg-primary mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Users</h5>
+                            <p class="card-text display-4">{{ $totalUsers }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card text-white bg-success mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">User Accounts</h5>
+                            <p class="card-text display-4">{{ $userUsers }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card text-white bg-warning mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Pending Approvals</h5>
+                            <p class="card-text display-4">{{ $pendingUsers }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mt-3">
+                <div class="card-header">Recent Activity</div>
+                <div class="card-body">
+                    <p>No recent activity.</p>
                 </div>
             </div>
         </div>
     </div>
-</x-app-layout>
+</div>
+@endsection

@@ -6,13 +6,14 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class EnsureAdmin
+class adminacc
 {
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::check() && Auth::user()->role !== 'admin') {
-            return redirect('/dashboard');
+        if (Auth::check() && Auth::user()->roles !== 'admin') {
+            return redirect()->route('user.dashboard');
         }
+
         return $next($request);
     }
 }
