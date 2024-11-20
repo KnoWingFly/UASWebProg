@@ -9,7 +9,7 @@
                 <div class="card-body">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admin.users') }}">Manage Users</a>
+                            <a class="nav-link" href="{{ route('admin.manage-users') }}">Manage Users</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('admin.approvals') }}">Approve Accounts</a>

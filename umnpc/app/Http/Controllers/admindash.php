@@ -24,8 +24,33 @@ class admindash extends Controller
 
     public function manageUsers()
     {
-        $users = User::all();
-        return view('admin.users', compact('users'));
+        $users = User::all(); // Mengambil semua data pengguna
+        return view('admin.manage-users', compact('users'));
+    }
+
+    public function updateUser(Request $request, User $user)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'is_approved' => 'required|boolean',
+        ]);
+
+        $user->update([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'is_approved' => $request->input('is_approved'),
+        ]);
+
+        return redirect()->route('admin.manage-users')->with('success', 'User updated successfully.');
+    }
+
+    // Menghapus pengguna
+    public function deleteUser(User $user)
+    {
+        $user->delete();
+
+        return redirect()->route('admin.manage-users')->with('success', 'User deleted successfully.');
     }
 
 // Di dalam AdminDash Controller

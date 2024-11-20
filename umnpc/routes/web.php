@@ -22,11 +22,15 @@ Route::middleware(['auth', 'approve'])->group(function () {
     // Admin-specific Routes
     Route::middleware(['admin'])->prefix('admin')->group(function () {
         Route::get('/dashboard', [AdminDash::class, 'index'])->name('admin.dashboard');
-        Route::get('/users', [AdminDash::class, 'manageUsers'])->name('admin.users');
+
+        //User routes
+        Route::get('/manage-users', [AdminDash::class, 'manageUsers'])->name('admin.manage-users');
+        Route::post('/manage-users/{user}/update', [AdminDash::class, 'updateUser'])->name('admin.update-user');
+        Route::delete('/manage-users/{user}/delete', [AdminDash::class, 'deleteUser'])->name('admin.delete-user');
 
         // Approvals Route
         Route::get('/approvals', [AdminDash::class, 'userApprovals'])->name('admin.approvals');
-        Route::post('/admin/users/bulk-approve', [AdminDash::class, 'bulkApprove'])->name('admin.users.bulkApprove');
+        Route::post('/admin/users/bulk-approve', [AdminDash::class, 'bulkApprove'])->name('admin.user.bulkApprove');
         Route::post('/admin/users/{user}/approve', [AdminDash::class, 'approveUser'])->name('admin.users.approve');
 
 
