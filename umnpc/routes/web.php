@@ -23,9 +23,15 @@ Route::middleware(['auth', 'approve'])->group(function () {
     Route::middleware(['admin'])->prefix('admin')->group(function () {
         Route::get('/dashboard', [AdminDash::class, 'index'])->name('admin.dashboard');
         Route::get('/users', [AdminDash::class, 'manageUsers'])->name('admin.users');
+
+        // Approvals Route
         Route::get('/approvals', [AdminDash::class, 'userApprovals'])->name('admin.approvals');
+        Route::post('/admin/users/bulk-approve', [AdminDash::class, 'bulkApprove'])->name('admin.users.bulkApprove');
+        Route::post('/admin/users/{user}/approve', [AdminDash::class, 'approveUser'])->name('admin.users.approve');
+
+
+        // Settings Route
         Route::get('/settings', [AdminDash::class, 'settings'])->name('admin.settings');
-        Route::post('/users/{user}/approve', [AdminDash::class, 'approveUser'])->name('admin.users.approve');
     });
 });
 
