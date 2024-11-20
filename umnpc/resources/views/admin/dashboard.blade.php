@@ -13,7 +13,7 @@
                 <!-- Admin Navigation -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Manage Users -->
-                    <a href="{{ route('admin.users.index') }}"
+                    <a href="{{ route('admin.users.users') }}"
                        class="block bg-blue-600 text-white text-center font-medium py-3 px-4 rounded-lg hover:bg-blue-700">
                         Manage Users
                     </a>
