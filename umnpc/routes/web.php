@@ -34,6 +34,7 @@ Route::middleware(['auth', 'approve'])->group(function () {
 
         // Approvals
         Route::post('/approvals/{user}/approve', [AdminDash::class, 'approveUser'])->name('admin.users.approve');
+        Route::get('/approvals', [AdminDash::class, 'userApprovals'])->name('admin.approvals');
 
         // Settings
         Route::get('/settings', [AdminDash::class, 'settings'])->name('admin.settings');
