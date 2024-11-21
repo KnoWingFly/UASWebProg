@@ -16,12 +16,10 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Admin(Admin123)',
-            'email' => 'admin@example.com',
-            'password' => hash::make('Admin123'),
-            'is_approved' => true,
-            'roles' => 'admin',
-        ]);
+        User::factory(10)->create()->each(function ($user) {
+            $user->update([
+                'is_approved' => rand(0, 1) == 1,  
+            ]);
+        });
     }
 }

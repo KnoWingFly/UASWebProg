@@ -18,23 +18,24 @@ Route::get('/not-approved', [AuthController::class, 'notApproved'])->name('not-a
 // Authenticated and Approved Routes
 Route::middleware(['auth', 'approve'])->group(function () {
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('user.dashboard');
-    
+
     // Admin-specific Routes
     Route::middleware(['admin'])->prefix('admin')->group(function () {
         Route::get('/dashboard', [AdminDash::class, 'index'])->name('admin.dashboard');
 
-        //User routes
+        // Manage Users
         Route::get('/manage-users', [AdminDash::class, 'manageUsers'])->name('admin.manage-users');
-        Route::post('/manage-users/{user}/update', [AdminDash::class, 'updateUser'])->name('admin.update-user');
-        Route::put('/manage-users/{user}/delete', [AdminDash::class, 'deleteUser'])->name('admin.delete-user');
+        Route::put('/admin/users/{user}', [AdminDash::class, 'update'])->name('admin.users.update');
+        Route::delete('/admin/users/{user}', [AdminDash::class, 'deleteUser'])->name('admin.users.destroy');
 
-        // Approvals Route
-        Route::get('/approvals', [AdminDash::class, 'userApprovals'])->name('admin.approvals');
-        Route::post('/admin/users/bulk-approve', [AdminDash::class, 'bulkApprove'])->name('admin.user.bulkApprove');
-        Route::post('/admin/users/{user}/approve', [AdminDash::class, 'approveUser'])->name('admin.users.approve');
+        // Bulk Operations
+        Route::post('/users/bulk-approve', [AdminDash::class, 'bulkApprove'])->name('admin.users.bulk-approve');
+        Route::post('/users/bulk-delete', [AdminDash::class, 'bulkDelete'])->name('admin.users.bulk-delete');
 
+        // Approvals
+        Route::post('/approvals/{user}/approve', [AdminDash::class, 'approveUser'])->name('admin.users.approve');
 
-        // Settings Route
+        // Settings
         Route::get('/settings', [AdminDash::class, 'settings'])->name('admin.settings');
     });
 });
