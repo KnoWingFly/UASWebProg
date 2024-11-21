@@ -24,47 +24,50 @@ class admindash extends Controller
      */
     public function manageUsers(Request $request)
     {
-        $query = User::query();
+        // Filter users based on search and category filter
+        $users = User::query();
     
-        // Search by name or email
-        if ($request->has('search') && !empty($request->search)) {
-            $query->where(function ($q) use ($request) {
-                $q->where('name', 'LIKE', '%' . $request->search . '%')
-                    ->orWhere('email', 'LIKE', '%' . $request->search . '%');
-            });
+        // Apply search filter if present
+        if ($request->filled('search')) {
+            $users->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('email', 'like', '%' . $request->search . '%');
         }
     
-        // Filter by date range
-        if ($request->has('date_filter') && !empty($request->date_filter)) {
-            $dateFilter = $request->date_filter;
-            switch ($dateFilter) {
+        // Apply category filter if present
+        if ($request->filled('date_filter')) {
+            $filter = $request->date_filter;
+            switch ($filter) {
                 case 'today':
-                    $query->whereDate('created_at', now()->format('Y-m-d'));
+                    $users->whereDate('created_at', date('Y-m-d')); // Today
                     break;
                 case 'yesterday':
-                    $query->whereDate('created_at', now()->subDay()->format('Y-m-d'));
+                    $users->whereDate('created_at', date('Y-m-d', strtotime('yesterday'))); // Yesterday
                     break;
                 case 'last_week':
-                    $query->whereBetween('created_at', [now()->subWeek()->startOfWeek(), now()->subWeek()->endOfWeek()]);
+                    // Get the start and end date of the last week (Monday to Sunday)
+                    $startOfLastWeek = date('Y-m-d', strtotime('last Monday -1 week'));
+                    $endOfLastWeek = date('Y-m-d', strtotime('last Sunday -1 week'));
+                    $users->whereBetween('created_at', [$startOfLastWeek, $endOfLastWeek]); // Last week (Monday to Sunday)
                     break;
                 case 'last_month':
-                    $query->whereMonth('created_at', now()->subMonth()->format('m'))
-                        ->whereYear('created_at', now()->subMonth()->format('Y'));
+                    $users->whereMonth('created_at', date('m', strtotime('-1 month'))); // Last month
+                    break;
+                default:
+                    // No filter
                     break;
             }
         }
     
-        $users = $query->paginate(10);
+        // Get the filtered users
+        $users = $users->paginate(10);
     
-        // If no users are found and a filter is applied, redirect with the default filter
-        if ($users->isEmpty() && $request->has('date_filter') && $request->date_filter != '') {
-            return redirect()->route('admin.manage-users', ['search' => $request->search])
-                             ->with('message', 'No users found for the selected filter.');  // optional message
+        // Check if no users are found, and redirect with a message
+        if ($users->isEmpty()) {
+            return redirect()->route('admin.manage-users')->with('error', 'No users found for the selected filter.');
         }
     
         return view('admin.manage-users', compact('users'));
-    }
-    
+    }    
 
     /**
      * Approve multiple users in bulk.
@@ -73,32 +76,32 @@ class admindash extends Controller
     {
         // Decode the JSON string to an array of user IDs
         $userIds = json_decode($request->input('userIds'));
-    
+
         // Perform the bulk approve action for the users
         User::whereIn('id', $userIds)->update(['is_approved' => true]);
-    
+
         return redirect()->route('admin.manage-users')->with('success', 'Selected users have been approved.');
     }
-    
+
     public function bulkDisapprove(Request $request)
     {
         // Decode the JSON string to an array of user IDs
         $userIds = json_decode($request->input('userIds'));
-    
+
         // Perform the bulk disapprove action for the users
         User::whereIn('id', $userIds)->update(['is_approved' => false]);
-    
+
         return redirect()->route('admin.manage-users')->with('success', 'Selected users have been disapproved.');
     }
-    
+
     public function bulkDelete(Request $request)
     {
         // Decode the JSON string to an array of user IDs
         $userIds = json_decode($request->input('userIds'));
-    
+
         // Perform the bulk delete action for the users
         User::whereIn('id', $userIds)->delete();
-    
+
         return redirect()->route('admin.manage-users')->with('success', 'Selected users have been deleted.');
     }
 
