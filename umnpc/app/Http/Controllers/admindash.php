@@ -22,27 +22,55 @@ class admindash extends Controller
         ]);
     }
 
-    public function manageUsers()
+    public function manageUsers(Request $request)
     {
-        $users = User::all(); // Mengambil semua data pengguna
+        $query = User::query();
+    
+        // Pencarian
+        if ($request->has('search') && $request->search != '') {
+            $query->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('email', 'like', '%' . $request->search . '%');
+        }
+    
+        // Filter berdasarkan tanggal
+        if ($request->has('start_date') && $request->has('end_date')) {
+            $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
+        }
+    
+        // Pagination dengan 10 item per halaman
+        $users = $query->paginate(10);
+    
         return view('admin.manage-users', compact('users'));
     }
+    
 
     public function updateUser(Request $request, User $user)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'is_approved' => 'required|boolean',
-        ]);
+        try {
+            // Validate the incoming request
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email,' . $user->id,
+            ]);
 
-        $user->update([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'is_approved' => $request->input('is_approved'),
-        ]);
+            // Update the user
+            $user->name = $validated['name'];
+            $user->email = $validated['email'];
+            
+            // Explicitly handle the is_approved checkbox
+            $user->is_approved = $request->has('is_approved') ? 1 : 0;
+            
+            $user->save();
 
-        return redirect()->route('admin.manage-users')->with('success', 'User updated successfully.');
+            // Redirect with success message
+            return redirect()->route('admin.manage-users')->with('success', 'User updated successfully.');
+        } catch (\Exception $e) {
+            // Log the error
+            \Log::error('User update error: ' . $e->getMessage());
+            
+            // Redirect with error message
+            return redirect()->back()->withInput()->with('error', 'Failed to update user: ' . $e->getMessage());
+        }
     }
 
     // Menghapus pengguna

@@ -1,61 +1,59 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-header">Admin Menu</div>
-                <div class="card-body">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admin.manage-users') }}">Manage Users</a>
+<div class="p-6 space-y-6">
+    <!-- Dashboard Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Total Users -->
+        <div class="p-6 bg-blue-600 rounded-lg shadow-lg">
+            <h5 class="text-lg font-semibold text-gray-200">Total Users</h5>
+            <p class="mt-3 text-4xl font-bold text-white">{{ $totalUsers }}</p>
+        </div>
+        <!-- User Accounts -->
+        <div class="p-6 bg-green-600 rounded-lg shadow-lg">
+            <h5 class="text-lg font-semibold text-gray-200">User Accounts</h5>
+            <p class="mt-3 text-4xl font-bold text-white">{{ $userUsers }}</p>
+        </div>
+        <!-- Pending Approvals -->
+        <div class="p-6 bg-yellow-600 rounded-lg shadow-lg">
+            <h5 class="text-lg font-semibold text-gray-800">Pending Approvals</h5>
+            <p class="mt-3 text-4xl font-bold text-gray-900">{{ $pendingUsers }}</p>
+        </div>
+    </div>
+
+    <!-- Admin Menu -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div class="col-span-1">
+            <div class="bg-gray-800 rounded-lg shadow-lg">
+                <div class="p-5">
+                    <h5 class="text-lg font-semibold text-gray-200">Admin Menu</h5>
+                    <ul class="mt-4 space-y-2">
+                        <li>
+                            <a href="{{ route('admin.manage-users') }}" class="block p-2 text-sm font-medium text-gray-200 rounded-md hover:bg-gray-700">
+                                Manage Users
+                            </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admin.approvals') }}">Approve Accounts</a>
+                        <li>
+                            <a href="{{ route('admin.approvals') }}" class="block p-2 text-sm font-medium text-gray-200 rounded-md hover:bg-gray-700">
+                                Approve Accounts
+                            </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admin.settings') }}">System Settings</a>
+                        <li>
+                            <a href="{{ route('admin.settings') }}" class="block p-2 text-sm font-medium text-gray-200 rounded-md hover:bg-gray-700">
+                                System Settings
+                            </a>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
-        
-        <div class="col-md-9">
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="card text-white bg-primary mb-3">
-                        <div class="card-body">
-                            <h5 class="card-title">Total Users</h5>
-                            <p class="card-text display-4">{{ $totalUsers }}</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-4">
-                    <div class="card text-white bg-success mb-3">
-                        <div class="card-body">
-                            <h5 class="card-title">User Accounts</h5>
-                            <p class="card-text display-4">{{ $userUsers }}</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-4">
-                    <div class="card text-white bg-warning mb-3">
-                        <div class="card-body">
-                            <h5 class="card-title">Pending Approvals</h5>
-                            <p class="card-text display-4">{{ $pendingUsers }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card mt-3">
-                <div class="card-header">Recent Activity</div>
-                <div class="card-body">
-                    <p>No recent activity.</p>
+
+        <!-- Recent Activity -->
+        <div class="col-span-1 lg:col-span-3">
+            <div class="bg-gray-800 rounded-lg shadow-lg">
+                <div class="p-5">
+                    <h5 class="text-lg font-semibold text-gray-200">Recent Activity</h5>
+                    <p class="mt-4 text-sm text-gray-400">No recent activity.</p>
                 </div>
             </div>
         </div>

@@ -26,7 +26,7 @@ Route::middleware(['auth', 'approve'])->group(function () {
         //User routes
         Route::get('/manage-users', [AdminDash::class, 'manageUsers'])->name('admin.manage-users');
         Route::post('/manage-users/{user}/update', [AdminDash::class, 'updateUser'])->name('admin.update-user');
-        Route::delete('/manage-users/{user}/delete', [AdminDash::class, 'deleteUser'])->name('admin.delete-user');
+        Route::put('/manage-users/{user}/delete', [AdminDash::class, 'deleteUser'])->name('admin.delete-user');
 
         // Approvals Route
         Route::get('/approvals', [AdminDash::class, 'userApprovals'])->name('admin.approvals');

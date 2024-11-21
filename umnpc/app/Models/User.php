@@ -76,4 +76,8 @@ class User extends Authenticatable
     {
         return $this->roles === 'admin';
     }
+
+    protected $casts = [
+        'is_approved' => 'boolean',
+    ];
 }
