@@ -29,7 +29,7 @@ class admindash extends Controller
         // Search by name or email
         if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('email', 'like', '%' . $request->search . '%');
+                ->orWhere('email', 'like', '%' . $request->search . '%');
         }
 
         // Filter by date range

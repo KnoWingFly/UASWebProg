@@ -12,7 +12,7 @@ Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login')->m
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Not Approved Route (without 'auth' middleware)
+// Not Approved Route
 Route::get('/not-approved', [AuthController::class, 'notApproved'])->name('not-approved');
 
 // Authenticated and Approved Routes
