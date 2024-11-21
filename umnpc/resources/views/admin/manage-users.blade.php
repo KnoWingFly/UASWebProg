@@ -89,10 +89,12 @@
                     <td class="px-6 py-4 text-center space-x-2">
                         <button onclick="openEditModal({{ $user }})" 
                                 class="text-white bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded">Edit</button>
-                        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="inline-block">
+                        <form id="deleteUserForm" action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="inline">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded">Delete</button>
+                            <button type="button" class="bg-red-600 hover:bg-red-500 text-white py-2 px-4 rounded" onclick="openDeleteModal({{ $user->id }})">
+                                Delete
+                            </button>
                         </form>
                     </td>
                 </tr>
@@ -141,7 +143,17 @@
             </div>
         </div>
 
-
+        <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden">
+            <div class="bg-gray-800 text-white p-6 rounded-lg w-96">
+                <h3 class="text-xl mb-4">Are you sure you want to delete this user?</h3>
+                <form id="confirmDeleteForm" method="POST" action="" class="inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="bg-red-600 hover:bg-red-500 text-white py-2 px-4 rounded mr-2">Yes, Delete</button>
+                    <button type="button" class="bg-gray-600 hover:bg-gray-500 text-white py-2 px-4 rounded" onclick="closeDeleteModal()">Cancel</button>
+                </form>
+            </div>
+        </div>
 
     <!-- Pagination -->
     <div class="mt-4">
@@ -174,6 +186,20 @@
     // Close the Edit Modal
     function closeModal() {
         document.getElementById('editModal').classList.add('hidden');
+    }
+
+    function openDeleteModal(userId) {
+        // Set the form action dynamically
+        const form = document.getElementById('confirmDeleteForm');
+        form.action = '/admin/users/' + userId;
+
+        // Show the modal
+        document.getElementById('deleteModal').classList.remove('hidden');
+    }
+
+    // Function to close the modal
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.add('hidden');
     }
 
     // Select/Deselect all checkboxes

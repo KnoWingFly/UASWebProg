@@ -25,8 +25,8 @@ Route::middleware(['auth', 'approve'])->group(function () {
 
         // Manage Users
         Route::get('/manage-users', [AdminDash::class, 'manageUsers'])->name('admin.manage-users');
-        Route::put('/admin/users/{user}', [AdminDash::class, 'update'])->name('admin.users.update');
-        Route::delete('/admin/users/{user}', [AdminDash::class, 'deleteUser'])->name('admin.users.destroy');
+        Route::put('/users/{user}', [AdminDash::class, 'update'])->name('admin.users.update');
+        Route::delete('/users/{user}', [AdminDash::class, 'deleteUser'])->name('admin.users.destroy');
 
         // Bulk Operations
         Route::post('/users/bulk-approve', [AdminDash::class, 'bulkApprove'])->name('admin.users.bulk-approve');
