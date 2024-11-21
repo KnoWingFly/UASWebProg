@@ -25,63 +25,80 @@ class admindash extends Controller
     public function manageUsers(Request $request)
     {
         $query = User::query();
-
+    
         // Search by name or email
-        if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%')
-                ->orWhere('email', 'like', '%' . $request->search . '%');
+        if ($request->has('search') && !empty($request->search)) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'LIKE', '%' . $request->search . '%')
+                    ->orWhere('email', 'LIKE', '%' . $request->search . '%');
+            });
         }
-
+    
         // Filter by date range
-        if ($request->filled('start_date') && $request->filled('end_date')) {
-            $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
+        if ($request->has('date_filter') && !empty($request->date_filter)) {
+            $dateFilter = $request->date_filter;
+            switch ($dateFilter) {
+                case 'today':
+                    $query->whereDate('created_at', now()->format('Y-m-d'));
+                    break;
+                case 'yesterday':
+                    $query->whereDate('created_at', now()->subDay()->format('Y-m-d'));
+                    break;
+                case 'last_week':
+                    $query->whereBetween('created_at', [now()->subWeek()->startOfWeek(), now()->subWeek()->endOfWeek()]);
+                    break;
+                case 'last_month':
+                    $query->whereMonth('created_at', now()->subMonth()->format('m'))
+                        ->whereYear('created_at', now()->subMonth()->format('Y'));
+                    break;
+            }
         }
-
+    
         $users = $query->paginate(10);
+    
+        // If no users are found and a filter is applied, redirect with the default filter
+        if ($users->isEmpty() && $request->has('date_filter') && $request->date_filter != '') {
+            return redirect()->route('admin.manage-users', ['search' => $request->search])
+                             ->with('message', 'No users found for the selected filter.');  // optional message
+        }
+    
         return view('admin.manage-users', compact('users'));
     }
+    
 
     /**
      * Approve multiple users in bulk.
      */
     public function bulkApprove(Request $request)
     {
-        $userIds = explode(',', $request->input('userIds'));
-
-        if (empty($userIds)) {
-            return redirect()->route('admin.manage-users')->withErrors('No users selected for approval.');
-        }
-
+        // Decode the JSON string to an array of user IDs
+        $userIds = json_decode($request->input('userIds'));
+    
+        // Perform the bulk approve action for the users
         User::whereIn('id', $userIds)->update(['is_approved' => true]);
+    
         return redirect()->route('admin.manage-users')->with('success', 'Selected users have been approved.');
     }
-
+    
     public function bulkDisapprove(Request $request)
     {
-        $userIds = explode(',', $request->input('userIds'));
-
-        if (empty($userIds)) {
-            return redirect()->route('admin.manage-users')->with('error', 'No users selected for disapproval.');
-        }
-
+        // Decode the JSON string to an array of user IDs
+        $userIds = json_decode($request->input('userIds'));
+    
+        // Perform the bulk disapprove action for the users
         User::whereIn('id', $userIds)->update(['is_approved' => false]);
-
+    
         return redirect()->route('admin.manage-users')->with('success', 'Selected users have been disapproved.');
     }
-
-
-    /**
-     * Delete multiple users in bulk.
-     */
+    
     public function bulkDelete(Request $request)
     {
-        $userIds = explode(',', $request->input('userIds'));
-
-        if (empty($userIds)) {
-            return redirect()->route('admin.manage-users')->withErrors('No users selected for deletion.');
-        }
-
+        // Decode the JSON string to an array of user IDs
+        $userIds = json_decode($request->input('userIds'));
+    
+        // Perform the bulk delete action for the users
         User::whereIn('id', $userIds)->delete();
+    
         return redirect()->route('admin.manage-users')->with('success', 'Selected users have been deleted.');
     }
 

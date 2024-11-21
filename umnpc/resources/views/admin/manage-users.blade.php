@@ -31,20 +31,26 @@
     @endif
 
 <!-- ============================================================== Search, filter ============================================================== -->
-    <!-- Search and Filter Form -->
-    <div class="flex mb-4 space-x-4">
-        <form action="{{ route('admin.manage-users') }}" method="GET" class="flex space-x-2">
-            <input type="text" name="search" placeholder="Search by name or email"
-                class="px-4 py-2 border rounded dark:bg-gray-700 dark:text-gray-100" value="{{ request()->search }}">
-            <input type="date" name="start_date" placeholder="Start Date"
-                class="px-4 py-2 border rounded dark:bg-gray-700 dark:text-gray-100"
-                value="{{ request()->start_date }}">
-            <input type="date" name="end_date" placeholder="End Date"
-                class="px-4 py-2 border rounded dark:bg-gray-700 dark:text-gray-100" value="{{ request()->end_date }}">
-            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Search &
-                Filter</button>
-        </form>
-    </div>
+<div class="flex gap-4 mb-4">
+    <!-- Search Box -->
+    <form action="{{ route('admin.manage-users') }}" method="GET" class="flex gap-2">
+        <input type="text" name="search" placeholder="Search by name or email"
+            class="px-4 py-2 border rounded dark:bg-gray-700 dark:text-gray-100"
+            value="{{ request()->search }}">
+        <button type="submit"
+            class="px-4 py-2 bg-blue-500 text-white rounded">Search</button>
+    </form>
+
+    <!-- Filter Dropdown -->
+    <select id="date_filter" name="date_filter"
+        class="px-4 py-2 border rounded dark:bg-gray-700 dark:text-gray-100">
+        <option value="">Default</option>
+        <option value="today" {{ request()->date_filter == 'today' ? 'selected' : '' }}>Today</option>
+        <option value="yesterday" {{ request()->date_filter == 'yesterday' ? 'selected' : '' }}>Yesterday</option>
+        <option value="last_week" {{ request()->date_filter == 'last_week' ? 'selected' : '' }}>Last Week</option>
+        <option value="last_month" {{ request()->date_filter == 'last_month' ? 'selected' : '' }}>Last Month</option>
+    </select>
+</div>
 
     <!-- Bulk Operations -->
     <div class="flex space-x-4 mb-4">
@@ -77,121 +83,127 @@
 
 <!-- ============================================================== Table ============================================================== -->
     <!-- Users Table -->
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 dark:bg-gray-800">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
-                <tr>
-                    <th scope="col" class="px-6 py-3">
-                        <input type="checkbox" id="select-all" class="select-all-checkbox">
-                    </th>
-                    <th scope="col" class="px-6 py-3">Name</th>
-                    <th scope="col" class="px-6 py-3">Email</th>
-                    <th scope="col" class="px-6 py-3">Status</th>
-                    <th scope="col" class="px-6 py-3">Created At</th>
-                    <th scope="col" class="px-6 py-3 text-center">Actions</th>
-                </tr>
-            </thead>
+    @if($users->isEmpty())
+        <div class="text-center text-gray-500 mt-4">
+            No users match your criteria.
+        </div>
+    @else
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 dark:bg-gray-800">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">
+                            <input type="checkbox" id="select-all" class="select-all-checkbox">
+                        </th>
+                        <th scope="col" class="px-6 py-3">Name</th>
+                        <th scope="col" class="px-6 py-3">Email</th>
+                        <th scope="col" class="px-6 py-3">Status</th>
+                        <th scope="col" class="px-6 py-3">Created At</th>
+                        <th scope="col" class="px-6 py-3 text-center">Actions</th>
+                    </tr>
+                </thead>
 
 <!-- ============================================================== Table Body ============================================================== -->
-            <tbody>
-                @forelse ($users as $user)
-                    <tr
-                        class="bg-white border-b hover:bg-gray-100 dark:bg-gray-900 dark:border-gray-700 dark:hover:bg-gray-700">
-                        <td class="px-6 py-4">
-                            <input type="checkbox" class="user-checkbox" value="{{ $user->id }}">
-                        </td>
-                        <td class="px-6 py-4">{{ $user->name }}</td>
-                        <td class="px-6 py-4">{{ $user->email }}</td>
-                        <td class="px-6 py-4">
-                            <span
-                                class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium 
-                            {{ $user->is_approved ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-200' }}">
-                                {{ $user->is_approved ? 'Approved' : 'Not Approved' }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4">{{ $user->created_at->format('Y-m-d') }}</td>
-                        <td class="px-6 py-4 text-center space-x-2">
-                            <button onclick="openEditModal({{ $user }})"
-                                class="text-white bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded">Edit</button>
-                            <form id="deleteUserForm" action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
-                                class="inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="button" class="bg-red-600 hover:bg-red-500 text-white py-2 px-4 rounded"
-                                    onclick="openDeleteModal({{ $user->id }})">
-                                    Delete
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="6" class="text-center py-4">No users found</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+                <tbody>
+                    @forelse ($users as $user)
+                        <tr
+                            class="bg-white border-b hover:bg-gray-100 dark:bg-gray-900 dark:border-gray-700 dark:hover:bg-gray-700">
+                            <td class="px-6 py-4">
+                                <input type="checkbox" class="user-checkbox" value="{{ $user->id }}">
+                            </td>
+                            <td class="px-6 py-4">{{ $user->name }}</td>
+                            <td class="px-6 py-4">{{ $user->email }}</td>
+                            <td class="px-6 py-4">
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium 
+                                {{ $user->is_approved ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-200' }}">
+                                    {{ $user->is_approved ? 'Approved' : 'Not Approved' }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">{{ $user->created_at->format('Y-m-d') }}</td>
+                            <td class="px-6 py-4 text-center space-x-2">
+                                <button onclick="openEditModal({{ $user }})"
+                                    class="text-white bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded">Edit</button>
+                                <form id="deleteUserForm" action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
+                                    class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button" class="bg-red-600 hover:bg-red-500 text-white py-2 px-4 rounded"
+                                        onclick="openDeleteModal({{ $user->id }})">
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center py-4">No users found</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
 
 <!-- ============================================================== Modal ============================================================== -->
-    <!-- Edit User Modal -->
-    <div id="editModal" class="hidden fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
-        <div class="bg-gray-800 text-white p-6 rounded shadow-lg max-w-sm w-full">
-            <h2 class="text-xl font-bold mb-4">Edit User</h2>
-            <form id="editForm" action="{{ route('admin.users.update', ':userId') }}" method="POST">
-                @csrf
-                @method('PUT')
+        <!-- Edit User Modal -->
+        <div id="editModal" class="hidden fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
+            <div class="bg-gray-800 text-white p-6 rounded shadow-lg max-w-sm w-full">
+                <h2 class="text-xl font-bold mb-4">Edit User</h2>
+                <form id="editForm" action="{{ route('admin.users.update', ':userId') }}" method="POST">
+                    @csrf
+                    @method('PUT')
 
-                <!-- Name -->
-                <div class="mb-4">
-                    <label for="name" class="block text-sm font-medium text-gray-300">Name</label>
-                    <input type="text" id="name" name="name"
-                        class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:text-gray-100">
-                </div>
+                    <!-- Name -->
+                    <div class="mb-4">
+                        <label for="name" class="block text-sm font-medium text-gray-300">Name</label>
+                        <input type="text" id="name" name="name"
+                            class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:text-gray-100">
+                    </div>
 
-                <!-- Email -->
-                <div class="mb-4">
-                    <label for="email" class="block text-sm font-medium text-gray-300">Email</label>
-                    <input type="email" id="email" name="email"
-                        class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:text-gray-100">
-                </div>
+                    <!-- Email -->
+                    <div class="mb-4">
+                        <label for="email" class="block text-sm font-medium text-gray-300">Email</label>
+                        <input type="email" id="email" name="email"
+                            class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:text-gray-100">
+                    </div>
 
-                <!-- Approval Status -->
-                <div class="mb-4">
-                    <label for="is_approved" class="block text-sm font-medium text-gray-300">Approved</label>
-                    <input type="checkbox" id="is_approved" name="is_approved" class="text-indigo-600" value="1" {{ old('is_approved', $user->is_approved) ? 'checked' : '' }}>
-                </div>
+                    <!-- Approval Status -->
+                    <div class="mb-4">
+                        <label for="is_approved" class="block text-sm font-medium text-gray-300">Approved</label>
+                        <input type="checkbox" id="is_approved" name="is_approved" class="text-indigo-600" value="1" {{ old('is_approved', $user->is_approved) ? 'checked' : '' }}>
+                    </div>
 
-                <!-- Submit & Cancel buttons -->
-                <div class="flex justify-end space-x-2">
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save
-                        Changes</button>
-                    <button type="button" onclick="closeModal()"
-                        class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">Cancel</button>
-                </div>
-            </form>
+                    <!-- Submit & Cancel buttons -->
+                    <div class="flex justify-end space-x-2">
+                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save
+                            Changes</button>
+                        <button type="button" onclick="closeModal()"
+                            class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">Cancel</button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
 
-    <!-- Delete User Modal -->
-    <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden">
-        <div class="bg-gray-800 text-white p-6 rounded-lg w-96">
-            <h3 class="text-xl mb-4">Are you sure you want to delete this user?</h3>
-            <form id="confirmDeleteForm" method="POST" action="" class="inline">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="bg-red-600 hover:bg-red-500 text-white py-2 px-4 rounded mr-2">Yes,
-                    Delete</button>
-                <button type="button" class="bg-gray-600 hover:bg-gray-500 text-white py-2 px-4 rounded"
-                    onclick="closeDeleteModal()">Cancel</button>
-            </form>
+        <!-- Delete User Modal -->
+        <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden">
+            <div class="bg-gray-800 text-white p-6 rounded-lg w-96">
+                <h3 class="text-xl mb-4">Are you sure you want to delete this user?</h3>
+                <form id="confirmDeleteForm" method="POST" action="" class="inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="bg-red-600 hover:bg-red-500 text-white py-2 px-4 rounded mr-2">Yes,
+                        Delete</button>
+                    <button type="button" class="bg-gray-600 hover:bg-gray-500 text-white py-2 px-4 rounded"
+                        onclick="closeDeleteModal()">Cancel</button>
+                </form>
+            </div>
         </div>
-    </div>
 
-    <!-- Pagination -->
-    <div class="mt-4">
-        {{ $users->links() }}
-    </div>
+        <!-- Pagination -->
+        <div class="mt-4">
+            {{ $users->links() }}
+        </div>
+    @endif
 </div>
 
 <!-- ============================================================== JS ============================================================== -->
@@ -249,9 +261,33 @@
             return;
         }
 
-        document.getElementById(hiddenFieldId).value = selectedIds.join(',');
+        // Set the selected IDs as an array
+        document.getElementById(hiddenFieldId).value = JSON.stringify(selectedIds);  // Store as JSON string
         document.querySelector(formId).submit();
     }
+
+    // Date filter
+    document.getElementById('date_filter').addEventListener('change', function () {
+        const filterValue = this.value;
+        const searchParams = new URLSearchParams(window.location.search);
+
+        if (filterValue) {
+            searchParams.set('date_filter', filterValue);
+        } else {
+            searchParams.delete('date_filter');
+        }
+
+        // Update the URL and reload the page
+        window.location.search = searchParams.toString();
+    });
+
+    // Check if there are no users and reset the filter to the default
+    const noUsers = document.querySelector('.no-users');
+    if (noUsers) {
+        const filterSelect = document.getElementById('date_filter');
+        filterSelect.value = '';  // Reset to default (or clear value)
+    }
+
 </script>
 
 @endsection
