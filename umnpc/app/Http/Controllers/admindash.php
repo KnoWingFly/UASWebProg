@@ -56,6 +56,20 @@ class admindash extends Controller
         return redirect()->route('admin.manage-users')->with('success', 'Selected users have been approved.');
     }
 
+    public function bulkDisapprove(Request $request)
+    {
+        $userIds = explode(',', $request->input('userIds'));
+
+        if (empty($userIds)) {
+            return redirect()->route('admin.manage-users')->with('error', 'No users selected for disapproval.');
+        }
+
+        User::whereIn('id', $userIds)->update(['is_approved' => false]);
+
+        return redirect()->route('admin.manage-users')->with('success', 'Selected users have been disapproved.');
+    }
+
+
     /**
      * Delete multiple users in bulk.
      */

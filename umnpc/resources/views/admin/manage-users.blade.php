@@ -48,12 +48,25 @@
 
     <!-- Bulk Operations -->
     <div class="flex space-x-4 mb-4">
+
+        <!-- approve bulk -->
         <form id="bulkApproveForm" action="{{ route('admin.users.bulk-approve') }}" method="POST">
             @csrf
             <input type="hidden" name="userIds" id="approveUserIds">
             <button type="button" onclick="submitBulkAction('approveUserIds', '.user-checkbox', '#bulkApproveForm')"
                 class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Approve Selected</button>
         </form>
+
+        <!-- disapprove bulk -->
+        <form id="bulkDisapproveForm" action="{{ route('admin.users.bulk-disapprove') }}" method="POST">
+            @csrf
+            <input type="hidden" name="userIds" id="disapproveUserIds">
+            <button type="button" onclick="submitBulkAction('disapproveUserIds', '.user-checkbox', '#bulkDisapproveForm')"
+                class="px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700">Disapprove Selected</button>
+        </form>
+
+
+        <!-- delete bulk -->
         <form id="bulkDeleteForm" action="{{ route('admin.users.bulk-delete') }}" method="POST">
             @csrf
             <input type="hidden" name="userIds" id="deleteUserIds">

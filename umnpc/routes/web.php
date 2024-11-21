@@ -31,6 +31,8 @@ Route::middleware(['auth', 'approve'])->group(function () {
         // Bulk Operations
         Route::post('/users/bulk-approve', [AdminDash::class, 'bulkApprove'])->name('admin.users.bulk-approve');
         Route::post('/users/bulk-delete', [AdminDash::class, 'bulkDelete'])->name('admin.users.bulk-delete');
+        Route::post('/admin/users/bulk-disapprove', [AdminDash::class, 'bulkDisapprove'])->name('admin.users.bulk-disapprove');
+
 
         // Approvals
         Route::post('/approvals/{user}/approve', [AdminDash::class, 'approveUser'])->name('admin.users.approve');
