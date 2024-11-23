@@ -27,7 +27,7 @@ forum bagi anggota untuk berdiskusi tentang berbagai topik pemrograman, berbagi 
 8. Materi dan Modul Pembelajaran
 Bagian khusus yang berisi modul, artikel, dan materi pembelajaran dalam bentuk PDF atau video. Admin dapat mengunggah atau memperbarui konten secara berkala untuk memastikan materi tetap relevan dan bermanfaat bagi anggota.
 
-9. Manajemen Pengguna (Admin)
+9. Manajemen Pengguna (Admin) [DONE]
 CRUD Data Anggota: Admin memiliki akses penuh untuk menambah, mengedit, atau menghapus data anggota. 
 Pemberian Role: Admin bisa memberikan peran kepada anggota sebagai ‘member’ atau ‘admin’, mengatur hak akses sesuai dengan peran masing-masing.
 Pengelolaan Keanggotaan: Fitur ini juga memungkinkan admin untuk melacak aktivitas anggota dan status keanggotaan.
@@ -35,4 +35,4 @@ Pengelolaan Keanggotaan: Fitur ini juga memungkinkan admin untuk melacak aktivit
 10. Pencarian dan Filter
 Fitur pencarian dan filter yang memungkinkan anggota menemukan soal latihan, event, atau materi pembelajaran secara cepat dan mudah. Fitur ini membantu navigasi website agar lebih efisien dan memudahkan pengguna menemukan konten yang mereka butuhkan.
 
-11. Autentikasi dan Hak Akses [Done, Pake laravel jetstream]
+11. Autentikasi dan Hak Akses [Done, Pake laravel jetstream sama udh ada fitur approve admin]

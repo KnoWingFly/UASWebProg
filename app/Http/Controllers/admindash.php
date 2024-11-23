@@ -28,40 +28,35 @@ class admindash extends Controller
      */
     public function manageUsers(Request $request)
     {
-        $users = User::query();
+        $query = User::query();
 
-        if ($request->filled('search')) {
-            $users->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('email', 'like', '%' . $request->search . '%');
+        // Search functionality
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where('name', 'LIKE', "%$search%")
+                ->orWhere('email', 'LIKE', "%$search%");
         }
 
-        if ($request->filled('date_filter')) {
-            $filter = $request->date_filter;
-            switch ($filter) {
-                case 'today':
-                    $users->whereDate('created_at', date('Y-m-d'));
-                    break;
-                case 'yesterday':
-                    $users->whereDate('created_at', date('Y-m-d', strtotime('yesterday')));
-                    break;
-                case 'last_week':
-                    $startOfLastWeek = date('Y-m-d', strtotime('last Monday -1 week'));
-                    $endOfLastWeek = date('Y-m-d', strtotime('last Sunday -1 week'));
-                    $users->whereBetween('created_at', [$startOfLastWeek, $endOfLastWeek]);
-                    break;
-                case 'last_month':
-                    $users->whereMonth('created_at', date('m', strtotime('-1 month')));
-                    break;
-                default:
-                    break;
+        // Date filter
+        if ($request->has('date_filter')) {
+            $dateFilter = $request->date_filter;
+            if ($dateFilter == 'today') {
+                $query->whereDate('created_at', now()->toDateString());
+            } elseif ($dateFilter == 'yesterday') {
+                $query->whereDate('created_at', now()->subDay()->toDateString());
+            } elseif ($dateFilter == 'last_week') {
+                $query->whereBetween('created_at', [now()->subWeek(), now()]);
+            } elseif ($dateFilter == 'last_month') {
+                $query->whereMonth('created_at', now()->subMonth()->month);
             }
         }
 
-        $users = $users->paginate(10);
+        // Sorting functionality
+        // $sortBy = $request->get('sort_by', 'created_at'); 
+        // $sortOrder = $request->get('sort_order', 'desc'); 
+        // $query->orderBy($sortBy, $sortOrder);
 
-        if ($users->isEmpty()) {
-            return redirect()->route('admin.manage-users')->with('error', 'No users found for the selected filter.');
-        }
+        $users = $query->paginate(10);
 
         return view('admin.manage-users', compact('users'));
     }
@@ -101,19 +96,23 @@ class admindash extends Controller
         return redirect()->route('admin.manage-users')->with('success', 'User deleted successfully.');
     }
 
-    public function update(Request $request, User $user)
+    public function update(Request $request, $id)
     {
-        $request->validate([
+        $user = User::findOrFail($id);
+
+        $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'email' => 'required|email|max:255|unique:users,email,' . $id,
             'is_approved' => 'nullable|boolean',
+            'roles' => 'required|in:user,admin',
         ]);
 
-        $user->update([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'is_approved' => $request->boolean('is_approved', false),
-        ]);
+        // Update user attributes
+        $user->name = $validatedData['name'];
+        $user->email = $validatedData['email'];
+        $user->is_approved = $request->has('is_approved') ? 1 : 0;
+        $user->roles = $validatedData['roles'];
+        $user->save();
 
         return redirect()->route('admin.manage-users')->with('success', 'User updated successfully.');
     }
@@ -123,7 +122,7 @@ class admindash extends Controller
         $events = Event::latest()->paginate(10);
         return view('admin.events.manage-events', compact('events'));
     }
-    
+
     public function createEvent()
     {
         return view('admin.events.create-events');
@@ -282,11 +281,11 @@ class admindash extends Controller
     {
         // Ensure a relationship exists to fetch participants
         $participants = $event->participants; // Assumes you have a `participants` relationship in the Event model
-    
+
         // Pass the event and its participants to the view
         return view('admin.events.participants', compact('event', 'participants'));
     }
-    
+
 
     public function removeParticipant(Event $event, User $participant)
     {

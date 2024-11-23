@@ -4,7 +4,7 @@
 <div class="container mx-auto mt-8">
     <h1 class="text-2xl font-bold mb-6">Manage Users</h1>
 
-<!-- ============================================================== Any Error Message ============================================================== -->
+    <!-- ============================================================== Any Error Message ============================================================== -->
     <!-- Feedback Messages -->
     @if(session('success'))
         <div class="bg-green-500 text-white p-4 mb-4">
@@ -30,27 +30,25 @@
         </div>
     @endif
 
-<!-- ============================================================== Search, filter ============================================================== -->
-<div class="flex gap-4 mb-4">
-    <!-- Search Box -->
-    <form action="{{ route('admin.manage-users') }}" method="GET" class="flex gap-2">
-        <input type="text" name="search" placeholder="Search by name or email"
-            class="px-4 py-2 border rounded dark:bg-gray-700 dark:text-gray-100"
-            value="{{ request()->search }}">
-        <button type="submit"
-            class="px-4 py-2 bg-blue-500 text-white rounded">Search</button>
-    </form>
+    <!-- ============================================================== Search, filter ============================================================== -->
+    <div class="flex gap-4 mb-4">
+        <!-- Search Box -->
+        <form action="{{ route('admin.manage-users') }}" method="GET" class="flex gap-2">
+            <input type="text" name="search" placeholder="Search by name or email"
+                class="px-4 py-2 border rounded dark:bg-gray-700 dark:text-gray-100" value="{{ request()->search }}">
+            <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">Search</button>
+        </form>
 
-    <!-- Filter Dropdown -->
-    <select id="date_filter" name="date_filter"
-        class="px-4 py-2 border rounded dark:bg-gray-700 dark:text-gray-100">
-        <option value="">Default</option>
-        <option value="today" {{ request()->date_filter == 'today' ? 'selected' : '' }}>Today</option>
-        <option value="yesterday" {{ request()->date_filter == 'yesterday' ? 'selected' : '' }}>Yesterday</option>
-        <option value="last_week" {{ request()->date_filter == 'last_week' ? 'selected' : '' }}>Last Week</option>
-        <option value="last_month" {{ request()->date_filter == 'last_month' ? 'selected' : '' }}>Last Month</option>
-    </select>
-</div>
+        <!-- Filter Dropdown -->
+        <select id="date_filter" name="date_filter"
+            class="px-4 py-2 border rounded dark:bg-gray-700 dark:text-gray-100">
+            <option value="">Default</option>
+            <option value="today" {{ request()->date_filter == 'today' ? 'selected' : '' }}>Today</option>
+            <option value="yesterday" {{ request()->date_filter == 'yesterday' ? 'selected' : '' }}>Yesterday</option>
+            <option value="last_week" {{ request()->date_filter == 'last_week' ? 'selected' : '' }}>Last Week</option>
+            <option value="last_month" {{ request()->date_filter == 'last_month' ? 'selected' : '' }}>Last Month</option>
+        </select>
+    </div>
 
     <!-- Bulk Operations -->
     <div class="flex space-x-4 mb-4">
@@ -67,7 +65,8 @@
         <form id="bulkDisapproveForm" action="{{ route('admin.users.bulk-disapprove') }}" method="POST">
             @csrf
             <input type="hidden" name="userIds" id="disapproveUserIds">
-            <button type="button" onclick="submitBulkAction('disapproveUserIds', '.user-checkbox', '#bulkDisapproveForm')"
+            <button type="button"
+                onclick="submitBulkAction('disapproveUserIds', '.user-checkbox', '#bulkDisapproveForm')"
                 class="px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700">Disapprove Selected</button>
         </form>
 
@@ -81,7 +80,7 @@
         </form>
     </div>
 
-<!-- ============================================================== Table ============================================================== -->
+    <!-- ============================================================== Table ============================================================== -->
     <!-- Users Table -->
     @if($users->isEmpty())
         <div class="text-center text-gray-500 mt-4">
@@ -97,13 +96,14 @@
                         </th>
                         <th scope="col" class="px-6 py-3">Name</th>
                         <th scope="col" class="px-6 py-3">Email</th>
+                        <th scope="col" class="px-6 py-3">Roles</th>
                         <th scope="col" class="px-6 py-3">Status</th>
                         <th scope="col" class="px-6 py-3">Created At</th>
                         <th scope="col" class="px-6 py-3 text-center">Actions</th>
                     </tr>
                 </thead>
 
-<!-- ============================================================== Table Body ============================================================== -->
+                <!-- ============================================================== Table Body ============================================================== -->
                 <tbody>
                     @forelse ($users as $user)
                         <tr
@@ -113,10 +113,11 @@
                             </td>
                             <td class="px-6 py-4">{{ $user->name }}</td>
                             <td class="px-6 py-4">{{ $user->email }}</td>
+                            <td class="px-6 py-4">{{ $user->roles }}</td>
                             <td class="px-6 py-4">
                                 <span
                                     class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium 
-                                {{ $user->is_approved ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-200' }}">
+                                                                                        {{ $user->is_approved ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-200' }}">
                                     {{ $user->is_approved ? 'Approved' : 'Not Approved' }}
                                 </span>
                             </td>
@@ -144,7 +145,7 @@
             </table>
         </div>
 
-<!-- ============================================================== Modal ============================================================== -->
+        <!-- ============================================================== Modal ============================================================== -->
         <!-- Edit User Modal -->
         <div id="editModal" class="hidden fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
             <div class="bg-gray-800 text-white p-6 rounded shadow-lg max-w-sm w-full">
@@ -170,8 +171,19 @@
                     <!-- Approval Status -->
                     <div class="mb-4">
                         <label for="is_approved" class="block text-sm font-medium text-gray-300">Approved</label>
-                        <input type="checkbox" id="is_approved" name="is_approved" class="text-indigo-600" value="1" {{ old('is_approved', $user->is_approved) ? 'checked' : '' }}>
+                        <input type="checkbox" id="is_approved" name="is_approved" class="text-indigo-600" value="1">
                     </div>
+
+                    <!-- Role -->
+                    <div class="mb-4">
+                        <label for="roles" class="block text-sm font-medium text-gray-300">Role</label>
+                        <select id="roles" name="roles"
+                            class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:text-gray-100">
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+
 
                     <!-- Submit & Cancel buttons -->
                     <div class="flex justify-end space-x-2">
@@ -208,18 +220,22 @@
 
 <!-- ============================================================== JS ============================================================== -->
 <script>
-    
+
     // Edit modal open JS
     function openEditModal(user) {
         const editForm = document.getElementById('editForm');
         editForm.action = editForm.action.replace(':userId', user.id);
         document.getElementById('name').value = user.name;
         document.getElementById('email').value = user.email;
+
         const approvedCheckbox = document.getElementById('is_approved');
-        approvedCheckbox.checked = Boolean(user.is_approved); 
+        approvedCheckbox.checked = Boolean(user.is_approved);
+
+        const rolesSelect = document.getElementById('roles'); 
+        rolesSelect.value = user.roles; 
+
         document.getElementById('editModal').classList.remove('hidden');
     }
-
 
     // Close the Edit Modal
     function closeModal() {
@@ -262,7 +278,7 @@
         }
 
         // Set the selected IDs as an array
-        document.getElementById(hiddenFieldId).value = JSON.stringify(selectedIds);  // Store as JSON string
+        document.getElementById(hiddenFieldId).value = JSON.stringify(selectedIds);  
         document.querySelector(formId).submit();
     }
 
@@ -277,15 +293,13 @@
             searchParams.delete('date_filter');
         }
 
-        // Update the URL and reload the page
         window.location.search = searchParams.toString();
     });
 
-    // Check if there are no users and reset the filter to the default
     const noUsers = document.querySelector('.no-users');
     if (noUsers) {
         const filterSelect = document.getElementById('date_filter');
-        filterSelect.value = '';  // Reset to default (or clear value)
+        filterSelect.value = '';
     }
 
 </script>

@@ -53,5 +53,30 @@ class UpdateEventRegistrationStatus extends Command
         }
 
         $this->info('Event registration statuses have been updated successfully.');
+
+        $this->info("Updating registration statuses...");
+
+        foreach ($events as $event) {
+            $this->info("Event ID: {$event->id}, Current Status: {$event->registration_status}");
+
+            if ($event->start_date && $event->end_date) {
+                $startDate = Carbon::parse($event->start_date);
+                $endDate = Carbon::parse($event->end_date);
+
+                if ($currentDateTime->between($startDate, $endDate)) {
+                    $event->registration_status = 'open';
+                } else {
+                    $event->registration_status = 'closed';
+                }
+            } else {
+                $event->registration_status = 'closed';
+            }
+
+            $event->save();
+
+            $this->info("Updated Status: {$event->registration_status}");
+        }
+
+        $this->info('Update complete.');
     }
 }
