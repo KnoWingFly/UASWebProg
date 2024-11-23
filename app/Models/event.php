@@ -28,6 +28,6 @@ class event extends Model
 
     public function participants()
     {
-        return $this->belongsToMany(User::class, 'event_user')->withTimestamps();
+        return $this->hasMany(EventUser::class);
     }
 }

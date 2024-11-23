@@ -121,7 +121,7 @@ class admindash extends Controller
     public function indexEvents()
     {
         // Pagination should be preserved here
-        $events = Event::latest()->paginate(10);
+        $events = Event::latest()->paginate(12);
 
         // The Artisan call is still valid if needed
         Artisan::call('events:update-registration-status');

@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminDash;
-use App\Http\Controllers\eventcontroller;
 
 // Welcome Route
 Route::get('/', [AuthController::class, 'welcome'])->name('welcome');
@@ -39,8 +38,6 @@ Route::middleware(['auth', 'approve'])->group(function () {
         Route::get('/approvals', [AdminDash::class, 'userApprovals'])->name('admin.approvals');
 
         // Events
-        Route::get('/admin/events', [EventController::class, 'index'])->name('admin.events.index');
-
         Route::get('/events', [AdminDash::class, 'indexEvents'])->name('admin.events.index');
         Route::get('/events/create', [AdminDash::class, 'createEvent'])->name('admin.events.create');
         Route::post('/events', [AdminDash::class, 'storeEvent'])->name('admin.events.store');
