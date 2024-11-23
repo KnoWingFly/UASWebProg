@@ -77,6 +77,7 @@
                         class="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-600 text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                         value="{{ old('event_start_time', $event->event_start_time) }}" required>
                 </div>
+
             </div>
 
             <!-- Event End -->
@@ -117,7 +118,7 @@
                     </div>
                 </div>
                 <input id="dropzone-file" type="file" name="banner"
-                    class="absolute inset-0 opacity-0 cursor-pointer z-20" accept="image/*" required>
+                    class="absolute inset-0 opacity-0 cursor-pointer z-20" accept="image/*" {{ $event->banner ? '' : 'required' }}>
             </div>
             @error('banner')
                 <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
@@ -141,14 +142,13 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Date and time
-        const now = new Date();
+        // Date and time elements
         const startDateInput = document.querySelector('input[name="event_start_date"]');
         const startTimeInput = document.querySelector('input[name="event_start_time"]');
         const endDateInput = document.querySelector('input[name="event_end_date"]');
         const endTimeInput = document.querySelector('input[name="event_end_time"]');
 
-        // Dropzone
+        // Dropzone elements
         const dropzoneFile = document.getElementById('dropzone-file');
         const dropzoneContainer = document.getElementById('dropzone-container');
         const previewImage = document.getElementById('preview-image');
@@ -156,7 +156,117 @@
         const placeholderSvg = placeholder.querySelector('svg');
         const placeholderText = Array.from(placeholder.querySelectorAll('p'));
 
-        // Function to handle file selection
+        // Utility function to validate date format (YYYY-MM-DD)
+        function isValidDate(date) {
+            return /^\d{4}-\d{2}-\d{2}$/.test(date);
+        }
+
+        // Utility function for date formatting
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // Get the current date
+        const now = new Date();
+        const currentDate = formatDate(now);
+
+        // Set minimum date for start date
+        startDateInput.setAttribute('min', currentDate);
+
+        // Update the min value for end date
+        function updateEndDateMin() {
+            if (isValidDate(startDateInput.value)) {
+                endDateInput.setAttribute('min', startDateInput.value);
+            }
+        }
+
+        // Handle keyboard input for date fields
+        function handleDateInput(input) {
+            const value = input.value;
+
+            // Allow only numbers and dashes
+            const sanitizedValue = value.replace(/[^0-9-]/g, '');
+
+            // Ensure format stays in YYYY-MM-DD structure
+            if (sanitizedValue.length > 10) {
+                input.value = sanitizedValue.slice(0, 10);
+                return;
+            }
+
+            // Automatically add dashes as the user types
+            if (sanitizedValue.length === 4 || sanitizedValue.length === 7) {
+                if (!sanitizedValue.endsWith('-')) {
+                    input.value = sanitizedValue + '-';
+                } else {
+                    input.value = sanitizedValue;
+                }
+            } else {
+                input.value = sanitizedValue;
+            }
+        }
+
+        // Handle keyboard input for time fields
+        function handleTimeInput(input) {
+            let value = input.value.replace(/[^\d:]/g, '');
+
+            if (value.length === 2 && !value.includes(':')) {
+                value += ':';
+            }
+
+            if (value.length >= 4) {
+                if (!value.includes(':')) {
+                    value = value.slice(0, 2) + ':' + value.slice(2);
+                }
+
+                const [hours, minutes] = value.split(':');
+                const hoursNum = parseInt(hours);
+                const minutesNum = parseInt(minutes);
+
+                if (hoursNum >= 0 && hoursNum < 24 && minutesNum >= 0 && minutesNum < 60) {
+                    input.value = `${String(hoursNum).padStart(2, '0')}:${String(minutesNum).padStart(2, '0')}`;
+                }
+            }
+        }
+
+        // Event listeners for date input changes
+        startDateInput.addEventListener('input', function () {
+            handleDateInput(this);
+        });
+
+        startDateInput.addEventListener('blur', function () {
+            if (!isValidDate(this.value)) {
+                alert('Please enter a valid start date (YYYY-MM-DD)');
+                this.value = '';
+            }
+            updateEndDateMin();
+        });
+
+        endDateInput.addEventListener('input', function () {
+            handleDateInput(this);
+        });
+
+        endDateInput.addEventListener('blur', function () {
+            if (!isValidDate(this.value)) {
+                alert('Please enter a valid end date (YYYY-MM-DD)');
+                this.value = '';
+            }
+        });
+
+        startTimeInput.addEventListener('input', function () {
+            handleTimeInput(this);
+        });
+
+        endTimeInput.addEventListener('input', function () {
+            handleTimeInput(this);
+        });
+
+        // Initialize validation
+        updateEndDateMin();
+
+        // Dropzone functionality
         function handleFileSelect(file) {
             if (file) {
                 const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
@@ -166,11 +276,9 @@
                 }
 
                 const reader = new FileReader();
-
                 reader.onload = function (e) {
                     previewImage.src = e.target.result;
-                    previewImage.classList.remove('hidden'); // Ensure the preview image is shown
-                    // Hide SVG and change text opacity
+                    previewImage.classList.remove('hidden');
                     placeholderSvg.classList.add('hidden');
                     placeholderText.forEach(text => text.classList.add('opacity-30'));
                 };
@@ -178,89 +286,20 @@
                 reader.readAsDataURL(file);
             } else {
                 previewImage.src = '';
-                previewImage.classList.add('hidden'); // Hide the preview image if no file is selected
-                // Show SVG and restore text opacity
+                previewImage.classList.add('hidden');
                 placeholderSvg.classList.remove('hidden');
                 placeholderText.forEach(text => text.classList.remove('opacity-30'));
             }
         }
 
-        // If an image exists (when loading from storage), show it and hide the placeholder SVG
-        const existingBanner = "{{ old('banner', $event->banner) }}";  // Use Blade to pass the banner path
-        if (existingBanner) {
-            previewImage.src = `{{ Storage::url($event->banner) }}`;
-            previewImage.classList.remove('hidden'); // Show the preview image
-            placeholderSvg.classList.add('hidden'); // Hide the SVG
-            placeholderText.forEach(text => text.classList.add('opacity-30')); // Reduce opacity of text
+        // Handle existing banner image
+        const existingBanner = previewImage.getAttribute('src');
+        if (existingBanner && existingBanner !== '') {
+            placeholderSvg.classList.add('hidden');
+            placeholderText.forEach(text => text.classList.add('opacity-30'));
         }
 
-        // Format current date and time to match the input fields' required format
-        function formatDate(date) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
-
-        function formatTime(date) {
-            const hours = String(date.getHours()).padStart(2, '0');
-            const minutes = String(date.getMinutes()).padStart(2, '0');
-            return `${hours}:${minutes}`;
-        }
-
-        // Set start date and time restrictions
-        const startDate = formatDate(now);
-        const startTime = formatTime(now);
-
-        startDateInput.setAttribute('min', startDate);
-        startDateInput.value = startDate;
-        startTimeInput.value = startTime;
-
-        // Set end date restriction after start date
-        endDateInput.setAttribute('min', startDate);
-        endDateInput.value = startDate;
-
-        // Event listener to update end date and time after start is selected
-        startDateInput.addEventListener('change', function () {
-            updateEndDateTimeRestrictions();
-        });
-
-        startTimeInput.addEventListener('change', function () {
-            updateEndDateTimeRestrictions();
-        });
-
-        function updateEndDateTimeRestrictions() {
-            const startDate = new Date(startDateInput.value);
-            const startTime = startTimeInput.value ? new Date(`${startDateInput.value}T${startTimeInput.value}`) : null;
-
-            if (startTime) {
-                // Ensure end date is not before start date
-                endDateInput.setAttribute('min', startDateInput.value);
-
-                const endDate = new Date(endDateInput.value);
-
-                if (startDate.getTime() === endDate.getTime()) {
-                    // Same day: Ensure end time is at least 30 minutes after start time
-                    const minEndTime = new Date(startTime.getTime() + 30 * 60 * 1000);
-                    endTimeInput.setAttribute('min', formatTime(minEndTime));
-                } else {
-                    // Different day: Allow any time
-                    endTimeInput.removeAttribute('min');
-                }
-            }
-        }
-
-        updateEndDateTimeRestrictions();
-
-        endDateInput.addEventListener('change', function () {
-            updateEndDateTimeRestrictions();
-        });
-
-        endTimeInput.addEventListener('change', function () {
-            updateEndDateTimeRestrictions();
-        });
-
-        // Handle file input change
+        // File input change handler
         dropzoneFile.addEventListener('change', function (e) {
             const file = this.files[0];
             handleFileSelect(file);
@@ -274,7 +313,7 @@
             });
         });
 
-        // Handle drag and drop
+        // Handle drag and drop states
         dropzoneContainer.addEventListener('dragenter', function () {
             this.classList.add('border-blue-500');
         });

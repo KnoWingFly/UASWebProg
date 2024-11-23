@@ -11,28 +11,22 @@ Buat layout utama buat Anggota
 4. Sidebar Component (Frontend - resources/view/components/sidebar-user.blade.php)
 side bar untuk anggota (Buat redirect kemana aja)
 
-5. Leaderboard dan Statistik (Frontend - resources/views/user/leaderboard.blade.html, backend - web.php, )
-Menampilkan leaderboard anggota berdasarkan hasil latihan atau kompetisi internal, dengan statistik seperti skor, waktu penyelesaian, dan peringkat.
-
-6. Event dan Workshop 
-(Admin: Frontend - resources/views/admin/events, backend - admindash,web.php)
+5. Event dan Workshop 
+(Admin: Frontend - resources/views/admin/events, backend - admindash,web.php) 
 (User: Frontend - resources/views/user/events, backend - userdash, web.php)
 Daftar Event: Menampilkan daftar event mendatang, seperti pelatihan atau workshop, lengkap dengan tanggal, lokasi, dan detail acara lainnya. Pengunjung bisa melihat ringkasan dan tujuan dari setiap event.
 Registrasi Event: Formulir khusus untuk mendaftar event dengan konfirmasi pendaftaran melalui email. Anggota dapat langsung terdaftar setelah registrasi sukses.
-Manajemen Event (Admin): Fitur CRUD untuk admin yang memungkinkan pembuatan, pengeditan, dan penghapusan event. Admin dapat mengatur ulang informasi, menambah foto, dan menentukan jumlah maksimal peserta.
+Manajemen Event (Admin): Fitur CRUD untuk admin yang memungkinkan pembuatan, pengeditan, dan penghapusan event. Admin dapat mengatur ulang informasi, menambah foto, dan menentukan jumlah maksimal peserta. [done]
 
-7. Forum Diskusi 
-forum bagi anggota untuk berdiskusi tentang berbagai topik pemrograman, berbagi solusi soal, atau memberi tips terkait competitive programming. Ini berfungsi sebagai platform komunikasi internal di mana anggota bisa belajar dari satu sama lain.
-
-8. Materi dan Modul Pembelajaran
+6. Materi dan Modul Pembelajaran
 Bagian khusus yang berisi modul, artikel, dan materi pembelajaran dalam bentuk PDF atau video. Admin dapat mengunggah atau memperbarui konten secara berkala untuk memastikan materi tetap relevan dan bermanfaat bagi anggota.
 
-9. Manajemen Pengguna (Admin) [DONE]
+7. Manajemen Pengguna (Admin) [DONE]
 CRUD Data Anggota: Admin memiliki akses penuh untuk menambah, mengedit, atau menghapus data anggota. 
 Pemberian Role: Admin bisa memberikan peran kepada anggota sebagai ‘member’ atau ‘admin’, mengatur hak akses sesuai dengan peran masing-masing.
 Pengelolaan Keanggotaan: Fitur ini juga memungkinkan admin untuk melacak aktivitas anggota dan status keanggotaan.
 
-10. Pencarian dan Filter
+8. Pencarian dan Filter
 Fitur pencarian dan filter yang memungkinkan anggota menemukan soal latihan, event, atau materi pembelajaran secara cepat dan mudah. Fitur ini membantu navigasi website agar lebih efisien dan memudahkan pengguna menemukan konten yang mereka butuhkan.
 
-11. Autentikasi dan Hak Akses [Done, Pake laravel jetstream sama udh ada fitur approve admin]
+9. Autentikasi dan Hak Akses [Done, Pake laravel jetstream sama udh ada fitur approve admin]

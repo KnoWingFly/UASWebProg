@@ -126,13 +126,130 @@
     </form>
 </div>
 <script>
-    // Function to handle file selection
-    function handleFileSelect(file) {
-        const previewImage = document.getElementById('preview-image');
-        const placeholder = document.getElementById('dropzone-placeholder');
-        const placeholderSvg = placeholder.querySelector('svg');
-        const placeholderText = Array.from(placeholder.querySelectorAll('p'));
+document.addEventListener('DOMContentLoaded', function () {
+    // Date and time elements
+    const startDateInput = document.querySelector('input[name="event_start_date"]');
+    const startTimeInput = document.querySelector('input[name="event_start_time"]');
+    const endDateInput = document.querySelector('input[name="event_end_date"]');
+    const endTimeInput = document.querySelector('input[name="event_end_time"]');
 
+    // Dropzone elements
+    const dropzoneFile = document.getElementById('dropzone-file');
+    const previewImage = document.getElementById('preview-image');
+    const placeholder = document.getElementById('dropzone-placeholder');
+    const placeholderSvg = placeholder.querySelector('svg');
+    const placeholderText = Array.from(placeholder.querySelectorAll('p'));
+    const dropzoneContainer = document.getElementById('dropzone-container');
+
+    // Utility function to validate date format (YYYY-MM-DD)
+    function isValidDate(date) {
+        return /^\d{4}-\d{2}-\d{2}$/.test(date);
+    }
+
+    // Utility function to validate time format (HH:MM)
+    function isValidTime(time) {
+        return /^([01]\d|2[0-3]):([0-5]\d)$/.test(time);
+    }
+
+    // Utility function for date formatting
+    function formatDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    // Utility function for time formatting
+    function formatTime(date) {
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${hours}:${minutes}`;
+    }
+
+    // Set current date and time restrictions
+    const now = new Date();
+    const currentDate = formatDate(now);
+
+    startDateInput.setAttribute('min', currentDate);
+    endDateInput.setAttribute('min', currentDate);
+
+    // Update the min value for end date and time based on start date and time
+    function updateEndDateAndTime() {
+        if (isValidDate(startDateInput.value) && isValidTime(startTimeInput.value)) {
+            const startDateTime = new Date(`${startDateInput.value}T${startTimeInput.value}`);
+            let endDateTime;
+
+            // If the start date and time are on the same day, set end time to +1 hour
+            if (startDateTime.toDateString() === new Date().toDateString()) {
+                endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000); // 1 hour after start time
+            } else {
+                endDateTime = new Date(startDateTime.getTime() + 30 * 60 * 1000); // 30 minutes after start time
+            }
+
+            endDateInput.setAttribute('min', startDateInput.value);
+            endTimeInput.setAttribute('min', formatTime(endDateTime));
+        }
+    }
+
+    // Handle keyboard input for time fields
+    function handleTimeInput(input) {
+        let value = input.value.replace(/[^\d:]/g, '');
+
+        if (value.length === 2 && !value.includes(':')) {
+            value += ':';
+        }
+
+        if (value.length >= 4) {
+            if (!value.includes(':')) {
+                value = value.slice(0, 2) + ':' + value.slice(2);
+            }
+
+            const [hours, minutes] = value.split(':');
+            const hoursNum = parseInt(hours, 10);
+            const minutesNum = parseInt(minutes, 10);
+
+            if (hoursNum >= 0 && hoursNum < 24 && minutesNum >= 0 && minutesNum < 60) {
+                input.value = `${String(hoursNum).padStart(2, '0')}:${String(minutesNum).padStart(2, '0')}`;
+            }
+        }
+    }
+
+    // Event listeners for start and end date inputs
+    startDateInput.addEventListener('input', updateEndDateAndTime);
+
+    startTimeInput.addEventListener('input', function () {
+        handleTimeInput(this);
+        updateEndDateAndTime();
+    });
+
+    startTimeInput.addEventListener('blur', function () {
+        if (!isValidTime(this.value)) {
+            alert('Please enter a valid start time (HH:MM)');
+            this.value = '';
+        }
+        updateEndDateAndTime();
+    });
+
+    endDateInput.addEventListener('input', function () {
+        if (!isValidDate(this.value)) {
+            alert('Please enter a valid end date (YYYY-MM-DD)');
+            this.value = '';
+        }
+    });
+
+    endTimeInput.addEventListener('input', function () {
+        handleTimeInput(this);
+    });
+
+    endTimeInput.addEventListener('blur', function () {
+        if (!isValidTime(this.value)) {
+            alert('Please enter a valid end time (HH:MM)');
+            this.value = '';
+        }
+    });
+
+    // Dropzone functionality
+    function handleFileSelect(file) {
         if (file) {
             const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
             if (!validTypes.includes(file.type)) {
@@ -141,13 +258,10 @@
             }
 
             const reader = new FileReader();
-
             reader.onload = function (e) {
                 previewImage.src = e.target.result;
                 previewImage.classList.remove('hidden');
-                // Hide SVG
                 placeholderSvg.classList.add('hidden');
-                // visible (opacity) SVG
                 placeholderText.forEach(text => text.classList.add('opacity-30'));
             };
 
@@ -155,98 +269,39 @@
         } else {
             previewImage.src = '';
             previewImage.classList.add('hidden');
-            // Show SVG 
             placeholderSvg.classList.remove('hidden');
-            // Restore text opacity
             placeholderText.forEach(text => text.classList.remove('opacity-30'));
         }
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        // Date and time
-        const now = new Date();
-        const startDateInput = document.querySelector('input[name="event_start_date"]');
-        const startTimeInput = document.querySelector('input[name="event_start_time"]');
-        const endDateInput = document.querySelector('input[name="event_end_date"]');
-        const endTimeInput = document.querySelector('input[name="event_end_time"]');
+    dropzoneFile.addEventListener('change', function () {
+        const file = this.files[0];
+        handleFileSelect(file);
+    });
 
-        // Dropzone
-        const dropzoneFile = document.getElementById('dropzone-file');
-        const previewImage = document.getElementById('preview-image');
-        const placeholder = document.getElementById('dropzone-placeholder');
-        const dropzoneContainer = document.getElementById('dropzone-container');
-
-        // Format current date and time to match the input fields' required format
-        function formatDate(date) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
-
-        function formatTime(date) {
-            const hours = String(date.getHours()).padStart(2, '0');
-            const minutes = String(date.getMinutes()).padStart(2, '0');
-            return `${hours}:${minutes}`;
-        }
-
-        // Set start date and time restrictions
-        const startDate = formatDate(now); // Today's date
-        const startTime = formatTime(new Date(now.getTime() + 60 * 60 * 1000)); // 1 hour from now
-
-        startDateInput.setAttribute('min', startDate);
-        startTimeInput.setAttribute('min', startTime);
-
-        // Set end date restriction after start date
-        endDateInput.setAttribute('min', startDate);
-
-        // Event listener to update end date and time after start is selected
-        startDateInput.addEventListener('change', function () {
-            const selectedStartDate = new Date(startDateInput.value + 'T' + startTimeInput.value);
-            const selectedEndDate = new Date(selectedStartDate);
-            selectedEndDate.setMinutes(selectedEndDate.getMinutes() + 30); // Set end time 30 minutes after start time
-
-            endDateInput.setAttribute('min', startDateInput.value); // End date must be after start date
-            endTimeInput.setAttribute('min', formatTime(selectedEndDate)); // End time must be after start time
-        });
-
-        startTimeInput.addEventListener('change', function () {
-            const selectedStartDate = new Date(startDateInput.value + 'T' + startTimeInput.value);
-            const selectedEndDate = new Date(selectedStartDate);
-            selectedEndDate.setMinutes(selectedEndDate.getMinutes() + 30); // Set end time 30 minutes after start time
-
-            endTimeInput.setAttribute('min', formatTime(selectedEndDate)); // End time must be after start time
-        });
-
-        // Handle file input change
-        dropzoneFile.addEventListener('change', function (e) {
-            const file = this.files[0];
-            handleFileSelect(file);
-        });
-
-        // Prevent default drag behaviors
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            dropzoneContainer.addEventListener(eventName, function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-            });
-        });
-
-        // Handle drag and drop
-        dropzoneContainer.addEventListener('dragenter', function () {
-            this.classList.add('border-blue-500');
-        });
-
-        dropzoneContainer.addEventListener('dragleave', function () {
-            this.classList.remove('border-blue-500');
-        });
-
-        dropzoneContainer.addEventListener('drop', function (e) {
-            this.classList.remove('border-blue-500');
-            const file = e.dataTransfer.files[0];
-            dropzoneFile.files = e.dataTransfer.files;
-            handleFileSelect(file);
+    // Prevent default drag behaviors
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropzoneContainer.addEventListener(eventName, function (e) {
+            e.preventDefault();
+            e.stopPropagation();
         });
     });
+
+    // Handle drag and drop
+    dropzoneContainer.addEventListener('dragenter', function () {
+        this.classList.add('border-blue-500');
+    });
+
+    dropzoneContainer.addEventListener('dragleave', function () {
+        this.classList.remove('border-blue-500');
+    });
+
+    dropzoneContainer.addEventListener('drop', function (e) {
+        this.classList.remove('border-blue-500');
+        const file = e.dataTransfer.files[0];
+        dropzoneFile.files = e.dataTransfer.files;
+        handleFileSelect(file);
+    });
+});
 </script>
 @endsection

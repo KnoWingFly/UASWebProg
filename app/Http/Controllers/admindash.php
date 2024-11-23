@@ -220,29 +220,34 @@ class admindash extends Controller
         ]);
 
         try {
+            // Parse the event start and end datetime
             $startDateTime = Carbon::parse($request->event_start_date . ' ' . $request->event_start_time);
             $endDateTime = Carbon::parse($request->event_end_date . ' ' . $request->event_end_time);
 
+            // Validate start and end datetime logic
             if ($endDateTime <= $startDateTime) {
                 return back()
                     ->withInput()
-                    ->withErrors(['event_end_date' => 'Event end time must be after event start time']);
+                    ->withErrors(['event_end_date' => 'Event end time must be after the start time']);
             }
 
-            $bannerPath = $event->banner;
+            $bannerPath = $event->banner; // Default to the current banner
+
+            // Handle banner upload if a new file is provided
             if ($request->hasFile('banner')) {
                 $newBannerPath = $this->storeEventBanner($request->file('banner'));
                 if ($newBannerPath) {
-                    $this->deleteEventBanner($event->banner);
-                    $bannerPath = $newBannerPath;
+                    $this->deleteEventBanner($event->banner); // Delete the old banner
+                    $bannerPath = $newBannerPath; // Update to the new banner
                 }
             }
 
+            // Update event with validated data and computed paths
             $event->update([
                 'name' => $validated['name'],
                 'banner' => $bannerPath,
-                'description' => $validated['description'],
-                'participant_limit' => $validated['participant_limit'],
+                'description' => $validated['description'] ?? $event->description,
+                'participant_limit' => $validated['participant_limit'] ?? $event->participant_limit,
                 'registration_start' => $startDateTime,
                 'registration_end' => $endDateTime,
             ]);
@@ -252,15 +257,17 @@ class admindash extends Controller
                 ->with('success', 'Event updated successfully.');
 
         } catch (\Exception $e) {
+            // Clean up the new banner if an error occurs during processing
             if (isset($newBannerPath)) {
                 $this->deleteEventBanner($newBannerPath);
             }
 
             return back()
                 ->withInput()
-                ->with('error', 'There was an error updating the event. Please try again.');
+                ->with('error', 'There was an error updating the event: ' . $e->getMessage());
         }
     }
+
 
     public function deleteEvent(Event $event)
     {
