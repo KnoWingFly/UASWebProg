@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminDash;
+use App\Http\Controllers\eventcontroller;
 
 // Welcome Route
 Route::get('/', [AuthController::class, 'welcome'])->name('welcome');
@@ -38,16 +39,18 @@ Route::middleware(['auth', 'approve'])->group(function () {
         Route::get('/approvals', [AdminDash::class, 'userApprovals'])->name('admin.approvals');
 
         // Events
-    Route::get('/events', [AdminDash::class, 'indexEvents'])->name('admin.events.index');
-    Route::get('/events/create', [AdminDash::class, 'createEvent'])->name('admin.events.create');
-    Route::post('/events', [AdminDash::class, 'storeEvent'])->name('admin.events.store');
-    Route::get('/events/{event}/edit', [AdminDash::class, 'editEvent'])->name('admin.events.edit');
-    Route::put('/events/{event}', [AdminDash::class, 'updateEvent'])->name('admin.events.update');
-    Route::delete('/events/{event}', [AdminDash::class, 'deleteEvent'])->name('admin.events.destroy');  
+        Route::get('/admin/events', [EventController::class, 'index'])->name('admin.events.index');
 
-    // event participants
-    Route::get('/admin/events/{event}/participants', [AdminDash::class, 'participants'])->name('admin.events.participants');
-    Route::delete('/admin/events/{event}/participants/{participant}', [AdminDash::class, 'removeParticipant'])->name('admin.events.removeParticipant');
+        Route::get('/events', [AdminDash::class, 'indexEvents'])->name('admin.events.index');
+        Route::get('/events/create', [AdminDash::class, 'createEvent'])->name('admin.events.create');
+        Route::post('/events', [AdminDash::class, 'storeEvent'])->name('admin.events.store');
+        Route::get('/events/{event}/edit', [AdminDash::class, 'editEvent'])->name('admin.events.edit');
+        Route::put('/events/{event}', [AdminDash::class, 'updateEvent'])->name('admin.events.update');
+        Route::delete('/events/{event}', [AdminDash::class, 'deleteEvent'])->name('admin.events.destroy');
+
+        // event participants
+        Route::get('/admin/events/{event}/participants', [AdminDash::class, 'participants'])->name('admin.events.participants');
+        Route::delete('/admin/events/{event}/participants/{participant}', [AdminDash::class, 'removeParticipant'])->name('admin.events.removeParticipant');
 
 
 

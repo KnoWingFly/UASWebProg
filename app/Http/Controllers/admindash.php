@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use App\Models\Event;
 use App\Models\User;
+use Illuminate\Support\Facades\Artisan;
 
 class admindash extends Controller
 {
@@ -119,9 +120,16 @@ class admindash extends Controller
 
     public function indexEvents()
     {
+        // Pagination should be preserved here
         $events = Event::latest()->paginate(10);
+
+        // The Artisan call is still valid if needed
+        Artisan::call('events:update-registration-status');
+
+        // Pass paginated events to the view
         return view('admin.events.manage-events', compact('events'));
     }
+
 
     public function createEvent()
     {

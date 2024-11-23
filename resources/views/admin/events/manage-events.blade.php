@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
+
 <div class="p-6 space-y-6">
     <div class="flex justify-between items-center">
         <h1 class="text-2xl font-semibold text-gray-200">Manage Events</h1>

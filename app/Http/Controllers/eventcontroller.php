@@ -6,6 +6,8 @@ use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Artisan;
+
 
 class eventcontroller extends Controller
 {
@@ -14,15 +16,18 @@ class eventcontroller extends Controller
      */
     public function index()
     {
-        $events = Event::all();
+        // Run the Artisan command and capture output
+        $output = Artisan::call('events:update-registration-status');
 
-        // Optionally update registration status dynamically
-        foreach ($events as $event) {
-            $this->updateRegistrationStatus($event);
-        }
+        // Check if any output was generated (optional for debugging)
+        \Log::info("Artisan output: " . $output);
+
+        // Retrieve events to display on the page
+        $events = Event::all();
 
         return view('admin.events.manage-events', compact('events'));
     }
+
 
     /**
      * Show the form for creating a new event.
@@ -57,8 +62,8 @@ class eventcontroller extends Controller
             'registration_end' => Carbon::parse($validated['registration_end']),
         ]);
 
-        // Update registration status dynamically
-        $this->updateRegistrationStatus($event);
+        // Automatically run the Artisan command to update registration status
+        Artisan::call('events:update-registration-status');
 
         return redirect()->route('admin.events.index')->with('success', 'Event created successfully.');
     }
@@ -104,12 +109,10 @@ class eventcontroller extends Controller
             'registration_end' => Carbon::parse($validated['registration_end']),
         ]);
 
-        // Update registration status dynamically
-        $this->updateRegistrationStatus($event);
+        // Automatically run the Artisan command to update registration status
+        Artisan::call('events:update-registration-status');
 
-        return redirect()
-            ->route('admin.events.index')
-            ->with('success', 'Event updated successfully.');
+        return redirect()->route('admin.events.index')->with('success', 'Event updated successfully.');
     }
 
     /**
@@ -124,9 +127,7 @@ class eventcontroller extends Controller
 
         $event->delete();
 
-        return redirect()
-            ->route('admin.events.index')
-            ->with('success', 'Event deleted successfully.');
+        return redirect()->route('admin.events.index')->with('success', 'Event deleted successfully.');
     }
 
     /**
