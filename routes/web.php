@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminDash;
+use App\Http\Controllers\UserController;
 
 // Welcome Route
 Route::get('/', [AuthController::class, 'welcome'])->name('welcome');
@@ -17,7 +18,11 @@ Route::get('/not-approved', [AuthController::class, 'notApproved'])->name('not-a
 
 // Authenticated and Approved Routes
 Route::middleware(['auth', 'approve'])->group(function () {
-    Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('user.dashboard');
+    Route::get('/dashboard', [UserController::class, 'profile'])->name('user.dashboard');
+    Route::get('/user/events', [UserController::class, 'events'])->name('user.events');
+    Route::get('/user/register_event/{id}', [UserController::class, 'registerEvent'])->name('user.register_event');
+    Route::get('/user/materials', [UserController::class, 'materials'])->name('user.materials');
+    Route::get('/user/profile', [UserController::class, 'profile'])->name('user.profile');
 
     // Admin-specific Routes
     Route::middleware(['admin'])->prefix('admin')->group(function () {

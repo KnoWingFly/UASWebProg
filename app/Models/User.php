@@ -85,4 +85,16 @@ class User extends Authenticatable
     {
         return $this->hasMany(EventUser::class);
     }
+
+    // In the User model
+    public function achievements()
+    {
+        return $this->hasMany(Achievement::class);
+    }
+    
+    public function activityHistories()
+    {
+        return $this->hasMany(ActivityHistory::class);
+    }
+    
 }
