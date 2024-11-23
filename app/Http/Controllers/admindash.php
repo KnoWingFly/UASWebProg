@@ -77,6 +77,9 @@ class admindash extends Controller
         return redirect()->route('admin.manage-users')->with('success', 'Selected users have been approved.');
     }
 
+    /**
+     * Disapprove multiple users in bulk.
+     */
     public function bulkDisapprove(Request $request)
     {
         $userIds = json_decode($request->input('userIds'));
@@ -85,6 +88,9 @@ class admindash extends Controller
         return redirect()->route('admin.manage-users')->with('success', 'Selected users have been disapproved.');
     }
 
+    /**
+     * Delete multiple users in bulk.
+     */
     public function bulkDelete(Request $request)
     {
         $userIds = json_decode($request->input('userIds'));
@@ -93,6 +99,9 @@ class admindash extends Controller
         return redirect()->route('admin.manage-users')->with('success', 'Selected users have been deleted.');
     }
 
+    /**
+     * Delete a user.
+     */
     public function deleteUser($id)
     {
         $user = User::findOrFail($id);
@@ -101,6 +110,9 @@ class admindash extends Controller
         return redirect()->route('admin.manage-users')->with('success', 'User deleted successfully.');
     }
 
+    /**
+     * Update user details.
+     */
     public function update(Request $request, User $user)
     {
         $request->validate([
@@ -118,12 +130,13 @@ class admindash extends Controller
         return redirect()->route('admin.manage-users')->with('success', 'User updated successfully.');
     }
 
+    // Event management methods
     public function indexEvents()
     {
         $events = Event::latest()->paginate(10);
         return view('admin.events.manage-events', compact('events'));
     }
-    
+
     public function createEvent()
     {
         return view('admin.events.create-events');
@@ -248,51 +261,19 @@ class admindash extends Controller
                 'registration_end' => $endDateTime,
             ]);
 
-            return redirect()
-                ->route('admin.events.index')
-                ->with('success', 'Event updated successfully.');
-
+            return redirect()->route('admin.events.index')->with('success', 'Event updated successfully.');
         } catch (\Exception $e) {
-            if (isset($newBannerPath)) {
-                $this->deleteEventBanner($newBannerPath);
-            }
-
             return back()
                 ->withInput()
-                ->with('error', 'There was an error updating the event. Please try again.');
+                ->with('error', 'There was an error updating the event: ' . $e->getMessage());
         }
     }
 
     public function deleteEvent(Event $event)
     {
-        try {
-            $this->deleteEventBanner($event->banner);
-            $event->delete();
+        $this->deleteEventBanner($event->banner);
+        $event->delete();
 
-            return redirect()
-                ->route('admin.events.index')
-                ->with('success', 'Event deleted successfully.');
-
-        } catch (\Exception $e) {
-            return back()->with('error', 'There was an error deleting the event. Please try again.');
-        }
+        return redirect()->route('admin.events.index')->with('success', 'Event deleted successfully.');
     }
-
-    public function participants(Event $event)
-    {
-        // Ensure a relationship exists to fetch participants
-        $participants = $event->participants; // Assumes you have a `participants` relationship in the Event model
-    
-        // Pass the event and its participants to the view
-        return view('admin.events.participants', compact('event', 'participants'));
-    }
-    
-
-    public function removeParticipant(Event $event, User $participant)
-    {
-        $event->participants()->detach($participant->id);
-        return redirect()->back()->with('success', 'Participant removed successfully.');
-    }
-
-
 }

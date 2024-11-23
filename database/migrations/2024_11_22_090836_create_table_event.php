@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('participant_limit')->nullable();
             $table->timestamp('registration_start')->nullable();
             $table->timestamp('registration_end')->nullable();
-            $table->boolean('is_active')->default(true);
+            $table->enum('registration_status', ['open', 'closed'])->default('open');
             $table->timestamps();
         });
     }

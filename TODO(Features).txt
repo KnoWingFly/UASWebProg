@@ -35,4 +35,4 @@ Pengelolaan Keanggotaan: Fitur ini juga memungkinkan admin untuk melacak aktivit
 10. Pencarian dan Filter
 Fitur pencarian dan filter yang memungkinkan anggota menemukan soal latihan, event, atau materi pembelajaran secara cepat dan mudah. Fitur ini membantu navigasi website agar lebih efisien dan memudahkan pengguna menemukan konten yang mereka butuhkan.
 
-11. Autentikasi dan Hak Akses (Done, Pake laravel jetstream)
+11. Autentikasi dan Hak Akses [Done, Pake laravel jetstream]

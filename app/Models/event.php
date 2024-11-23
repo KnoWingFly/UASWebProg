@@ -18,6 +18,7 @@ class event extends Model
         'participant_limit',
         'registration_start',
         'registration_end',
+        'registration_status',
     ];
 
     protected $dates = [
