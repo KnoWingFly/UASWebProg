@@ -49,6 +49,12 @@
                                 System Settings
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ route('admin.events.index') }}"
+                                class="block p-2 text-sm font-medium text-gray-200 rounded-md hover:bg-gray-700">
+                                Manage Events
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>

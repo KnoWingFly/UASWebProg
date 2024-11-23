@@ -80,4 +80,9 @@ class User extends Authenticatable
     protected $casts = [
         'is_approved' => 'boolean',
     ];
+
+    public function events()
+    {
+        return $this->belongsToMany(Event::class, 'event_user')->withTimestamps();
+    }
 }
