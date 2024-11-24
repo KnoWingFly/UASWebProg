@@ -105,22 +105,19 @@ class LearningMaterialController extends Controller
 
     public function uploadPdf(Request $request)
     {
-        // Validate that the uploaded file is a PDF and does not exceed 10MB
         $request->validate([
-            'file' => 'required|mimes:pdf|max:10240',  // Validate PDF upload
+            'file' => 'required|mimes:pdf|max:10240',
             'title' => 'required|max:255',
             'description' => 'nullable',
         ]);
 
-        // Store the file and get the path
         $path = $request->file('file')->store('materials', 'public');
 
-        // Create a new learning material entry with the PDF file and other metadata
         LearningMaterial::create([
             'title' => $request->title,
             'description' => $request->description,
-            'type' => 'pdf',  // Since it's a PDF, set the type to 'pdf'
-            'file_path' => $path,  // Store the file path
+            'type' => 'pdf',  
+            'file_path' => $path,
             'is_published' => $request->is_published ?? false,
         ]);
 
@@ -135,10 +132,9 @@ class LearningMaterialController extends Controller
     public function uploadVideo(Request $request)
     {
         $request->validate([
-            'video_url' => 'required|url', // Ensure the input is a valid URL
+            'video_url' => 'required|url', 
         ]);
 
-        // Here, you can handle video URL processing, such as saving to the database
         LearningMaterial::create([
             'title' => $request->title,
             'description' => $request->description,
