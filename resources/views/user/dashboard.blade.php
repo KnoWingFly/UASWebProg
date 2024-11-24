@@ -1,7 +1,7 @@
 @extends('layouts.user')
 
 @section('content')
-<div class="flex-1">
+<!-- <div class="flex-1">
     <header class="bg-gray-800 shadow">
         <div class="flex items-center justify-between p-4">
             <button id="hamburger" class="text-gray-300 hover:text-white">
@@ -13,7 +13,7 @@
             </button>
             <h1 class="text-lg font-bold text-gray-100">Welcome, {{ Auth::user()->name }}</h1>
         </div>
-    </header>
+    </header> -->
 
     <main class="p-6">
         <!-- User Profile Section -->

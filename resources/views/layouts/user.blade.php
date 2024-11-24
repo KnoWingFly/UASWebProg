@@ -25,7 +25,7 @@
                             d="M4 6h16M4 12h16m-7 6h7"></path>
                     </svg>
                 </button>
-                <h1 class="text-lg font-bold text-gray-100">@yield('header', 'User Dashboard')</h1>
+                <h1 class="text-lg font-bold text-gray-100">Welcome, {{ Auth::user()->name }}</h1>
             </div>
         </header>
 

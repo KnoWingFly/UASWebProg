@@ -18,7 +18,7 @@ Route::get('/not-approved', [AuthController::class, 'notApproved'])->name('not-a
 
 // Authenticated and Approved Routes
 Route::middleware(['auth', 'approve'])->group(function () {
-    Route::get('/dashboard', [UserController::class, 'profile'])->name('user.dashboard');
+    Route::get('/dashboard', [UserController::class, 'dashboard'])->middleware('auth');
     Route::get('/user/events', [UserController::class, 'events'])->name('user.events');
     Route::get('/user/register_event/{id}', [UserController::class, 'registerEvent'])->name('user.register_event');
     Route::get('/user/materials', [UserController::class, 'materials'])->name('user.materials');
