@@ -24,7 +24,7 @@
                     @endforeach
                 </div>
             @else
-                <p class="text-gray-400">Never give up, achievements will come!</p> <!-- Encouraging message -->
+                <p class="text-gray-400">Never give up, achievements will come!</p>
             @endif
         </div>
 

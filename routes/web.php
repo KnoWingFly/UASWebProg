@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminDash;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Admin\LearningMaterialController;
 
 // Welcome Route
 Route::get('/', [AuthController::class, 'welcome'])->name('welcome');
@@ -18,7 +19,7 @@ Route::get('/not-approved', [AuthController::class, 'notApproved'])->name('not-a
 
 // Authenticated and Approved Routes
 Route::middleware(['auth', 'approve'])->group(function () {
-    Route::get('/dashboard', [UserController::class, 'dashboard'])->middleware('auth');
+    Route::get('/dashboard', [UserController::class, 'dashboard'])->middleware('auth')->name('user.dashboard');
 
     // events
     Route::get('/user/events', [UserController::class, 'events'])->name('user.events');
@@ -27,9 +28,13 @@ Route::middleware(['auth', 'approve'])->group(function () {
     Route::get('/user/register_event/{id}', [UserController::class, 'registerEvent'])->name('user.register_event');
     Route::delete('/events/{event}/cancel-registration', [UserController::class, 'cancelRegistration'])->name('user.cancel_registration');
 
+    // User Learning Materials Routes
     Route::get('/user/materials', [UserController::class, 'materials'])->name('user.materials');
+    Route::get('/user/materials/{material}', [UserController::class, 'showMaterial'])->name('user.materials.show');
+
     Route::get('/user/profile', [UserController::class, 'profile'])->name('user.profile');
 
+    //================================================================ Admin routes =================================================================
     // Admin-specific Routes
     Route::middleware(['admin'])->prefix('admin')->group(function () {
         Route::get('/dashboard', [AdminDash::class, 'index'])->name('admin.dashboard');
@@ -56,11 +61,19 @@ Route::middleware(['auth', 'approve'])->group(function () {
         Route::put('/events/{event}', [AdminDash::class, 'updateEvent'])->name('admin.events.update');
         Route::delete('/events/{event}', [AdminDash::class, 'deleteEvent'])->name('admin.events.destroy');
 
-        // event participants
+        // Event participants
         Route::get('/admin/events/{event}/participants', [AdminDash::class, 'participants'])->name('admin.events.participants');
         Route::delete('/admin/events/{event}/participants/{participant}', [AdminDash::class, 'removeParticipant'])->name('admin.events.removeParticipant');
 
+        // Learning Materials Routes
+        Route::resource('materials', LearningMaterialController::class, ['as' => 'admin'])
+            ->except(['show']);
 
+        Route::post('/admin/materials/upload-pdf', [LearningMaterialController::class, 'uploadPdf'])
+            ->name('admin.materials.upload-pdf');
+
+        Route::post('/admin/materials/upload-video', [LearningMaterialController::class, 'uploadVideo'])
+            ->name('admin.materials.upload-video');
 
         // Settings
         Route::get('/settings', [AdminDash::class, 'settings'])->name('admin.settings');

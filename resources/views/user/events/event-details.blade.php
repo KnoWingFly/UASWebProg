@@ -68,8 +68,13 @@
         @endif
 
         <!-- Event Registration Button -->
+        <!-- Event Registration Button -->
         @if (!$registrationStatus)
-            @if ($event->registration_status === 'open')
+            @if ($event->participants->count() >= $event->participant_limit)
+                <div class="bg-yellow-200 p-4 rounded-md text-yellow-800 mt-4 dark:bg-yellow-900 dark:text-yellow-200">
+                    This event has reached the maximum number of participants.
+                </div>
+            @elseif ($event->registration_status === 'open')
                 <form action="{{ route('user.register_event', $event->id) }}" method="GET">
                     <button type="submit"
                         class="bg-blue-500 text-white px-6 py-3 rounded-md mt-4 hover:bg-blue-600 transition dark:bg-blue-700 dark:hover:bg-blue-800">
@@ -91,8 +96,8 @@
                     Cancel Registration
                 </button>
             </form>
-
         @endif
+
 
         <!-- Participant List -->
         <div class="mt-6">

@@ -5,10 +5,16 @@
     <!-- Page Header -->
     <div class="flex justify-between items-center">
         <h1 class="text-2xl font-semibold text-gray-200">Available Events</h1>
-        <!-- Search Bar -->
-        <div>
+        <!-- Search Bar and Filter -->
+        <div class="flex space-x-4">
             <input type="text" id="search-bar" placeholder="Search events..."
                 class="px-4 py-2 rounded bg-gray-700 text-white placeholder-gray-400 focus:ring focus:ring-indigo-500">
+            <select id="status-filter"
+                class="px-4 py-2 rounded bg-gray-700 text-white focus:ring focus:ring-indigo-500">
+                <option value="all">All</option>
+                <option value="open">Open</option>
+                <option value="closed">Closed</option>
+            </select>
         </div>
     </div>
 
@@ -18,8 +24,9 @@
             <p class="text-gray-400 col-span-full">No events found. Please check back later.</p>
         @else
             @foreach($events as $event)
-                <div data-event-name="{{ strtolower($event->name) }}"
-                    class="event-card bg-gray-800 rounded-lg shadow-md overflow-hidden flex flex-col 
+                <div data-event-name="{{ strtolower($event->name) }}" 
+                     data-event-status="{{ $event->registration_status }}" 
+                     class="event-card bg-gray-800 rounded-lg shadow-md overflow-hidden flex flex-col 
                                                                 @if($user->eventUsers->contains($event)) border-2 border-green-500 @endif">
                     <!-- Event Banner -->
                     <img src="{{ Storage::url($event->banner) }}" alt="{{ $event->name }}" class="w-full h-48 object-cover">
@@ -91,25 +98,33 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const searchBar = document.getElementById('search-bar');
+        const statusFilter = document.getElementById('status-filter');
         const eventCards = document.querySelectorAll('.event-card');
 
-        searchBar.addEventListener('input', function () {
+        function filterEvents() {
             const query = searchBar.value.toLowerCase().trim();
+            const status = statusFilter.value;
 
-            // Track visibility changes
             let visibleCardCount = 0;
 
             eventCards.forEach(card => {
                 const eventName = card.getAttribute('data-event-name')?.toLowerCase() || '';
+                const eventStatus = card.getAttribute('data-event-status') || 'all';
 
-                if (eventName.includes(query)) {
+                const matchesSearch = eventName.includes(query);
+                const matchesStatus = status === 'all' || eventStatus === status;
+
+                if (matchesSearch && matchesStatus) {
                     card.style.display = 'block';
                     visibleCardCount++;
                 } else {
                     card.style.display = 'none';
                 }
             });
-        });
+        }
+
+        searchBar.addEventListener('input', filterEvents);
+        statusFilter.addEventListener('change', filterEvents);
     });
 </script>
 @endsection
