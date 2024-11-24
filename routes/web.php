@@ -19,8 +19,14 @@ Route::get('/not-approved', [AuthController::class, 'notApproved'])->name('not-a
 // Authenticated and Approved Routes
 Route::middleware(['auth', 'approve'])->group(function () {
     Route::get('/dashboard', [UserController::class, 'dashboard'])->middleware('auth');
+
+    // events
     Route::get('/user/events', [UserController::class, 'events'])->name('user.events');
+    Route::get('/user/event/details/{event_id}', [UserController::class, 'eventdetails'])->name('user.event.details');
+    Route::post('/user/events/{event}/participate', [UserController::class, 'participate'])->name('user.events.participate');
     Route::get('/user/register_event/{id}', [UserController::class, 'registerEvent'])->name('user.register_event');
+    Route::delete('/events/{event}/cancel-registration', [UserController::class, 'cancelRegistration'])->name('user.cancel_registration');
+
     Route::get('/user/materials', [UserController::class, 'materials'])->name('user.materials');
     Route::get('/user/profile', [UserController::class, 'profile'])->name('user.profile');
 

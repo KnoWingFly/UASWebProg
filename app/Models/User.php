@@ -81,9 +81,9 @@ class User extends Authenticatable
         'is_approved' => 'boolean',
     ];
 
-    public function events()
+    public function eventUsers()
     {
-        return $this->hasMany(EventUser::class);
+        return $this->belongsToMany(Event::class, 'event_user', 'user_id', 'event_id');
     }
 
     // In the User model

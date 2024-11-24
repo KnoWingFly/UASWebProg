@@ -28,6 +28,6 @@ class event extends Model
 
     public function participants()
     {
-        return $this->hasMany(EventUser::class);
+        return $this->belongsToMany(User::class, 'event_user', 'event_id', 'user_id');
     }
 }
