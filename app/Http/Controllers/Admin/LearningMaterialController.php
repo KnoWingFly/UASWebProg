@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\MaterialCategory;
 use App\Models\LearningMaterial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -11,27 +12,31 @@ class LearningMaterialController extends Controller
 {
     public function index()
     {
-        $recentMaterials = LearningMaterial::orderBy('created_at', 'desc')->take(10)->get();
-        $materials = LearningMaterial::latest()->paginate(10);
-        return view('admin.materials.dashboard', compact('recentMaterials', 'materials'));
+        $recentMaterials = LearningMaterial::with('category')->orderBy('created_at', 'desc')->take(10)->get();
+        $materials = LearningMaterial::with('category')->latest()->paginate(10);        
+        $categories = MaterialCategory::all();
+        return view('admin.materials.dashboard', compact('recentMaterials', 'materials', 'categories'));
     }
+
 
     public function create()
     {
-        return view('admin.materials.create');
+        $categories = MaterialCategory::all();
+        return view('admin.materials.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
-        // Validate the incoming request
+        // Update validation rules
         $validated = $request->validate([
             'title' => 'required|max:255',
             'description' => 'nullable',
             'type' => 'required|in:pdf,video,article',
-            'file' => 'required_if:type,pdf|mimes:pdf|max:10240',  // Validate PDF files only
+            'file' => 'required_if:type,pdf|mimes:pdf|max:10240',
             'video_url' => 'required_if:type,video|url',
             'content' => 'required_if:type,article',
-            'is_published' => 'boolean'
+            'is_published' => 'boolean',
+            'category_id' => 'required|exists:material_categories,id'
         ]);
 
         // Check if a file is uploaded
@@ -116,7 +121,7 @@ class LearningMaterialController extends Controller
         LearningMaterial::create([
             'title' => $request->title,
             'description' => $request->description,
-            'type' => 'pdf',  
+            'type' => 'pdf',
             'file_path' => $path,
             'is_published' => $request->is_published ?? false,
         ]);
@@ -132,7 +137,7 @@ class LearningMaterialController extends Controller
     public function uploadVideo(Request $request)
     {
         $request->validate([
-            'video_url' => 'required|url', 
+            'video_url' => 'required|url',
         ]);
 
         LearningMaterial::create([

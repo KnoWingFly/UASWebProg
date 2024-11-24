@@ -16,7 +16,8 @@ class LearningMaterial extends Model
         'file_path',
         'video_url',
         'content',
-        'is_published'
+        'is_published',
+        'category_id'
     ];
 
     protected $casts = [
@@ -26,5 +27,10 @@ class LearningMaterial extends Model
     public function getFileUrlAttribute()
     {
         return $this->file_path ? asset('storage/' . $this->file_path) : null;
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(MaterialCategory::class, 'category_id');
     }
 }

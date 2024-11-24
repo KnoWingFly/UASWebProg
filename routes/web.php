@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminDash;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Admin\LearningMaterialController;
+use App\Http\Controllers\Admin\MaterialCategoryController;
 
 // Welcome Route
 Route::get('/', [AuthController::class, 'welcome'])->name('welcome');
@@ -74,6 +75,9 @@ Route::middleware(['auth', 'approve'])->group(function () {
 
         Route::post('/admin/materials/upload-video', [LearningMaterialController::class, 'uploadVideo'])
             ->name('admin.materials.upload-video');
+
+        Route::resource('categories', MaterialCategoryController::class)
+            ->names('admin.categories');
 
         // Settings
         Route::get('/settings', [AdminDash::class, 'settings'])->name('admin.settings');
