@@ -8,7 +8,7 @@ use App\Models\LearningMaterial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\Response;
+
 
 
 class LearningMaterialController extends Controller
@@ -155,23 +155,47 @@ class LearningMaterialController extends Controller
             ->with('success', 'Video uploaded successfully.');
     }
 
+    // public function view(LearningMaterial $material)
+    // {
+    //     // Ensure the material type is 'pdf' and the file exists
+    //     if ($material->type !== 'pdf' || !Storage::disk('public')->exists($material->file_path)) {
+    //         abort(404, 'The requested PDF does not exist.');
+    //     }
+    
+    //     // Get the absolute file path from storage
+    //     $filePath = Storage::disk('public')->path($material->file_path);
+    //                 return response()->file($filePath);
+    
+    //     // Check if the file exists before attempting to return it
+    //     if (file_exists($filePath)) {
+    //         // Return the file with Laravel's default response, which will display the PDF inline
+
+    //     }
+    
+    //     abort(404, 'File not found.');
+    // }    
+
     public function download(LearningMaterial $material)
-{
-    try {
-        if ($material->type !== 'pdf' || !Storage::disk('public')->exists($material->file_path)) {
-            abort(404, 'PDF not found.');
+    {
+        try {
+            if ($material->type !== 'pdf' || !Storage::disk('public')->exists($material->file_path)) {
+                abort(404, 'PDF not found.');
+            }
+
+            $path = Storage::disk('public')->path($material->file_path);
+
+            return response()->download($path, $material->title . '.pdf', [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="' . $material->title . '.pdf"',
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error downloading PDF: ' . $e->getMessage());
+            return back()->withErrors(['error' => 'Failed to download PDF.']);
         }
-
-        $path = Storage::disk('public')->path($material->file_path);
-
-        return response()->download($path, $material->title . '.pdf', [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="' . $material->title . '.pdf"',
-        ]);
-    } catch (\Exception $e) {
-        \Log::error('Error downloading PDF: ' . $e->getMessage());
-        return back()->withErrors(['error' => 'Failed to download PDF.']);
     }
-}
 
+    public function show(LearningMaterial $material)
+    {
+        return view('admin.materials.show', compact('material'));
+    }    
 }

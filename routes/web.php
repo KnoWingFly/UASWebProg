@@ -36,7 +36,18 @@ Route::middleware(['auth', 'approve'])->group(function () {
 
     Route::get('/user/profile', [UserController::class, 'profile'])->name('user.profile');
 
+
+    // Admin
     Route::get('/admin/materials/{material}/download', [LearningMaterialController::class, 'download'])->name('admin.materials.download');
+
+    Route::get('/admin/categories/{category}', [MaterialCategoryController::class, 'show'])
+        ->name('admin.categories.show');
+
+    Route::get('/admin/materials/{material}', [LearningMaterialController::class, 'show'])
+        ->name('admin.materials.show');
+
+    Route::get('/admin/materials/{material}/view', [LearningMaterialController::class, 'view'])
+        ->name('admin.materials.view');
 
 
     //================================================================ Admin routes =================================================================
@@ -71,8 +82,8 @@ Route::middleware(['auth', 'approve'])->group(function () {
         Route::delete('/admin/events/{event}/participants/{participant}', [AdminDash::class, 'removeParticipant'])->name('admin.events.removeParticipant');
 
         // Learning Materials Routes
-        Route::resource('materials', LearningMaterialController::class, ['as' => 'admin'])
-            ->except(['show']);
+        Route::resource('materials', LearningMaterialController::class, ['as' => 'admin']);
+
 
         Route::post('/admin/materials/upload-pdf', [LearningMaterialController::class, 'uploadPdf'])
             ->name('admin.materials.upload-pdf');

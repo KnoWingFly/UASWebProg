@@ -62,4 +62,13 @@ class MaterialCategoryController extends Controller
         return redirect()->route('admin.categories.index')
             ->with('success', 'Category deleted successfully.');
     }
+
+    public function show(MaterialCategory $category)
+    {
+        // Load materials for the selected category
+        $materials = $category->learningMaterials()->paginate(10);
+
+        return view('admin.categories.show', compact('category', 'materials'));
+    }
+    
 }
