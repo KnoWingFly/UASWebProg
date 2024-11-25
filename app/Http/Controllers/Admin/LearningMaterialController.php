@@ -90,19 +90,22 @@ class LearningMaterialController extends Controller
     }    
 
     public function destroy(LearningMaterial $material)
-    {
-        // Delete the file from storage if it exists
-        if ($material->file_path) {
-            Storage::disk('public')->delete($material->file_path);
-        }
+{
+    // Get the category ID to redirect after deletion
+    $category = $material->material_category_id == 0 ? 'uncategorized' : $material->material_category_id;
 
-        // Delete the material from the database
-        $material->delete();
-
-        // Redirect with success message
-        return redirect()->route('admin.materials.index')
-            ->with('success', 'Learning material deleted successfully.');
+    // Delete the file from storage if it exists
+    if ($material->file_path) {
+        Storage::disk('public')->delete($material->file_path);
     }
+
+    // Delete the material from the database
+    $material->delete();
+
+    // Redirect to the category page with a success message
+    return redirect()->route('admin.categories.show', ['category' => $category])
+        ->with('success', 'Learning material deleted successfully.');
+}
 
     public function uploadPdf(Request $request)
     {

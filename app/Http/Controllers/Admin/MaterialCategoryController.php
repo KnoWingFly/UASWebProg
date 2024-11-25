@@ -66,38 +66,58 @@ class MaterialCategoryController extends Controller
         return view('admin.categories.edit', compact('category', 'categories'));
     }
 
-    public function update(Request $request, LearningMaterial $material)
+    public function update(Request $request, MaterialCategory $category)
     {
+        // Validate the input for category update
         $validated = $request->validate([
-            'title' => 'required|max:255',
+            'name' => 'required|max:255|unique:material_categories,name,' . $category->id,
             'description' => 'nullable',
-            'material_category_id' => 'nullable|exists:material_categories,id',
-            'type' => 'required|in:video,pdf',
-            'content_url' => 'required|url'
+            'parent_id' => 'nullable|exists:material_categories,id'
         ]);
-    
-        $material->update($validated);
-    
-        return redirect()->back()->with('success', 'Learning material updated successfully.');
+
+        // Check if the parent category is valid
+        if (!empty($validated['parent_id'])) {
+            $parent = MaterialCategory::find($validated['parent_id']);
+
+            // Ensure the category is not its own parent
+            if ($parent && $parent->id === $category->id) {
+                return back()->with('error', 'A category cannot be its own parent.');
+            }
+
+            // Check if the parent category has a parent (nested categories are not allowed beyond one level)
+            if ($parent && $parent->parent_id) {
+                return back()->with('error', 'Cannot create nested categories beyond one level.');
+            }
+        }
+
+        // Update the category
+        $category->update($validated);
+
+        return redirect()->route('admin.categories.index')
+            ->with('success', 'Category updated successfully.');
     }
+
+
 
     public function destroy(MaterialCategory $category)
     {
-        // Check if category has children
+        // Check if category has subcategories
         if ($category->children()->exists()) {
-            return back()->with('error', 'Cannot delete category with subcategories. Please delete or reassign subcategories first.');
+            // Remove parent association for subcategories
+            $category->children()->update(['parent_id' => null]);
         }
 
         // Handle learning materials when deleting category
         if ($category->learningMaterials()->exists()) {
-            // Set materials to uncategorized (null category_id)
-            $category->learningMaterials()->update(['material_category_id' => null]);
+            // Set materials to uncategorized (category_id = 0)
+            $category->learningMaterials()->update(['material_category_id' => 0]);
         }
 
+        // Delete the category (both parent and any orphaned subcategories will be deleted)
         $category->delete();
 
         return redirect()->route('admin.categories.index')
-            ->with('success', 'Category deleted successfully. Associated materials have been moved to uncategorized.');
+            ->with('success', 'Category and its subcategories have been deleted successfully. Associated materials have been moved to uncategorized.');
     }
 
     public function show($id)
@@ -105,10 +125,10 @@ class MaterialCategoryController extends Controller
         if ($id === 'uncategorized') {
             // Fetch uncategorized materials with material_category_id = 0
             $materials = LearningMaterial::where('material_category_id', 0)->paginate(10);
-            
+
             // Get all categories for the dropdown
             $allCategories = MaterialCategory::all();
-    
+
             // Create a pseudo-category object for Blade compatibility
             $category = (object) [
                 'id' => 'uncategorized',
@@ -116,17 +136,17 @@ class MaterialCategoryController extends Controller
                 'description' => 'Learning materials that haven\'t been assigned to any category',
                 'created_at' => '0000-00-00',
             ];
-    
+
             return view('admin.categories.show', compact('category', 'materials', 'allCategories'));
         }
-    
+
         // Logic for other categories
         $category = MaterialCategory::with('learningMaterials')->findOrFail($id);
         $materials = $category->learningMaterials()->paginate(10);
-        
+
         // Get all categories for the dropdown
         $allCategories = MaterialCategory::all();
-    
+
         return view('admin.categories.show', compact('category', 'materials', 'allCategories'));
     }
 

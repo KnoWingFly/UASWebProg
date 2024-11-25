@@ -17,6 +17,16 @@
         </div>
     @endif
 
+    @if($errors->any())
+        <div class="p-4 mb-4 text-sm text-red-400 rounded-lg bg-gray-800" role="alert">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <!-- Search and Filter Section -->
     <div class="mb-6 space-y-4">
         <div class="flex gap-4">
@@ -85,11 +95,11 @@
 
                     <div class="flex items-center space-x-3 mt-auto">
                         <button onclick="openEditModal(
-                                            {{ $category->id }}, 
-                                            '{{ $category->name }}', 
-                                            '{{ $category->description }}', 
-                                            {{ $category->parent_id ?? 'null' }}
-                                        )"
+                                                        {{ $category->id }}, 
+                                                        '{{ $category->name }}', 
+                                                        '{{ $category->description }}', 
+                                                        {{ $category->parent_id ?? 'null' }}
+                                                    )"
                             class="px-3 py-2 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-800 transition-colors duration-200">
                             Edit
                         </button>
@@ -157,15 +167,16 @@
                 </button>
             </div>
 
-            <form id="categoryForm" method="POST">
+            <form id="categoryForm" method="POST" action="{{ route('admin.categories.update', $category->id) }}">
                 @csrf
-                <div id="methodField"></div>
+                <input type="hidden" id="methodField" name="_method">
 
+                <!-- Category Fields -->
                 <div class="mb-4">
                     <label class="block text-gray-200 text-sm font-medium mb-2" for="name">
                         Category Name
                     </label>
-                    <input type="text" name="name" id="name" required
+                    <input type="text" name="name" id="name" value="{{ old('name', $category->name ?? '') }}" required
                         class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:outline-none focus:border-blue-500">
                 </div>
 
@@ -174,7 +185,7 @@
                         Description
                     </label>
                     <textarea name="description" id="description" rows="3"
-                        class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:outline-none focus:border-blue-500"></textarea>
+                        class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:outline-none focus:border-blue-500">{{ old('description', $category->description ?? '') }}</textarea>
                 </div>
 
                 <div class="mb-6">
@@ -185,8 +196,10 @@
                         class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:outline-none focus:border-blue-500">
                         <option value="">None</option>
                         @foreach($allCategories as $cat)
-                            @if(!$cat->parent_id)
-                                <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                            @if(!$cat->parent_id && $cat->id !== $category->id)
+                                <option value="{{ $cat->id }}" {{ old('parent_id', $category->parent_id) == $cat->id ? 'selected' : '' }}>
+                                    {{ $cat->name }}
+                                </option>
                             @endif
                         @endforeach
                     </select>
@@ -203,9 +216,11 @@
                     </button>
                 </div>
             </form>
+
         </div>
     </div>
 </div>
+
 
 <!-- Delete Confirmation Modal -->
 <div id="deleteModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden items-center justify-center z-50">
@@ -276,6 +291,12 @@
 
         modal.classList.remove('hidden');
         modal.classList.add('flex');
+    }
+
+    function closeCategoryModal() {
+        const modal = document.getElementById('categoryModal');
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
     }
 
     function closeCategoryModal() {

@@ -50,6 +50,9 @@ Route::middleware(['auth', 'approve'])->group(function () {
     Route::put('admin/materials/{material}', [LearningMaterialController::class, 'update'])->name('admin.materials.update');
         Route::resource('materials', LearningMaterialController::class, ['as' => 'admin']);
 
+        Route::put('/admin/categories/{category}', [MaterialCategoryController::class, 'update'])->name('admin.categories.update');
+
+
     
 
 
