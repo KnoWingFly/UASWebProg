@@ -5,10 +5,18 @@
 <div class="container mx-auto px-4 py-8">
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-semibold text-gray-200">Material Details</h2>
-        <a href="{{ route('admin.categories.show', $material->category->id) }}"
-            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-            Back to {{ $material->category->name ?? 'Category' }}
-        </a>
+        @if($material->category)
+            <a href="{{ route('admin.categories.show', $material->category->id) }}"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                Back to {{ $material->category->name }}
+            </a>
+        @else
+            <a href="{{ route('admin.categories.show', 'uncategorized') }}"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                Back to Uncategorized
+            </a>
+        @endif
+
     </div>
 
     <div class="bg-gray-800 p-6 rounded-lg shadow-lg">

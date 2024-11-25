@@ -41,21 +41,18 @@ class LearningMaterialController extends Controller
             'is_published' => 'boolean',
             'category_id' => 'required|exists:material_categories,id'
         ]);
-
-        // Check if a file is uploaded
+        
+        $validated['material_category_id'] = $validated['category_id']; // Map the field name
+        
         if ($request->hasFile('file')) {
-            // Store the file and get the path
             $path = $request->file('file')->store('materials', 'public');
-            // Add the file path to the validated data
             $validated['file_path'] = $path;
         }
-
-        // Create a new learning material record in the database
+        
         LearningMaterial::create($validated);
-
-        // Redirect with success message
+        
         return redirect()->route('admin.materials.index')
-            ->with('success', 'Learning material created successfully.');
+            ->with('success', 'Learning material created successfully.');        
     }
 
     public function edit(LearningMaterial $material)
@@ -70,28 +67,25 @@ class LearningMaterialController extends Controller
             'title' => 'required|max:255',
             'description' => 'nullable',
             'type' => 'required|in:pdf,video,article',
-            'file' => 'nullable|mimes:pdf|max:10240',  // Validate PDF files only
+            'file' => 'nullable|mimes:pdf|max:10240',
             'video_url' => 'required_if:type,video|url',
             'content' => 'required_if:type,article',
-            'is_published' => 'boolean'
+            'is_published' => 'boolean',
+            'category_id' => 'required|exists:material_categories,id'
         ]);
-
-        // Check if a new file is uploaded
+        
+        $validated['material_category_id'] = $validated['category_id']; // Map the field name
+        
         if ($request->hasFile('file')) {
-            // If there's an old file, delete it from storage
             if ($material->file_path) {
                 Storage::disk('public')->delete($material->file_path);
             }
-            // Store the new file and get the path
             $path = $request->file('file')->store('materials', 'public');
-            // Add the new file path to the validated data
             $validated['file_path'] = $path;
         }
-
-        // Update the existing material with the new data
+        
         $material->update($validated);
-
-        // Redirect with success message
+        
         return redirect()->route('admin.materials.index')
             ->with('success', 'Learning material updated successfully.');
     }

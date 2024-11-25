@@ -40,8 +40,7 @@ Route::middleware(['auth', 'approve'])->group(function () {
     // Admin
     Route::get('/admin/materials/{material}/download', [LearningMaterialController::class, 'download'])->name('admin.materials.download');
 
-    Route::get('/admin/categories/{category}', [MaterialCategoryController::class, 'show'])
-        ->name('admin.categories.show');
+    Route::get('/admin/categories/{id}', [MaterialCategoryController::class, 'show'])->name('admin.categories.show');
 
     Route::get('/admin/materials/{material}', [LearningMaterialController::class, 'show'])
         ->name('admin.materials.show');
@@ -91,6 +90,7 @@ Route::middleware(['auth', 'approve'])->group(function () {
         Route::post('/admin/materials/upload-video', [LearningMaterialController::class, 'uploadVideo'])
             ->name('admin.materials.upload-video');
 
+        // Existing categories resource route
         Route::resource('categories', MaterialCategoryController::class)
             ->names('admin.categories');
 

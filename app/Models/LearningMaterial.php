@@ -17,7 +17,7 @@ class LearningMaterial extends Model
         'video_url',
         'content',
         'is_published',
-        'category_id'
+        'material_category_id',
     ];
 
     protected $casts = [
@@ -31,6 +31,6 @@ class LearningMaterial extends Model
 
     public function category()
     {
-        return $this->belongsTo(MaterialCategory::class, 'category_id');
+        return $this->belongsTo(MaterialCategory::class, 'material_category_id');
     }
 }
