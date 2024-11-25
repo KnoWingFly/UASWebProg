@@ -15,9 +15,7 @@ class LearningMaterial extends Model
         'type',
         'file_path',
         'video_url',
-        'content',
-        'is_published',
-        'material_category_id',
+        'material_category_id'
     ];
 
     protected $casts = [

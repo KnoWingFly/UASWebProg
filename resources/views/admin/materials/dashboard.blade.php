@@ -8,10 +8,6 @@
             <h1 class="text-3xl font-bold">UMN PC Learning Materials</h1>
             <div class="flex space-x-4">
                 <button class="p-2 hover:bg-gray-800 rounded-lg">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
                 </button>
             </div>
         </div>
@@ -96,26 +92,6 @@
                             d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                     Manage Categories
-                </a>
-            </div>
-
-            <!-- Manage Resources Card -->
-            <div class="bg-gray-800 p-6 rounded-lg text-center">
-                <div class="flex justify-center mb-4">
-                    <svg class="w-12 h-12 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
-                </div>
-                <h3 class="text-xl font-semibold mb-4">Manage Resources</h3>
-                <p class="text-gray-400 mb-4">Manage existing resources.</p>
-                <a href="{{ route('admin.materials.index') }}"
-                    class="w-full flex items-center justify-center px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                    Manage All
                 </a>
             </div>
         </div>
@@ -262,18 +238,20 @@
                         </div>
                         <div>
                             <label for="pdf_category" class="block mb-2 text-sm font-medium text-white">Category</label>
-                            <select name="category_id" id="pdf_category"
+                            <select name="material_category_id" id="pdf_category"
                                 class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                 required>
-                                <option value="">Select category</option>
+                                <option value="0" {{ old('material_category_id', $material->material_category_id ?? 0) == 0 ? 'selected' : '' }}>
+                                    Uncategorized</option>
                                 @foreach($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    <option value="{{ $category->id }}" {{ old('material_category_id') == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
                         <div>
-                            <label class="block mb-2 text-sm font-medium text-white" for="pdf_file">Upload
-                                PDF</label>
+                            <label class="block mb-2 text-sm font-medium text-white" for="pdf_file">Upload PDF</label>
                             <input type="file" name="file" id="pdf_file" accept=".pdf"
                                 class="block w-full text-sm text-gray-400 border border-gray-600 rounded-lg cursor-pointer bg-gray-700 focus:outline-none"
                                 required>
@@ -289,6 +267,7 @@
                         Upload PDF
                     </button>
                 </form>
+
             </div>
         </div>
     </div>
@@ -385,12 +364,15 @@
                         <div>
                             <label for="video_category"
                                 class="block mb-2 text-sm font-medium text-white">Category</label>
-                            <select name="category_id" id="video_category"
+                                <select name="material_category_id" id="pdf_category"
                                 class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                 required>
-                                <option value="">Select category</option>
+                                <option value="0" {{ old('material_category_id', $material->material_category_id ?? 0) == 0 ? 'selected' : '' }}>
+                                    Uncategorized</option>
                                 @foreach($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    <option value="{{ $category->id }}" {{ old('material_category_id') == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -531,7 +513,7 @@
             });
         });
 
-        
+
 
     });
 </script>

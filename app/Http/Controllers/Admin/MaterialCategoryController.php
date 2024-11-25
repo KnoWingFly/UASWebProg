@@ -66,36 +66,19 @@ class MaterialCategoryController extends Controller
         return view('admin.categories.edit', compact('category', 'categories'));
     }
 
-    public function update(Request $request, MaterialCategory $category)
+    public function update(Request $request, LearningMaterial $material)
     {
         $validated = $request->validate([
-            'name' => 'required|max:255|unique:material_categories,name,' . $category->id,
+            'title' => 'required|max:255',
             'description' => 'nullable',
-            'parent_id' => [
-                'nullable',
-                'exists:material_categories,id',
-                function ($attribute, $value, $fail) use ($category) {
-                    if ($value == $category->id) {
-                        $fail('A category cannot be its own parent.');
-                    }
-
-                    // Prevent circular references
-                    if ($value) {
-                        $parent = MaterialCategory::find($value);
-                        if ($parent && $parent->parent_id == $category->id) {
-                            $fail('Cannot create circular reference in category hierarchy.');
-                        }
-                    }
-                }
-            ]
+            'material_category_id' => 'nullable|exists:material_categories,id',
+            'type' => 'required|in:video,pdf',
+            'content_url' => 'required|url'
         ]);
-
-        $validated['slug'] = Str::slug($validated['name']);
-
-        $category->update($validated);
-
-        return redirect()->route('admin.categories.index')
-            ->with('success', 'Category updated successfully.');
+    
+        $material->update($validated);
+    
+        return redirect()->back()->with('success', 'Learning material updated successfully.');
     }
 
     public function destroy(MaterialCategory $category)
@@ -122,6 +105,9 @@ class MaterialCategoryController extends Controller
         if ($id === 'uncategorized') {
             // Fetch uncategorized materials with material_category_id = 0
             $materials = LearningMaterial::where('material_category_id', 0)->paginate(10);
+            
+            // Get all categories for the dropdown
+            $allCategories = MaterialCategory::all();
     
             // Create a pseudo-category object for Blade compatibility
             $category = (object) [
@@ -131,14 +117,17 @@ class MaterialCategoryController extends Controller
                 'created_at' => '0000-00-00',
             ];
     
-            return view('admin.categories.show', compact('category', 'materials'));
+            return view('admin.categories.show', compact('category', 'materials', 'allCategories'));
         }
     
         // Logic for other categories
         $category = MaterialCategory::with('learningMaterials')->findOrFail($id);
         $materials = $category->learningMaterials()->paginate(10);
+        
+        // Get all categories for the dropdown
+        $allCategories = MaterialCategory::all();
     
-        return view('admin.categories.show', compact('category', 'materials'));
-    }    
+        return view('admin.categories.show', compact('category', 'materials', 'allCategories'));
+    }
 
 }

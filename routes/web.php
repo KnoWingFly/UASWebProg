@@ -36,17 +36,21 @@ Route::middleware(['auth', 'approve'])->group(function () {
 
     Route::get('/user/profile', [UserController::class, 'profile'])->name('user.profile');
 
-
     // Admin
     Route::get('/admin/materials/{material}/download', [LearningMaterialController::class, 'download'])->name('admin.materials.download');
 
-    Route::get('/admin/categories/{id}', [MaterialCategoryController::class, 'show'])->name('admin.categories.show');
+    Route::get('/admin/categories/{category}', [MaterialCategoryController::class, 'show'])->name('admin.categories.show');
 
     Route::get('/admin/materials/{material}', [LearningMaterialController::class, 'show'])
         ->name('admin.materials.show');
 
     Route::get('/admin/materials/{material}/view', [LearningMaterialController::class, 'view'])
         ->name('admin.materials.view');
+
+    Route::put('admin/materials/{material}', [LearningMaterialController::class, 'update'])->name('admin.materials.update');
+        Route::resource('materials', LearningMaterialController::class, ['as' => 'admin']);
+
+    
 
 
     //================================================================ Admin routes =================================================================

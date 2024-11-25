@@ -29,31 +29,32 @@ class LearningMaterialController extends Controller
     }
 
     public function store(Request $request)
-    {
-        // Update validation rules
-        $validated = $request->validate([
-            'title' => 'required|max:255',
-            'description' => 'nullable',
-            'type' => 'required|in:pdf,video,article',
-            'file' => 'required_if:type,pdf|mimes:pdf|max:10240',
-            'video_url' => 'required_if:type,video|url',
-            'content' => 'required_if:type,article',
-            'is_published' => 'boolean',
-            'category_id' => 'required|exists:material_categories,id'
-        ]);
-        
-        $validated['material_category_id'] = $validated['category_id']; // Map the field name
-        
-        if ($request->hasFile('file')) {
-            $path = $request->file('file')->store('materials', 'public');
-            $validated['file_path'] = $path;
-        }
-        
-        LearningMaterial::create($validated);
-        
-        return redirect()->route('admin.materials.index')
-            ->with('success', 'Learning material created successfully.');        
+{
+    $validated = $request->validate([
+        'title' => 'required|max:255',
+        'description' => 'nullable',
+        'type' => 'required|in:pdf,video,article',
+        'file' => 'required_if:type,pdf|mimes:pdf|max:10240',
+        'video_url' => 'required_if:type,video|url',
+        'content' => 'required_if:type,article',
+        'is_published' => 'boolean',
+        'material_category_id' => 'required|integer|in:0,' . implode(',', MaterialCategory::pluck('id')->toArray()),
+    ]);
+
+    // If a file is uploaded, store it
+    if ($request->hasFile('file')) {
+        $path = $request->file('file')->store('materials', 'public');
+        $validated['file_path'] = $path;
     }
+
+    // Create the material
+    LearningMaterial::create($validated);
+
+    // Redirect back with a success message
+    return redirect()->route('admin.materials.index')
+        ->with('success', 'Learning material created successfully.');
+}
+
 
     public function edit(LearningMaterial $material)
     {
@@ -62,20 +63,15 @@ class LearningMaterialController extends Controller
 
     public function update(Request $request, LearningMaterial $material)
     {
-        // Validate the incoming request
         $validated = $request->validate([
             'title' => 'required|max:255',
             'description' => 'nullable',
             'type' => 'required|in:pdf,video,article',
             'file' => 'nullable|mimes:pdf|max:10240',
-            'video_url' => 'required_if:type,video|url',
-            'content' => 'required_if:type,article',
-            'is_published' => 'boolean',
-            'category_id' => 'required|exists:material_categories,id'
+            'video_url' => 'nullable|url|required_if:type,video',
+            'material_category_id' => 'required|integer|in:0,' . implode(',', MaterialCategory::pluck('id')->toArray()),
         ]);
-        
-        $validated['material_category_id'] = $validated['category_id']; // Map the field name
-        
+    
         if ($request->hasFile('file')) {
             if ($material->file_path) {
                 Storage::disk('public')->delete($material->file_path);
@@ -83,12 +79,15 @@ class LearningMaterialController extends Controller
             $path = $request->file('file')->store('materials', 'public');
             $validated['file_path'] = $path;
         }
-        
+    
         $material->update($validated);
-        
-        return redirect()->route('admin.materials.index')
+    
+        // Map material_category_id 0 to 'uncategorized'
+        $category = $validated['material_category_id'] == 0 ? 'uncategorized' : $validated['material_category_id'];
+    
+        return redirect()->route('admin.categories.show', ['category' => $category])
             ->with('success', 'Learning material updated successfully.');
-    }
+    }    
 
     public function destroy(LearningMaterial $material)
     {
@@ -155,17 +154,17 @@ class LearningMaterialController extends Controller
     //     if ($material->type !== 'pdf' || !Storage::disk('public')->exists($material->file_path)) {
     //         abort(404, 'The requested PDF does not exist.');
     //     }
-    
+
     //     // Get the absolute file path from storage
     //     $filePath = Storage::disk('public')->path($material->file_path);
     //                 return response()->file($filePath);
-    
+
     //     // Check if the file exists before attempting to return it
     //     if (file_exists($filePath)) {
     //         // Return the file with Laravel's default response, which will display the PDF inline
 
     //     }
-    
+
     //     abort(404, 'File not found.');
     // }    
 
@@ -191,5 +190,5 @@ class LearningMaterialController extends Controller
     public function show(LearningMaterial $material)
     {
         return view('admin.materials.show', compact('material'));
-    }    
+    }
 }
