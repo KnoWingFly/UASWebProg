@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\Admin\LearningMaterialController;
 use App\Http\Controllers\Admin\MaterialCategoryController;
 
+
 // Welcome Route
 Route::get('/', [AuthController::class, 'welcome'])->name('welcome');
 
@@ -34,6 +35,9 @@ Route::middleware(['auth', 'approve'])->group(function () {
     Route::get('/user/materials/{material}', [UserController::class, 'showMaterial'])->name('user.materials.show');
 
     Route::get('/user/profile', [UserController::class, 'profile'])->name('user.profile');
+
+    Route::get('/admin/materials/{material}/download', [LearningMaterialController::class, 'download'])->name('admin.materials.download');
+
 
     //================================================================ Admin routes =================================================================
     // Admin-specific Routes

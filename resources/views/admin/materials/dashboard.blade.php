@@ -323,9 +323,6 @@
                     <!-- PDF Content -->
                     <div class="pdf-content hidden">
                         <div class="flex justify-between items-center">
-                            <p class="text-sm text-gray-400 downloads-count">
-                                <!-- Downloads count will be inserted dynamically -->
-                            </p>
                             <a href="#"
                                 class="download-btn inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -344,15 +341,11 @@
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowfullscreen></iframe>
                         </div>
-                        <p class="text-sm text-gray-400 mt-2 views-count">
-                            <!-- Views count will be inserted dynamically -->
-                        </p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
 
     <!-- Video Upload Modal -->
     <div id="video-upload-modal" tabindex="-1" aria-hidden="true"
@@ -427,95 +420,119 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Initialize Flowbite modal
-    const materialDetailModal = document.getElementById('material-detail-modal');
-    const modalOptions = {
-        backdrop: 'static',
-        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40'
-    };
-    const modal = new Modal(materialDetailModal, modalOptions);
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize Flowbite modal
+        const materialDetailModal = document.getElementById('material-detail-modal');
+        const modalOptions = {
+            backdrop: 'static',
+            backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40'
+        };
+        const modal = new Modal(materialDetailModal, modalOptions);
 
-    // Add click event listeners to recent uploads
-    const recentItems = document.querySelectorAll('.flex.items-center.justify-between.p-4.hover\\:bg-gray-700');
-    recentItems.forEach(item => {
-        item.addEventListener('click', function () {
-            // Extract data from the item's HTML structure
-            const materialType = this.querySelector('svg').classList.contains('text-blue-500') ? 'pdf' : 'video';
-            const titleElement = this.querySelector('.font-medium.text-white');
-            const descriptionElement = this.querySelector('.text-sm.text-gray-400');
+        // Add click event listeners to recent uploads
+        const recentItems = document.querySelectorAll('.flex.items-center.justify-between.p-4.hover\\:bg-gray-700');
+        recentItems.forEach(item => {
+            item.addEventListener('click', function () {
+                const materialType = this.querySelector('svg').classList.contains('text-blue-500') ? 'pdf' : 'video';
+                const titleElement = this.querySelector('.font-medium.text-white');
+                const descriptionElement = this.querySelector('.text-sm.text-gray-400');
 
-            const materialData = {
-                type: materialType,
-                title: titleElement ? titleElement.textContent : '',
-                description: this.getAttribute('data-description'),
-                downloads: materialType === 'pdf' ? 
-                    this.querySelector('.text-sm.text-gray-400').textContent.split(' ')[0] : 0,
-                views: materialType === 'video' ? 
-                    this.querySelector('.text-sm.text-gray-400').textContent.split(' ')[0] : 0,
-                url: this.dataset.url || '',
-                id: this.dataset.id || '',
-                category: this.dataset.category || 'Uncategorized'
-            };
+                const materialData = {
+                    type: materialType,
+                    title: titleElement ? titleElement.textContent : '',
+                    description: this.getAttribute('data-description'),
+                    downloads: materialType === 'pdf' ?
+                        descriptionElement.textContent.split(' ')[0] : 0,
+                    views: materialType === 'video' ?
+                        descriptionElement.textContent.split(' ')[0] : 0,
+                    url: this.dataset.url || '',
+                    id: this.dataset.id || '',
+                    category: this.dataset.category || 'Uncategorized'
+                };
 
-            // Update modal content
-            const modalTitle = materialDetailModal.querySelector('.material-title');
-            const modalDescription = materialDetailModal.querySelector('.material-description');
-            const pdfContent = materialDetailModal.querySelector('.pdf-content');
-            const videoContent = materialDetailModal.querySelector('.video-content');
-            const categoryContent = materialDetailModal.querySelector('.category-content');
+                // Update modal content
+                const modalTitle = materialDetailModal.querySelector('.material-title');
+                const modalDescription = materialDetailModal.querySelector('.material-description');
+                const pdfContent = materialDetailModal.querySelector('.pdf-content');
+                const videoContent = materialDetailModal.querySelector('.video-content');
+                const categoryContent = materialDetailModal.querySelector('.category-content');
 
-            modalTitle.textContent = materialData.title;
-            modalDescription.textContent = materialData.description;
+                modalTitle.textContent = materialData.title;
+                modalDescription.textContent = materialData.description;
 
-            // Hide both content sections initially
-            pdfContent.classList.add('hidden');
-            videoContent.classList.add('hidden');
-            categoryContent.classList.add('hidden');
+                // Hide both content sections initially
+                pdfContent.classList.add('hidden');
+                videoContent.classList.add('hidden');
+                categoryContent.classList.add('hidden');
 
-            // Display category name dynamically
-            categoryContent.textContent = `Category: ${materialData.category}`;
-            categoryContent.classList.remove('hidden');
+                // Display category name dynamically
+                categoryContent.textContent = `Category: ${materialData.category}`;
+                categoryContent.classList.remove('hidden');
 
-            if (materialData.type === 'pdf') {
-                pdfContent.classList.remove('hidden');
-                const downloadsCount = pdfContent.querySelector('.downloads-count');
-                const downloadBtn = pdfContent.querySelector('.download-btn');
+                if (materialData.type === 'pdf') {
+                    pdfContent.classList.remove('hidden');
+                    const downloadBtn = pdfContent.querySelector('.download-btn');
 
-                downloadsCount.textContent = `${materialData.downloads} Downloads`;
-                downloadBtn.href = `/materials/${materialData.id}/download`;
-            } else if (materialData.type === 'video' && materialData.url) {
-                videoContent.classList.remove('hidden');
-                const videoFrame = videoContent.querySelector('.video-frame');
-                const viewsCount = videoContent.querySelector('.views-count');
 
-                // Check if the URL is a valid YouTube URL and extract the video ID
-                const youtubeRegex = /(?:youtube\.com\/(?:[^/]+\/[^/]+\/|(?:v|e(?:mbed)?)\/|(?:watch(?:_popup)?)?\?v=)|youtu\.be\/)([a-zA-Z0-9_-]+)/;
-                const match = materialData.url.match(youtubeRegex);
+                    // Update download button
+                    downloadBtn.onclick = function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
 
-                if (match && match[1]) {
-                    const videoId = match[1];
-                    videoFrame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`; // Embed URL format
-                    videoFrame.dataset.videoUrl = videoFrame.src; // Save for later reset
-                    viewsCount.textContent = `${materialData.views} Views`;
-                } else {
-                    videoFrame.src = ''; // Fallback if the URL is not a valid YouTube URL
+                        // Open in new tab to handle the download
+                        window.open(`/admin/materials/${materialData.id}/download`, '_blank');
+                        return false;
+                    };
+                } else if (materialData.type === 'video' && materialData.url) {
+                    videoContent.classList.remove('hidden');
+                    const videoFrame = videoContent.querySelector('.video-frame');
+
+                    // Fixing YouTube regex
+                    const youtubeRegex = /(?:youtube\.com\/(?:[^/]+\/[^/]+\/|(?:v|e(?:mbed)?)\/|(?:watch(?:_popup)?)?\?v=)|youtu\.be\/)([a-zA-Z0-9_-]+)/;
+                    const match = materialData.url.match(youtubeRegex);
+
+                    if (match && match[1]) {
+                        const videoId = match[1];
+                        videoFrame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+                    } else {
+                        videoFrame.src = '';
+                    }
                 }
-            }
-
-            // Show modal
-            modal.show();
+                modal.show();
+            });
         });
-    });
 
-    // Stop video and clean up when modal is hidden
-    materialDetailModal.addEventListener('hide.flowbite.modal', function () {
-        const videoFrame = materialDetailModal.querySelector('.video-frame');
-        if (videoFrame) {
-            videoFrame.src = ''; // Stop video playback by clearing the src
+        function stopVideo(modalElement) {
+            const videoFrame = modalElement.querySelector('.video-frame');
+            if (videoFrame) {
+                videoFrame.src = ''; // Clear the src to stop playback
+            }
         }
-    });
-});
-</script>
 
+        // Corrected modal hide event handling for Flowbite
+        materialDetailModal.addEventListener('hidden.bs.modal', function () {
+            stopVideo(materialDetailModal);
+        });
+
+        const closeModalButton = materialDetailModal.querySelector('[data-modal-hide="material-detail-modal"]');
+        closeModalButton.addEventListener('click', function () {
+            modal.hide();
+            stopVideo(materialDetailModal);
+        });
+
+        document.querySelectorAll('.download-btn').forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.preventDefault();
+
+                const downloadUrl = this.href;
+                const materialTitle = this.getAttribute('data-title') || 'document';
+
+                window.location.href = downloadUrl;
+            });
+        });
+
+        
+
+    });
+</script>
 @endsection

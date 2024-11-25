@@ -6,14 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Models\MaterialCategory;
 use App\Models\LearningMaterial;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\Response;
+
 
 class LearningMaterialController extends Controller
 {
     public function index()
     {
         $recentMaterials = LearningMaterial::with('category')->orderBy('created_at', 'desc')->take(10)->get();
-        $materials = LearningMaterial::with('category')->latest()->paginate(10);        
+        $materials = LearningMaterial::with('category')->latest()->paginate(10);
         $categories = MaterialCategory::all();
         return view('admin.materials.dashboard', compact('recentMaterials', 'materials', 'categories'));
     }
@@ -151,4 +154,24 @@ class LearningMaterialController extends Controller
         return redirect()->route('admin.materials.index')
             ->with('success', 'Video uploaded successfully.');
     }
+
+    public function download(LearningMaterial $material)
+{
+    try {
+        if ($material->type !== 'pdf' || !Storage::disk('public')->exists($material->file_path)) {
+            abort(404, 'PDF not found.');
+        }
+
+        $path = Storage::disk('public')->path($material->file_path);
+
+        return response()->download($path, $material->title . '.pdf', [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . $material->title . '.pdf"',
+        ]);
+    } catch (\Exception $e) {
+        \Log::error('Error downloading PDF: ' . $e->getMessage());
+        return back()->withErrors(['error' => 'Failed to download PDF.']);
+    }
+}
+
 }
