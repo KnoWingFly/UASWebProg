@@ -294,7 +294,6 @@ class admindash extends Controller
 
     public function participants(Event $event)
     {
-        // Ensure a relationship exists to fetch participants
         $participants = $event->participants; // Assumes you have a `participants` relationship in the Event model
 
         // Pass the event and its participants to the view

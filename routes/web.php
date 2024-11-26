@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\LearningMaterialController as AdminLearningMateri
 use App\Http\Controllers\Admin\MaterialCategoryController as AdminMaterialCategoryController;
 use App\Http\Controllers\User\LearningMaterialController as UserLearningMaterialController;
 use App\Http\Controllers\User\MaterialCategoryController as UserMaterialCategoryController;
+Use App\Http\controllers\ProfileController;
 
 // ============================= Public Routes =============================
 Route::get('/', [AuthController::class, 'welcome'])->name('welcome');
@@ -22,7 +23,7 @@ Route::get('/not-approved', [AuthController::class, 'notApproved'])->name('not-a
 
 // ============================= Authenticated Routes =============================
 Route::middleware(['auth', 'approve'])->group(function () {
-
+    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
     // ========================= User-Specific Routes =========================
     Route::prefix('user')->name('user.')->group(function () {
         // Dashboard
