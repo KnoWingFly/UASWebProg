@@ -33,22 +33,16 @@ class UpdateEventRegistrationStatus extends Command
         $events = Event::all();
 
         foreach ($events as $event) {
-            // Check if registration_start and registration_end are valid
             if ($event->registration_start && $event->registration_end) {
-                // Parse registration start and end times and subtract 7 hours to convert them to UTC
-                $registrationStart = Carbon::parse($event->registration_start)->subHours(7);  // Adjust to UTC by subtracting 7 hours
-                $registrationEnd = Carbon::parse($event->registration_end)->subHours(7);  // Adjust to UTC by subtracting 7 hours
+                $registrationStart = Carbon::parse($event->registration_start)->subHours(7);  
+                $registrationEnd = Carbon::parse($event->registration_end)->subHours(7);  
 
-                // Check if the current time is between the registration start and end dates (inclusive)
                 if ($currentDateTime->gte($registrationStart) && $currentDateTime->lte($registrationEnd)) {
-                    // Current time is between start and end date, open registration
                     $event->registration_status = 'open';
                 } else {
-                    // Otherwise, close registration
                     $event->registration_status = 'closed';
                 }
             } else {
-                // Default to 'closed' if dates are null
                 $event->registration_status = 'closed';
             }
 

@@ -5,9 +5,16 @@
 <div class="p-6 space-y-6">
     <div class="flex justify-between items-center">
         <h1 class="text-2xl font-semibold text-gray-200">Manage Events</h1>
-        <div>
+        <!-- Search Bar and Filter -->
+        <div class="flex space-x-4">
             <input type="text" id="search-bar" placeholder="Search events..."
                 class="px-4 py-2 rounded bg-gray-700 text-white placeholder-gray-400 focus:ring focus:ring-indigo-500">
+            <select id="status-filter"
+                class="px-4 py-2 rounded bg-gray-700 text-white focus:ring focus:ring-indigo-500">
+                <option value="all">All</option>
+                <option value="open">Open</option>
+                <option value="closed">Closed</option>
+            </select>
         </div>
         <a href="{{ route('admin.events.create') }}"
             class="px-4 py-2 bg-blue-600 text-white font-medium rounded hover:bg-blue-700">
@@ -96,50 +103,70 @@
     function openDeleteModal(eventId) {
         const modal = document.getElementById('deleteModal');
         const form = document.getElementById('deleteForm');
-        form.action = '/admin/events/' + eventId; 
+        form.action = '/admin/events/' + eventId;
         modal.classList.remove('hidden'); // Show the modal
     }
 
     function closeDeleteModal() {
         const modal = document.getElementById('deleteModal');
-        modal.classList.add('hidden'); 
+        modal.classList.add('hidden');
     }
-
     document.addEventListener('DOMContentLoaded', function () {
     const searchBar = document.getElementById('search-bar');
+    const statusFilter = document.getElementById('status-filter');
     const eventCards = document.querySelectorAll('.event-card');
 
-    searchBar.addEventListener('input', function () {
-        const query = searchBar.value.toLowerCase().trim();
+    function normalizeText(text) {
+        return text.toLowerCase().trim();
+    }
 
-        // Track visibility changes
+    function filterEvents() {
+        const query = normalizeText(searchBar.value);
+        const status = statusFilter.value;
         let visibleCardCount = 0;
 
         eventCards.forEach(card => {
-            const eventName = card.getAttribute('data-event-name')?.toLowerCase() || '';
+            // Extract event name
+            const eventName = normalizeText(card.getAttribute('data-event-name') || '');
 
-            if (eventName.includes(query)) {
-                card.style.display = 'block';
+            // Extract registration status
+            const registrationStatusElement = card.querySelector('p:last-of-type');
+            const eventStatus = registrationStatusElement ? 
+                normalizeText(registrationStatusElement.textContent.replace('Registration Status:', '').trim()) : 
+                '';
+
+            const matchesSearch = eventName.includes(query);
+            const matchesStatus = 
+                status === 'all' || 
+                (status === 'open' && eventStatus.includes('open')) ||
+                (status === 'closed' && eventStatus.includes('closed'));
+
+            if (matchesSearch && matchesStatus) {
+                card.style.display = 'flex';
                 visibleCardCount++;
             } else {
-                card.style.display = 'none'; 
+                card.style.display = 'none';
             }
         });
 
-        // Optionally, you can display a message when no events are found
-        if (visibleCardCount === 0) {
-            const noResultsMessage = document.createElement('p');
-            noResultsMessage.classList.add('text-gray-400', 'col-span-full');
-            noResultsMessage.textContent = 'No events found.';
-            document.querySelector('.grid').appendChild(noResultsMessage);
-        } else {
-            const existingMessage = document.querySelector('.grid p.text-gray-400');
-            if (existingMessage) {
-                existingMessage.remove();
-            }
-        }
-    });
-});
+        // Handle no results message
+        const gridContainer = document.querySelector('.grid');
+        const existingNoResultsMessage = gridContainer.querySelector('.no-results-message');
 
+        if (visibleCardCount === 0) {
+            if (!existingNoResultsMessage) {
+                const noResultsMessage = document.createElement('p');
+                noResultsMessage.classList.add('text-gray-400', 'col-span-full', 'no-results-message');
+                noResultsMessage.textContent = 'No events found matching your search and filter criteria.';
+                gridContainer.appendChild(noResultsMessage);
+            }
+        } else if (existingNoResultsMessage) {
+            existingNoResultsMessage.remove();
+        }
+    }
+
+    searchBar.addEventListener('input', filterEvents);
+    statusFilter.addEventListener('change', filterEvents);
+});
 </script>
 @endsection
