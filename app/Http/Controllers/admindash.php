@@ -127,7 +127,7 @@ class admindash extends Controller
         Artisan::call('events:update-registration-status');
 
         // Pass paginated events to the view
-        return view('admin.eadmin.users.manage-events', compact('events'));
+        return view('admin.events.manage-events', compact('events'));
     }
 
 
