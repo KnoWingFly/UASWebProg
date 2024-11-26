@@ -4,107 +4,108 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminDash;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\Admin\LearningMaterialController;
-use App\Http\Controllers\Admin\MaterialCategoryController;
+use App\Http\Controllers\Admin\LearningMaterialController as AdminLearningMaterialController;
+use App\Http\Controllers\Admin\MaterialCategoryController as AdminMaterialCategoryController;
+use App\Http\Controllers\User\LearningMaterialController as UserLearningMaterialController;
+use App\Http\Controllers\User\MaterialCategoryController as UserMaterialCategoryController;
 
-
-// Welcome Route
+// ============================= Public Routes =============================
 Route::get('/', [AuthController::class, 'welcome'])->name('welcome');
 
 // Authentication Routes
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login')->middleware('guest');
-Route::post('/login', [AuthController::class, 'login']);
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+});
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
-
-// Not Approved Route
 Route::get('/not-approved', [AuthController::class, 'notApproved'])->name('not-approved');
 
-// Authenticated and Approved Routes
+// ============================= Authenticated Routes =============================
 Route::middleware(['auth', 'approve'])->group(function () {
-    Route::get('/dashboard', [UserController::class, 'dashboard'])->middleware('auth')->name('user.dashboard');
 
-    // events
-    Route::get('/user/events', [UserController::class, 'events'])->name('user.events');
-    Route::get('/user/event/details/{event_id}', [UserController::class, 'eventdetails'])->name('user.event.details');
-    Route::post('/user/events/{event}/participate', [UserController::class, 'participate'])->name('user.events.participate');
-    Route::get('/user/register_event/{id}', [UserController::class, 'registerEvent'])->name('user.register_event');
-    Route::delete('/events/{event}/cancel-registration', [UserController::class, 'cancelRegistration'])->name('user.cancel_registration');
-
-    // User Learning Materials Routes
-    Route::get('/user/materials', [UserController::class, 'materials'])->name('user.materials');
-    Route::get('/user/materials/{material}', [UserController::class, 'showMaterial'])->name('user.materials.show');
-
-    Route::get('/user/profile', [UserController::class, 'profile'])->name('user.profile');
-
-    // Admin
-    Route::get('/admin/materials/{material}/download', [LearningMaterialController::class, 'download'])->name('admin.materials.download');
-
-    Route::get('/admin/categories/{category}', [MaterialCategoryController::class, 'show'])->name('admin.categories.show');
-
-    Route::get('/admin/materials/{material}', [LearningMaterialController::class, 'show'])
-        ->name('admin.materials.show');
-
-    Route::get('/admin/materials/{material}/view', [LearningMaterialController::class, 'view'])
-        ->name('admin.materials.view');
-
-    Route::put('admin/materials/{material}', [LearningMaterialController::class, 'update'])->name('admin.materials.update');
-        Route::resource('materials', LearningMaterialController::class, ['as' => 'admin']);
-
-        Route::put('/admin/categories/{category}', [MaterialCategoryController::class, 'update'])->name('admin.categories.update');
-
-
-    
-
-
-    //================================================================ Admin routes =================================================================
-    // Admin-specific Routes
-    Route::middleware(['admin'])->prefix('admin')->group(function () {
-        Route::get('/dashboard', [AdminDash::class, 'index'])->name('admin.dashboard');
-
-        // Manage Users
-        Route::get('/manage-users', [AdminDash::class, 'manageUsers'])->name('admin.manage-users');
-        Route::put('/users/{user}', [AdminDash::class, 'update'])->name('admin.users.update');
-        Route::delete('/users/{user}', [AdminDash::class, 'deleteUser'])->name('admin.users.destroy');
-
-        // Bulk Operations
-        Route::post('/users/bulk-approve', [AdminDash::class, 'bulkApprove'])->name('admin.users.bulk-approve');
-        Route::post('/users/bulk-delete', [AdminDash::class, 'bulkDelete'])->name('admin.users.bulk-delete');
-        Route::post('/admin/users/bulk-disapprove', [AdminDash::class, 'bulkDisapprove'])->name('admin.users.bulk-disapprove');
-
-        // Approvals
-        Route::post('/approvals/{user}/approve', [AdminDash::class, 'approveUser'])->name('admin.users.approve');
-        Route::get('/approvals', [AdminDash::class, 'userApprovals'])->name('admin.approvals');
+    // ========================= User-Specific Routes =========================
+    Route::prefix('user')->name('user.')->group(function () {
+        // Dashboard
+        Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
 
         // Events
-        Route::get('/events', [AdminDash::class, 'indexEvents'])->name('admin.events.index');
-        Route::get('/events/create', [AdminDash::class, 'createEvent'])->name('admin.events.create');
-        Route::post('/events', [AdminDash::class, 'storeEvent'])->name('admin.events.store');
-        Route::get('/events/{event}/edit', [AdminDash::class, 'editEvent'])->name('admin.events.edit');
-        Route::put('/events/{event}', [AdminDash::class, 'updateEvent'])->name('admin.events.update');
-        Route::delete('/events/{event}', [AdminDash::class, 'deleteEvent'])->name('admin.events.destroy');
+        Route::get('/events', [UserController::class, 'events'])->name('events');
+        Route::get('/event/details/{event_id}', [UserController::class, 'eventdetails'])->name('event.details');
+        Route::post('/events/{event}/participate', [UserController::class, 'participate'])->name('events.participate');
+        Route::get('/register_event/{id}', [UserController::class, 'registerEvent'])->name('register_event');
+        Route::delete('/events/{event}/cancel-registration', [UserController::class, 'cancelRegistration'])->name('cancel_registration');
 
-        // Event participants
-        Route::get('/admin/events/{event}/participants', [AdminDash::class, 'participants'])->name('admin.events.participants');
-        Route::delete('/admin/events/{event}/participants/{participant}', [AdminDash::class, 'removeParticipant'])->name('admin.events.removeParticipant');
+        // Learning Materials
+        Route::prefix('materials')->name('materials.')->group(function () {
+            Route::get('/', [UserLearningMaterialController::class, 'index'])->name('index');
+            Route::get('/{material}', [UserLearningMaterialController::class, 'show'])->name('show');
+            Route::get('/{material}/download', [UserLearningMaterialController::class, 'download'])->name('download');
+        });
 
-        // Learning Materials Routes
-        Route::resource('materials', LearningMaterialController::class, ['as' => 'admin']);
+        // Profile
+        Route::get('/profile', [UserController::class, 'profile'])->name('profile');
 
+        // Categories
+        Route::prefix('categories')->name('categories.')->group(function () {
+            Route::get('/', [UserMaterialCategoryController::class, 'index'])->name('index');
+            Route::get('/{category}', [UserMaterialCategoryController::class, 'show'])->name('show');
+        });
 
-        Route::post('/admin/materials/upload-pdf', [LearningMaterialController::class, 'uploadPdf'])
-            ->name('admin.materials.upload-pdf');
+        Route::prefix('materials')->name('materials.')->group(function () {
+            Route::get('/{material}/download', [UserLearningMaterialController::class, 'download'])->name('download');
+            Route::get('/{material}/view', [UserLearningMaterialController::class, 'show'])->name('view');
+        });
+        Route::resource('materials', UserLearningMaterialController::class);
+    });
 
-        Route::post('/admin/materials/upload-video', [LearningMaterialController::class, 'uploadVideo'])
-            ->name('admin.materials.upload-video');
+    // ========================= Admin-Specific Routes =========================
+    Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
+        // Dashboard
+        Route::get('/dashboard', [AdminDash::class, 'index'])->name('dashboard');
 
-        // Existing categories resource route
-        Route::resource('categories', MaterialCategoryController::class)
-            ->names('admin.categories');
+        // Manage Users
+        Route::prefix('users')->name('users.')->group(function () {
+            Route::get('/manage', [AdminDash::class, 'manageUsers'])->name('manage');
+            Route::put('/{user}', [AdminDash::class, 'update'])->name('update');
+            Route::delete('/{user}', [AdminDash::class, 'deleteUser'])->name('destroy');
+
+            // Bulk Operations
+            Route::post('/bulk-approve', [AdminDash::class, 'bulkApprove'])->name('bulk-approve');
+            Route::post('/bulk-delete', [AdminDash::class, 'bulkDelete'])->name('bulk-delete');
+            Route::post('/bulk-disapprove', [AdminDash::class, 'bulkDisapprove'])->name('bulk-disapprove');
+        });
+
+        // Approvals
+        Route::get('/approvals', [AdminDash::class, 'userApprovals'])->name('approvals');
+        Route::post('/approvals/{user}/approve', [AdminDash::class, 'approveUser'])->name('users.approve');
+
+        // Events
+        Route::prefix('events')->name('events.')->group(function () {
+            Route::get('/', [AdminDash::class, 'indexEvents'])->name('index');
+            Route::get('/create', [AdminDash::class, 'createEvent'])->name('create');
+            Route::post('/', [AdminDash::class, 'storeEvent'])->name('store');
+            Route::get('/{event}/edit', [AdminDash::class, 'editEvent'])->name('edit');
+            Route::put('/{event}', [AdminDash::class, 'updateEvent'])->name('update');
+            Route::delete('/{event}', [AdminDash::class, 'deleteEvent'])->name('destroy');
+            Route::get('/{event}/participants', [AdminDash::class, 'participants'])->name('participants');
+            Route::delete('/{event}/participants/{participant}', [AdminDash::class, 'removeParticipant'])->name('removeParticipant');
+        });
+
+        // Categories
+        Route::resource('categories', AdminMaterialCategoryController::class)->except('show');
+        Route::get('/categories/{category}', [AdminMaterialCategoryController::class, 'show'])->name('categories.show');
+
+        // Learning Materials
+        Route::prefix('materials')->name('materials.')->group(function () {
+            Route::get('/{material}/download', [AdminLearningMaterialController::class, 'download'])->name('download');
+            Route::get('/{material}/view', [AdminLearningMaterialController::class, 'show'])->name('view');
+        });
+        Route::resource('materials', AdminLearningMaterialController::class);
 
         // Settings
-        Route::get('/settings', [AdminDash::class, 'settings'])->name('admin.settings');
+        Route::get('/settings', [AdminDash::class, 'settings'])->name('settings');
     });
 });
 
-// Fallback Route for undefined paths
+// ============================= Fallback Route =============================
 Route::fallback([AuthController::class, 'fallback']);

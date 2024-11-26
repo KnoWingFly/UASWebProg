@@ -18,7 +18,7 @@ class admindash extends Controller
     public function index()
     {
         $totalUsers = User::count();
-        $userUsers = User::where('roles', 'user')->count();
+        $userUsers = User::where('roles', 'users')->count();
         $pendingUsers = User::where('is_approved', false)->count();
 
         return view('admin.dashboard', compact('totalUsers', 'userUsers', 'pendingUsers'));
@@ -70,7 +70,7 @@ class admindash extends Controller
         $userIds = json_decode($request->input('userIds'));
         User::whereIn('id', $userIds)->update(['is_approved' => true]);
 
-        return redirect()->route('admin.manage-users')->with('success', 'Selected users have been approved.');
+        return redirect()->route('admin.users.manage')->with('success', 'Selected users have been approved.');
     }
 
     public function bulkDisapprove(Request $request)
@@ -78,7 +78,7 @@ class admindash extends Controller
         $userIds = json_decode($request->input('userIds'));
         User::whereIn('id', $userIds)->update(['is_approved' => false]);
 
-        return redirect()->route('admin.manage-users')->with('success', 'Selected users have been disapproved.');
+        return redirect()->route('admin.users.manage')->with('success', 'Selected users have been disapproved.');
     }
 
     public function bulkDelete(Request $request)
@@ -86,20 +86,20 @@ class admindash extends Controller
         $userIds = json_decode($request->input('userIds'));
         User::whereIn('id', $userIds)->delete();
 
-        return redirect()->route('admin.manage-users')->with('success', 'Selected users have been deleted.');
+        return redirect()->route('admin.users.manage')->with('success', 'Selected users have been deleted.');
     }
 
     public function deleteUser($id)
     {
-        $user = User::findOrFail($id);
-        $user->delete();
+        $users = User::findOrFail($id);
+        $users->delete();
 
-        return redirect()->route('admin.manage-users')->with('success', 'User deleted successfully.');
+        return redirect()->route('admin.users.manage')->with('success', 'User deleted successfully.');
     }
 
     public function update(Request $request, $id)
     {
-        $user = User::findOrFail($id);
+        $users = User::findOrFail($id);
 
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
@@ -108,14 +108,14 @@ class admindash extends Controller
             'roles' => 'required|in:user,admin',
         ]);
 
-        // Update user attributes
-        $user->name = $validatedData['name'];
-        $user->email = $validatedData['email'];
-        $user->is_approved = $request->has('is_approved') ? 1 : 0;
-        $user->roles = $validatedData['roles'];
-        $user->save();
+        // Update users attributes
+        $users->name = $validatedData['name'];
+        $users->email = $validatedData['email'];
+        $users->is_approved = $request->has('is_approved') ? 1 : 0;
+        $users->roles = $validatedData['roles'];
+        $users->save();
 
-        return redirect()->route('admin.manage-users')->with('success', 'User updated successfully.');
+        return redirect()->route('admin.users.manage')->with('success', 'User updated successfully.');
     }
 
     public function indexEvents()
@@ -127,7 +127,7 @@ class admindash extends Controller
         Artisan::call('events:update-registration-status');
 
         // Pass paginated events to the view
-        return view('admin.events.manage-events', compact('events'));
+        return view('admin.eadmin.users.manage-events', compact('events'));
     }
 
 

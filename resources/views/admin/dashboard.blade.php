@@ -70,7 +70,7 @@
                 <div class="p-6">
                     <h5 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Quick Actions</h5>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <a href="{{ route('admin.manage-users') }}" 
+                        <a href="{{ route('admin.users.manage') }}" 
                            class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg p-4 flex items-center space-x-4 transition duration-300">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />

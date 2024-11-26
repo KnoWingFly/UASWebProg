@@ -33,7 +33,7 @@
     <!-- ============================================================== Search, filter ============================================================== -->
     <div class="flex gap-4 mb-4">
         <!-- Search Box -->
-        <form action="{{ route('admin.manage-users') }}" method="GET" class="flex gap-2">
+        <form action="{{ route('admin.users.manage') }}" method="GET" class="flex gap-2">
             <input type="text" name="search" placeholder="Search by name or email"
                 class="px-4 py-2 border rounded dark:bg-gray-700 dark:text-gray-100" value="{{ request()->search }}">
             <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">Search</button>

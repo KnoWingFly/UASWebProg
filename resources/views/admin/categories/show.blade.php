@@ -62,6 +62,10 @@
                                 </span>
                             </div>
                             <div class="flex justify-between items-center">
+                            <a href="{{ route('admin.materials.view', ['material' => $material->id]) }}"
+                                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                                    View
+                                </a>
                                 <button data-modal-target="editModal-{{ $material->id }}"
                                     data-modal-toggle="editModal-{{ $material->id }}"
                                     class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700">

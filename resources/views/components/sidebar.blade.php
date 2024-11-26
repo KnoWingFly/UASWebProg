@@ -31,7 +31,7 @@
 
             <!-- Manage user link -->
             <li>
-                <a href="{{ route('admin.manage-users') }}"
+                <a href="{{ route('admin.users.manage') }}"
                     class="flex items-center p-2 text-sm font-medium text-gray-300 rounded-lg hover:bg-gray-700">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
@@ -56,21 +56,6 @@
                     Learning Materials
                 </a>
             </li>
-
-            <!-- setting -->
-            <li>
-                <a href="{{ route('admin.settings') }}"
-                    class="flex items-center p-2 text-sm font-medium text-gray-300 rounded-lg hover:bg-gray-700">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4.75 15.75l3.25 3.25m12.5-3.25l-3.25 3.25M6.5 12h11m-4.75 3.25l-3.25-3.25m0 0l3.25-3.25">
-                        </path>
-                    </svg>
-                    Settings
-                </a>
-            </li>
-        </ul>
 
         <!-- logout -->
         <div class="mt-6 border-t border-gray-700 pt-4">

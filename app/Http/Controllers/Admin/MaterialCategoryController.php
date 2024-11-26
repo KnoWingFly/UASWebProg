@@ -105,19 +105,11 @@ class MaterialCategoryController extends Controller
                         $fail('A category cannot be its own parent.');
                     }
 
-                    // Check category depth and subcategory limit
+                    // Prevent circular and deep nesting references
                     if ($value) {
                         $currentParent = MaterialCategory::find($value);
                         $visited = collect([$category->id]);
                         $depth = 0;
-
-                        // Check total number of subcategories for this parent
-                        $subcategoriesCount = MaterialCategory::where('parent_id', $value)
-                            ->where('id', '!=', $category->id) // Exclude current category from count
-                            ->count();
-                        if ($subcategoriesCount >= 3) {
-                            $fail('A parent category can have a maximum of 3 subcategories.');
-                        }
 
                         while ($currentParent) {
                             // Check for circular reference
