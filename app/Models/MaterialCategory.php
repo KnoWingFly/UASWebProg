@@ -30,4 +30,18 @@ class MaterialCategory extends Model
     {
         return $this->hasMany(MaterialCategory::class, 'parent_id');
     }
+
+    public function isDescendantOf($category)
+{
+    $parent = $this->parent;
+    
+    while ($parent) {
+        if ($parent->id === $category->id) {
+            return true;
+        }
+        $parent = $parent->parent;
+    }
+    
+    return false;
+}
 }

@@ -40,7 +40,7 @@
                     class="px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:outline-none focus:border-blue-500">
                     <option value="">All Categories</option>
                     <option value="uncategorized">Uncategorized</option>
-                    <option value="parent">Parent Categories</option>
+                    <option value="parent">Root Categories</option>
                     <option value="sub">Subcategories</option>
                 </select>
                 <select id="sortFilter" onchange="filterCategories()"
@@ -55,13 +55,12 @@
     </div>
 
     <div id="categoriesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-
         @foreach($categories as $category)
+            <!-- Render only top-level categories -->
             <div class="category-card bg-gray-800 border border-gray-700 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
                 data-name="{{ strtolower($category->name) }}" data-description="{{ strtolower($category->description) }}"
                 data-parent="{{ $category->parent_id ? 'sub' : 'parent' }}"
                 data-date="{{ $category->created_at->format('Y-m-d') }}">
-                <!-- Rest of the category card content remains the same -->
                 <div class="p-5">
                     <div class="flex items-center justify-between mb-4">
                         <h5 class="text-xl font-bold tracking-tight text-gray-200">
@@ -87,6 +86,7 @@
                                 @foreach($category->children as $child)
                                     <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">
                                         {{ $child->name }}
+                                        <span class="text-blue-300 ml-1">({{ $child->learning_materials_count }} Materials)</span>
                                     </span>
                                 @endforeach
                             </div>
@@ -95,11 +95,11 @@
 
                     <div class="flex items-center space-x-3 mt-auto">
                         <button onclick="openEditModal(
-                                                        {{ $category->id }}, 
-                                                        '{{ $category->name }}', 
-                                                        '{{ $category->description }}', 
-                                                        {{ $category->parent_id ?? 'null' }}
-                                                    )"
+                                    {{ $category->id }}, 
+                                    '{{ $category->name }}', 
+                                    '{{ $category->description }}', 
+                                    {{ $category->parent_id ?? 'null' }}
+                                )"
                             class="px-3 py-2 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-800 transition-colors duration-200">
                             Edit
                         </button>
@@ -142,7 +142,6 @@
                         class="px-3 py-2 text-sm font-medium text-center text-white bg-green-600 rounded-lg hover:bg-green-700 focus:ring-4 focus:ring-green-800 transition-colors duration-200">
                         View the uncategorized
                     </a>
-
                 </div>
             </div>
         </div>
@@ -167,17 +166,19 @@
                 </button>
             </div>
 
-            <form id="categoryForm" method="POST" action="{{ route('admin.categories.update', $category->id) }}">
+            <form id="categoryForm" method="POST" action="{{ route('admin.categories.store') }}">
                 @csrf
                 <input type="hidden" id="methodField" name="_method">
+                <input type="hidden" id="categoryId" name="id">
 
                 <!-- Category Fields -->
                 <div class="mb-4">
                     <label class="block text-gray-200 text-sm font-medium mb-2" for="name">
                         Category Name
                     </label>
-                    <input type="text" name="name" id="name" value="{{ old('name', $category->name ?? '') }}" required
-                        class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:outline-none focus:border-blue-500">
+                    <input type="text" name="name" id="name" required
+                        class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:outline-none focus:border-blue-500"
+                        value="{{ old('name') }}">
                 </div>
 
                 <div class="mb-4">
@@ -185,7 +186,7 @@
                         Description
                     </label>
                     <textarea name="description" id="description" rows="3"
-                        class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:outline-none focus:border-blue-500">{{ old('description', $category->description ?? '') }}</textarea>
+                        class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:outline-none focus:border-blue-500">{{ old('description') }}</textarea>
                 </div>
 
                 <div class="mb-6">
@@ -196,11 +197,15 @@
                         class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:outline-none focus:border-blue-500">
                         <option value="">None</option>
                         @foreach($allCategories as $cat)
-                            @if(!$cat->parent_id && $cat->id !== $category->id)
-                                <option value="{{ $cat->id }}" {{ old('parent_id', $category->parent_id) == $cat->id ? 'selected' : '' }}>
-                                    {{ $cat->name }}
-                                </option>
-                            @endif
+                                                @php
+                                                    // Determine if this category can be a parent
+                                                    $canBeParent = !$cat->children->isNotEmpty(); // Cannot be parent if it has subcategories
+                                                @endphp
+                                                @if($canBeParent)
+                                                    <option value="{{ $cat->id }}" {{ old('parent_id') == $cat->id ? 'selected' : '' }}>
+                                                        {{ $cat->name }}
+                                                    </option>
+                                                @endif
                         @endforeach
                     </select>
                 </div>
@@ -216,9 +221,9 @@
                     </button>
                 </div>
             </form>
-
         </div>
     </div>
+</div>
 </div>
 
 
@@ -265,11 +270,18 @@
         const form = document.getElementById('categoryForm');
         const methodField = document.getElementById('methodField');
         const modalTitle = document.getElementById('modalTitle');
+        const categoryId = document.getElementById('categoryId');
 
         modalTitle.textContent = 'Add Category';
-        form.reset();
+
+        // Clear out all input fields
+        document.getElementById('name').value = '';
+        document.getElementById('description').value = '';
+        document.getElementById('parent_id').selectedIndex = 0;
+
         form.action = "{{ route('admin.categories.store') }}";
-        methodField.innerHTML = '';
+        methodField.value = ''; // Clear method field
+        categoryId.value = ''; // Clear category ID
 
         modal.classList.remove('hidden');
         modal.classList.add('flex');
@@ -280,17 +292,38 @@
         const form = document.getElementById('categoryForm');
         const methodField = document.getElementById('methodField');
         const modalTitle = document.getElementById('modalTitle');
+        const parentSelect = document.getElementById('parent_id');
+        const categoryId = document.getElementById('categoryId');
 
         modalTitle.textContent = 'Edit Category';
         form.action = `/admin/categories/${id}`;
-        methodField.innerHTML = '@method("PUT")';
+        methodField.value = 'PUT';
+        categoryId.value = id;
 
         document.getElementById('name').value = name;
         document.getElementById('description').value = description;
-        document.getElementById('parent_id').value = parentId || '';
+
+        // Reset all options first
+        Array.from(parentSelect.options).forEach(option => {
+            option.style.display = option.value ? 'block' : 'block';
+        });
+
+        // Prevent the current category from being selected as a parent
+        const currentOption = parentSelect.querySelector(`option[value="${id}"]`);
+        if (currentOption) {
+            currentOption.style.display = 'none';
+        }
+
+        parentSelect.value = parentId || '';
 
         modal.classList.remove('hidden');
         modal.classList.add('flex');
+    }
+
+    function closeCategoryModal() {
+        const modal = document.getElementById('categoryModal');
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
     }
 
     function closeCategoryModal() {
@@ -350,7 +383,10 @@
             const parentType = card.dataset.parent;
 
             const matchesSearch = name.includes(searchTerm) || description.includes(searchTerm);
-            const matchesParentFilter = parentFilter === '' || parentFilter === parentType;
+            const matchesParentFilter = parentFilter === '' ||
+                (parentFilter === 'parent' && parentType === 'parent') ||
+                (parentFilter === 'sub' && parentType === 'sub') ||
+                (parentFilter === 'uncategorized' && parentType === 'uncategorized');
 
             card.style.display = matchesSearch && matchesParentFilter ? 'block' : 'none';
         });
