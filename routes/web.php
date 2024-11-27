@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\MaterialCategoryController as AdminMaterialCatego
 use App\Http\Controllers\User\LearningMaterialController as UserLearningMaterialController;
 use App\Http\Controllers\User\MaterialCategoryController as UserMaterialCategoryController;
 Use App\Http\controllers\ProfileController;
+use App\Http\Controllers\Admin\ActivityHistoryController;
 
 // ============================= Public Routes =============================
 Route::get('/', [AuthController::class, 'welcome'])->name('welcome');
@@ -103,8 +104,14 @@ Route::middleware(['auth', 'approve'])->group(function () {
         });
         Route::resource('materials', AdminLearningMaterialController::class);
 
-        // Settings
-        Route::get('/settings', [AdminDash::class, 'settings'])->name('settings');
+        Route::controller(ActivityHistoryController::class)->group(function () {
+            Route::get('/activity-history', 'index')->name('activity-history.index');
+            Route::post('/activity-history', 'store')->name('activity-history.store');
+            Route::delete('/activity-history/{activityHistory}', 'destroy')->name('activity-history.destroy');
+            Route::post('/activity-history/{activityHistory}/add-users', 'addUsers')->name('activity-history.add-users');
+            Route::post('/activity-history/{activityHistory}/manage-users', 'manageUsers')->name('activity-history.manage-users');
+            Route::put('/activity-history/{activityHistory}', 'update')->name('activity-history.update');
+        });
     });
 });
 

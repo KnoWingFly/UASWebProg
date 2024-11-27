@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -92,9 +93,9 @@ class User extends Authenticatable
         return $this->hasMany(Achievement::class);
     }
     
-    public function activityHistories()
+    public function activityHistories(): BelongsToMany
     {
-        return $this->hasMany(ActivityHistory::class);
+        return $this->belongsToMany(ActivityHistory::class, 'activity_user', 'user_id', 'activity_history_id');
     }
     
 }
