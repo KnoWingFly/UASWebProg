@@ -17,23 +17,7 @@
     </div>
 
     <!-- Achievements Section -->
-    <div class="mb-8">
-        <h3 class="text-xl font-bold">Achievements</h3>
-
-        @if($userAchievements->isNotEmpty())
-            <div class="grid grid-cols-3 gap-4 mt-4">
-                @foreach($userAchievements as $achievement)
-                    <div class="bg-gray-700 p-4 rounded-lg text-center">
-                        <p class="font-semibold">{{ $achievement->title }}</p>
-                        <p class="text-gray-400">{{ $achievement->description ?? 'No description' }}</p>
-                    </div>
-                @endforeach
-            </div>
-        @else
-            <p class="text-gray-400">Never give up, achievements will come!</p>
-        @endif
-    </div>
-
+    <div class="mb-8"></div>
     <!-- Activity History Section -->
     <div>
         <h3 class="text-xl font-bold">Activity History</h3>

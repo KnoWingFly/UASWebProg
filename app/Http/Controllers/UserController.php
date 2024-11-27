@@ -19,12 +19,10 @@ class UserController extends Controller
             return redirect()->route('login');
         }
 
-        $userAchievements = Achievement::where('user_id', $user->id)->get();
-
         // Updated to use pivot table relationship
         $userActivities = $user->activityHistories()->latest()->get();
 
-        return view('user.dashboard', compact('user', 'userAchievements', 'userActivities'));
+        return view('user.dashboard', compact('user', 'userActivities'));
     }
 
     public function events()
@@ -177,8 +175,6 @@ class UserController extends Controller
             return redirect()->route('login');
         }
 
-        $userAchievements = Achievement::where('user_id', $user->id)->get();
-        $userActivities = ActivityHistory::where('user_id', $user->id)->get();
 
         return view('user.profile', compact('user', 'userAchievements', 'userActivities'));
     }
