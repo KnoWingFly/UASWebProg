@@ -17,7 +17,7 @@
     <div class="card text-white shadow-lg" style="background-color: #121212; width: 100%; max-width: 400px; border-radius: 10px; border: none;">
         <div class="card-body p-4 text-center">
             <h2 class="mb-4">Login</h2>
-            <p class="mb-4 text-muted">Welcome back! Please login to your account.</p>
+            <p class="mb-4 ">Welcome back! Please login to your account.</p>
             <form method="POST" action="{{ route('login') }}">
                 @csrf
                 <div class="mb-3">
@@ -64,7 +64,7 @@
                 <button type="submit" class="btn btn-primary w-100 mb-3" style="background-color: #1e90ff; border: none;">
                     Login
                 </button>
-                <a href="{{ route('password.request') }}" class="text-muted small">
+                <a href="{{ route('password.request') }}" class="text-">
                     Forget Password
                 </a>
             </form>
