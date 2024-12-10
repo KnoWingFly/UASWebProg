@@ -294,9 +294,8 @@ class admindash extends Controller
 
     public function participants(Event $event)
     {
-        $participants = $event->participants; // Assumes you have a `participants` relationship in the Event model
-
-        // Pass the event and its participants to the view
+        $participants = $event->participants()->withPivot('created_at')->get();
+    
         return view('admin.events.participants', compact('event', 'participants'));
     }
 

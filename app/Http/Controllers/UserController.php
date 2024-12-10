@@ -129,7 +129,12 @@ class UserController extends Controller
         }
 
         try {
-            $event->participants()->attach($user->id);
+            // Attach the user with explicit timestamps
+            $event->participants()->attach($user->id, [
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+
             return redirect()->route('user.event.details', $event->id)
                 ->with('success', 'You have successfully registered for this event.');
         } catch (\Exception $e) {
