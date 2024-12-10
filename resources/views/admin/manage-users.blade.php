@@ -2,10 +2,8 @@
 
 @section('content')
 <div class="container mx-auto mt-8">
-    <div class="flex justify-between items-center">
-        <h1 class="text-2xl font-bold mb-6">Manage Users</h1>
-        <a href="/admin/dashboard" class="mx-2 px-4 py-2 bg-blue-600 text-white font-medium rounded hover:bg-blue-700">Back to Dashboard</a>
-    </div>
+    <h1 class="text-2xl font-bold mb-6">Manage Users</h1>
+
 
     <!-- ============================================================== Any Error Message ============================================================== -->
     <!-- Feedback Messages -->
