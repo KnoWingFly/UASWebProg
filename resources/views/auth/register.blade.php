@@ -17,7 +17,7 @@
     <div class="card text-white shadow-lg" style="background-color: #121212; width: 100%; max-width: 400px; border-radius: 10px; border: none;">
         <div class="card-body p-4 text-center">
             <h2 class="mb-4">Register</h2>
-            <p class="mb-4 text-muted">Create a new account to get started.</p>
+            <p class="mb-4 ">Create a new account to get started.</p>
             <form method="POST" action="{{ route('register') }}">
                 @csrf
                 <div class="mb-3">
@@ -77,7 +77,7 @@
                 <button type="submit" class="btn btn-primary w-100 mb-3" style="background-color: #1e90ff; border: none;">
                     Register
                 </button>
-                <a href="{{ route('login') }}" class="text-muted small">
+                <a href="{{ route('login') }}" class="text">
                     Already have an account? Login here.
                 </a>
             </form>
