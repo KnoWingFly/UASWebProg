@@ -10,6 +10,13 @@ use App\Http\Controllers\User\LearningMaterialController as UserLearningMaterial
 use App\Http\Controllers\User\MaterialCategoryController as UserMaterialCategoryController;
 Use App\Http\controllers\ProfileController;
 use App\Http\Controllers\Admin\ActivityHistoryController;
+use App\Http\Controllers\User\LearningMaterialController;
+use App\Http\Controllers\User\UserProfileController;
+Route::get('/learning-materials', [LearningMaterialController::class, 'index'])->name('user.learning-materials');
+Route::get('/learning-materials/published', [LearningMaterialController::class, 'showPublished'])->name('user.learning-materials.published');
+Route::get('/learning-material/{material}', [LearningMaterialController::class, 'show'])->name('user.learning-material.show');
+Route::get('/learning-material/{material}/download', [LearningMaterialController::class, 'download'])->name('user.learning-material.download');
+Route::get('/profile', [UserProfileController::class, 'index'])->name('user.profile.index');
 
 // ============================= Public Routes =============================
 Route::get('/', [AuthController::class, 'welcome'])->name('welcome');
