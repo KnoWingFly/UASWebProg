@@ -2,19 +2,7 @@
 
 @section('content')
 <main class="p-6" x-data="profileManager()">
-    <!-- User Profile Section -->
-    <div class="text-center mb-8 relative">
-        <img src="{{ Auth::user()->profile_photo_path ? asset('storage/profile/' . Auth::user()->profile_photo_path) : asset('storage/profile/default.jpg') }}"
-            alt="Profile Image" class="w-32 h-32 rounded-full mx-auto object-cover">
-        <h2 class="text-2xl font-bold mt-4">{{ Auth::user()->name }}</h2>
-        <p class="text-gray-400">{{ Auth::user()->username }}</p>
 
-        <!-- Edit Profile Button -->
-        <button @click="openEditModal()"
-            class="absolute top-0 right-0 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition">
-            Edit Profile
-        </button>
-    </div>
 
     <!-- Achievements Section -->
     <div class="mb-8"></div>
@@ -38,86 +26,6 @@
         </ul>
     </div>
 
-    <!-- Edit Profile Modal -->
-    <div x-show="isModalOpen" x-cloak
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <div class="bg-gray-800 rounded-lg p-6 w-full max-w-md">
-            <h2 class="text-2xl font-bold mb-4">Edit Profile</h2>
-
-            <form @submit.prevent="updateProfile" enctype="multipart/form-data">
-                <!-- Profile Photo -->
-                <div class="mb-4">
-                    <label class="block mb-2">Profile Photo</label>
-                    <div class="flex items-center space-x-4">
-                        <img src="{{ Auth::user()->profile_photo_path ? asset('storage/profile/' . Auth::user()->profile_photo_path) : asset('storage/profile/default.jpg') }}"
-                            alt="Profile Image" class="w-32 h-32 rounded-full mx-auto object-cover">
-                        <input type="file" @change="handleFileUpload" accept="image/*" class="hidden"
-                            x-ref="profilePhotoInput">
-                        <button type="button" @click="$refs.profilePhotoInput.click()"
-                            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                            Change Photo
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Name Input -->
-                <div class="mb-4">
-                    <label class="block mb-2">Name</label>
-                    <input type="text" x-model="formData.name" value="{{ Auth::user()->name }}"
-                        class="w-full bg-gray-700 rounded px-3 py-2">
-                </div>
-
-                <!-- Email Input -->
-                <div class="mb-4">
-                    <label class="block mb-2">Email</label>
-                    <input type="email" x-model="formData.email" value="{{ Auth::user()->email }}"
-                        class="w-full bg-gray-700 rounded px-3 py-2">
-                </div>
-
-                <!-- Password Input -->
-                <div class="mb-4">
-                    <label class="block mb-2">New Password (optional)</label>
-                    <input type="password" x-model="formData.password" class="w-full bg-gray-700 rounded px-3 py-2"
-                        placeholder="Leave blank if no change">
-                </div>
-
-                <!-- Modal Actions -->
-                <div class="flex justify-end space-x-2 mt-6">
-                    <button type="button" @click="closeModal()"
-                        class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">
-                        Cancel
-                    </button>
-                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                        Save Changes
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Image Crop Modal -->
-    <div x-show="isCropModalOpen" x-cloak
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <div class="bg-gray-800 rounded-lg p-6 w-full max-w-md">
-            <h2 class="text-2xl font-bold mb-4">Crop Profile Photo</h2>
-
-            <div class="mb-4">
-                <div id="image-cropper" class="w-full h-64"></div>
-            </div>
-
-            <div class="flex justify-end space-x-2 mt-6">
-                <button type="button" @click="closeCropModal()"
-                    class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">
-                    Cancel
-                </button>
-                <button type="button" @click="saveCroppedImage()"
-                    class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                    Save
-                </button>
-            </div>
-        </div>
-    </div>
-</main>
 
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.js"></script>
