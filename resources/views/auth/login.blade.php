@@ -65,7 +65,7 @@
                     Login
                 </button>
                 <a href="{{ route('password.request') }}" class="text-muted small">
-                    login as guest
+                    Forget Password
                 </a>
             </form>
         </div>
