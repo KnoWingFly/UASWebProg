@@ -77,7 +77,7 @@
                 <button type="submit" class="btn btn-primary w-100 mb-3" style="background-color: #1e90ff; border: none;">
                     Register
                 </button>
-                <a href="{{ route('login') }}" class="text">
+                <a href="{{ route('login') }}" class="text ">
                     Already have an account? Login here.
                 </a>
             </form>
