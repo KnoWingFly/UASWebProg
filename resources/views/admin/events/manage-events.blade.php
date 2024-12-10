@@ -16,10 +16,13 @@
                 <option value="closed">Closed</option>
             </select>
         </div>
-        <a href="{{ route('admin.events.create') }}"
-            class="px-4 py-2 bg-blue-600 text-white font-medium rounded hover:bg-blue-700">
-            Create Event
-        </a>
+        <div>
+            <a href="{{ route('admin.events.create') }}"
+                    class="px-4 py-2 bg-blue-600 text-white font-medium rounded hover:bg-blue-700">
+                    Create Event
+            </a>
+            <a href="/admin/dashboard" class="mx-2 px-4 py-2 bg-blue-600 text-white font-medium rounded hover:bg-blue-700">Back to Dashboard</a>
+        </div>
     </div>
 
     <!-- Event List -->
