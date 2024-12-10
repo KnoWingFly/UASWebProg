@@ -17,21 +17,25 @@
     <!-- Sidebar Component -->
     @include('components.sidebar-user')
 
-    <!-- Main Content -->
-    <div class="flex-1">
-        <!-- Topbar -->
-        <header class="bg-gray-800 shadow">
-            <div class="flex items-center justify-between p-4">
-                <button id="hamburger" class="text-gray-300 hover:text-white">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6h16M4 12h16m-7 6h7"></path>
-                    </svg>
-                </button>
-                <h1 class="text-lg font-bold text-gray-100">Welcome, {{ Auth::user()->name }}</h1>
-            </div>
-        </header>
+    <header class="bg-gray-800 shadow">
+    <div class="flex items-center p-4">
+        <!-- Hamburger Button on the Left -->
+        <button id="hamburger" class="text-gray-300 hover:text-white mr-16">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
+        </button>
+
+        <!-- Logo and App Name next to Hamburger with additional margin to move it right -->
+        <div class="flex items-center space-x-2 ml-20"> <!-- Added ml-20 for left margin -->
+            <img src="{{ asset('images/UMN_Pc.png') }}" alt="Logo" style="height: 40px;">
+            <span class="text-white font-bold">{{ config('app.name', 'UMN PC') }}</span>
+        </div>
+    </div>
+</header>
+
+
+
 
         <!-- Page Content -->
         <main class="p-4">
