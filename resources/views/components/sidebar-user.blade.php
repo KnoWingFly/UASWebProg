@@ -51,8 +51,20 @@
                     Learning Materials
                 </a>
             </li>
+            <li>
+                <!-- New Profile Option -->
+                <a href="{{ route('user.profile.index') }}"
+                    class="flex items-center p-2 text-sm font-medium text-gray-300 rounded-lg hover:bg-gray-700">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M5.121 17.804A2.5 2.5 0 0 1 7.5 17h9a2.5 2.5 0 0 1 2.379 3.224 9.005 9.005 0 0 1-16.758 0zM12 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10z">
+                        </path>
+                    </svg>
+                    Profile
+                </a>
+            </li>
         </ul>
-
 
         <!-- Logout -->
         <div class="mt-6 border-t border-gray-700 pt-4">
