@@ -18,18 +18,20 @@
                 <img src="{{ Auth::user()->profile_photo_path ? asset('storage/profile/' . Auth::user()->profile_photo_path) : asset('storage/profile/default.jpg') }}"
                     alt="Profile Image" class="w-full h-full object-cover">
                 
-                <!-- Edit Profile Button -->
-                <button 
-                    @click="openEditModal()"
-                    class="absolute bottom-0 right-0 bg-blue-500 text-white px-2 py-1 text-xs rounded-full hover:bg-blue-600 transition m-1">
-                    Edit
-                </button>
+
             </div>
 
             <!-- User Information -->
             <h2 class="text-2xl font-bold mt-4">{{ Auth::user()->name }}</h2>
             <p class="text-gray-400">{{ Auth::user()->username }}</p>
         </div>
+        <div class="relative flex justify-center items-center h-64">
+    <button 
+        @click="openEditModal()"
+        class="absolute bg-blue-500 text-white px-2 py-1 text-xs rounded-full hover:bg-blue-600 transition m-1">
+        Edit
+    </button>
+</div>
 
         <!-- Edit Profile Modal -->
         <div 
