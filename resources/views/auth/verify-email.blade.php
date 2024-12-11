@@ -1,7 +1,10 @@
 <x-guest-layout>
     <x-authentication-card>
         <x-slot name="logo">
-            <x-authentication-card-logo />
+            <a class="navbar-brand" href="{{ url('/') }}">
+                <img src="{{ asset('images/UMN_Pc.png') }}" alt="Logo" style="height: 40px; margin-right: 10px;">
+                {{ config('app.name', 'UMN PC') }}
+            </a>
         </x-slot>
 
         <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
