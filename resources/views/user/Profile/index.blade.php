@@ -6,7 +6,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile Page</title>
-    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="bg-gray-900 text-white" x-data="profileManager()">
@@ -17,68 +16,42 @@
             <div class="w-32 h-32 bg-gray-500 rounded-full overflow-hidden relative">
                 <img src="{{ Auth::user()->profile_photo_path ? asset('storage/profile/' . Auth::user()->profile_photo_path) : asset('storage/profile/default.jpg') }}"
                     alt="Profile Image" class="w-full h-full object-cover">
-                
+
 
             </div>
 
-            <!-- User Information -->   
+            <!-- User Information -->
             <h2 class="text-2xl font-bold mt-4">{{ Auth::user()->name }}</h2>
             <p class="text-gray-400">{{ Auth::user()->username }}</p>
         </div>
         <div class="relative flex justify-center items-center h-64">
-    <button 
-        @click="openEditModal()"
-        class="absolute bg-blue-500 text-white px-2 py-1 text-xs rounded-full hover:bg-blue-600 transition m-1">
-        Edit
-    </button>
-</div>
+            <button @click="openEditModal()"
+                class="absolute bg-blue-500 text-white px-2 py-1 text-xs rounded-full hover:bg-blue-600 transition m-1">
+                Edit
+            </button>
+        </div>
 
         <!-- Edit Profile Modal -->
-        <div 
-            x-show="isModalOpen && !isCropModalOpen" 
-            x-cloak
-            @click.outside="closeModal()"
-            x-transition 
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
-        >
+        <div x-show="isModalOpen && !isCropModalOpen" x-cloak @click.outside="closeModal()" x-transition
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
             <div class="bg-gray-800 rounded-lg p-6 w-full max-w-md">
                 <h2 class="text-2xl font-bold mb-4">Edit Profile</h2>
                 <div class="space-y-4">
-                    <input 
-                        x-model="formData.name" 
-                        type="text" 
-                        placeholder="Name" 
-                        class="w-full bg-gray-700 rounded p-2"
-                    >
-                    <input 
-                        x-model="formData.email" 
-                        type="email" 
-                        placeholder="Email" 
-                        class="w-full bg-gray-700 rounded p-2"
-                    >
-                    <input 
-                        x-model="formData.password" 
-                        type="password" 
-                        placeholder="New Password (optional)" 
-                        class="w-full bg-gray-700 rounded p-2"
-                    >
-                    <input 
-                        @change="handleFileUpload($event)" 
-                        type="file" 
-                        accept="image/jpeg,image/png,image/gif" 
-                        class="w-full bg-gray-700 rounded p-2"
-                    >
+                    <input x-model="formData.name" type="text" placeholder="Name"
+                        class="w-full bg-gray-700 rounded p-2">
+                    <input x-model="formData.email" type="email" placeholder="Email"
+                        class="w-full bg-gray-700 rounded p-2">
+                    <input x-model="formData.password" type="password" placeholder="New Password (optional)"
+                        class="w-full bg-gray-700 rounded p-2">
+                    <input @change="handleFileUpload($event)" type="file" accept="image/jpeg,image/png,image/gif"
+                        class="w-full bg-gray-700 rounded p-2">
                     <div class="flex justify-end space-x-2">
-                        <button 
-                            @click="closeModal()" 
-                            class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-500"
-                        >
+                        <button @click="closeModal()"
+                            class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-500">
                             Cancel
                         </button>
-                        <button 
-                            @click="updateProfile()" 
-                            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                        >
+                        <button @click="updateProfile()"
+                            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                             Save Changes
                         </button>
                     </div>
@@ -87,40 +60,56 @@
         </div>
 
         <!-- Crop Modal -->
-        <div 
-            x-show="isCropModalOpen" 
-            x-cloak
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
-        >
+        <div x-show="isCropModalOpen" x-cloak
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
             <div class="bg-gray-800 rounded-lg p-6 w-full max-w-md">
                 <h2 class="text-2xl font-bold mb-4">Crop Image</h2>
                 <div id="image-cropper" class="mb-4"></div>
                 <div class="flex justify-end space-x-2">
-                    <button 
-                        @click="closeCropModal()" 
-                        class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-500"
-                    >
+                    <button @click="closeCropModal()"
+                        class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-500">
                         Cancel
                     </button>
-                    <button 
-                        @click="saveCroppedImage()" 
-                        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                    >
+                    <button @click="saveCroppedImage()"
+                        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                         Crop & Save
                     </button>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.css">
-    
+
     <style>
-        [x-cloak] { display: none !important; }
+        [x-cloak] {
+            display: none !important;
+        }
     </style>
 
+    <div class="participated-events">
+        <h3 class="text-2xl font-bold mb-4">Events Participated</h3>
+        @if($participatedEvents && $participatedEvents->count() > 0)
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                @foreach($participatedEvents as $event)
+                    <div class="bg-gray-800 rounded-lg p-4">
+                        <h4 class="text-lg font-semibold">{{ $event->title }}</h4>
+                        <p class="text-gray-400">{{ $event->date }}</p>
+                        <p class="text-sm">{{ $event->description }}</p>
+                        <a href="{{ route('user.event.details', $event->id) }}"
+                            class="mt-2 inline-block bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition">
+                            View Details
+                        </a>
+                    </div>
+                @endforeach
+            </div>
+        @else
+            <p class="text-gray-400">You haven't participated in any events yet.</p>
+        @endif
+
+    </div>
     <script>
         function profileManager() {
             return {

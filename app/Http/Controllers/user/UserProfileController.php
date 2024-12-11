@@ -11,8 +11,19 @@ class UserProfileController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
-        return view('user.Profile.index', compact('user'));
+        $user = auth()->user();
+    if (!$user) {
+        return redirect()->route('login');
+    }
+
+    // Fetch the events the user has participated in
+    $participatedEvents = $user->eventUsers;
+
+    // If you want to include user achievements or activities from the previous code
+    $userAchievements = []; // Add your logic to fetch user achievements if needed
+    $userActivities = $user->activityHistories()->latest()->get();
+
+    return view('user.profile.index', compact('user', 'participatedEvents', 'userAchievements', 'userActivities'));
     }
 }
 

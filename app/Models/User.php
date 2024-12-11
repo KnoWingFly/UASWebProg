@@ -92,10 +92,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Achievement::class);
     }
-    
+
     public function activityHistories(): BelongsToMany
     {
         return $this->belongsToMany(ActivityHistory::class, 'activity_user', 'user_id', 'activity_history_id');
     }
-    
+
 }

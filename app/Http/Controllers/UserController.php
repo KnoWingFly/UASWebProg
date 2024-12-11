@@ -28,6 +28,7 @@ class UserController extends Controller
     public function events()
     {
         $user = auth()->user();
+        
         if (!$user) {
             return redirect()->route('login');
         }
