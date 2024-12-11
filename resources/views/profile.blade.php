@@ -14,6 +14,7 @@
             @csrf
             @method('PUT')
 
+            
             <!-- Profile Photo Upload -->
             <div class="mb-4">
                 <label class="block text-gray-300 mb-2">Profile Photo</label>
@@ -22,7 +23,7 @@
                         src="{{ Auth::user()->avatar ?: 'default-avatar.png' }}" 
                         id="preview-avatar"
                         class="w-24 h-24 rounded-full object-cover"
-                    >
+                 >
                     <input 
                         type="file" 
                         name="avatar" 
