@@ -32,8 +32,8 @@
             <div class="p-6 bg-gradient-to-r from-green-500 to-green-600">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h5 class="text-sm font-medium text-green-100 uppercase tracking-wide">User Accounts</h5>
-                        <p class="mt-2 text-3xl font-bold text-white">{{ $userUsers }}</p>
+                        <h5 class="text-sm font-medium text-green-100 uppercase tracking-wide">Accepted user</h5>
+                        <p class="mt-2 text-3xl font-bold text-white">{{ $acceptedUsers }}</p>
                     </div>
                     <div class="bg-green-600 bg-opacity-50 p-3 rounded-full">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">

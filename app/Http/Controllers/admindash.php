@@ -19,9 +19,10 @@ class admindash extends Controller
     {
         $totalUsers = User::count();
         $userUsers = User::where('roles', 'users')->count();
+        $acceptedUsers = User::where('is_approved', true)->count();
         $pendingUsers = User::where('is_approved', false)->count();
 
-        return view('admin.dashboard', compact('totalUsers', 'userUsers', 'pendingUsers'));
+        return view('admin.dashboard', compact('totalUsers', 'userUsers', 'pendingUsers', 'acceptedUsers'));
     }
 
     /**
