@@ -2,7 +2,7 @@
     <x-authentication-card>
         <x-slot name="logo">
             <a class="navbar-brand" href="{{ url('/') }}">
-                <img src="{{ asset('images/UMN_Pc.png') }}" alt="Logo" style="height: 40px; margin-right: 10px;">
+                <img src="{{ asset('images/UMN_PC.png') }}" alt="Logo" style="height: 40px; margin-right: 10px;">
                 {{ config('app.name', 'UMN PC') }}
             </a>
         </x-slot>
