@@ -9,43 +9,62 @@
 </head>
 
 <body class="bg-gray-900 text-white" x-data="profileManager()">
-    <div class="max-w-4xl mx-auto py-10 relative">
-        <!-- Header -->
-        <div class="flex flex-col items-center mb-10">
-            <!-- Profile Picture -->
-            <div class="w-32 h-32 bg-gray-500 rounded-full overflow-hidden relative">
+<div class="max-w-4xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+        <!-- Profile Section -->
+        <div class="flex flex-col items-center mb-12 text-center">
+            <div class="w-32 h-32 bg-gray-500 rounded-full overflow-hidden relative shadow-md">
                 <img src="{{ Auth::user()->profile_photo_path ? asset('storage/profile/' . Auth::user()->profile_photo_path) : asset('storage/profile/default.jpg') }}"
                     alt="Profile Image" class="w-full h-full object-cover">
-
-
             </div>
-
-            <!-- User Information -->
-            <h2 class="text-2xl font-bold mt-4">{{ Auth::user()->name }}</h2>
-            <p class="text-gray-400">{{ Auth::user()->username }}</p>
+            <h2 class="text-3xl font-bold mt-6">{{ Auth::user()->name }}</h2>
         </div>
-        <div class="relative flex justify-center items-center h-64">
+
+        <!-- Edit Profile Button -->
+        <div class="flex justify-center mb-8">
             <button @click="openEditModal()"
-                class="absolute bg-blue-500 text-white px-2 py-1 text-xs rounded-full hover:bg-blue-600 transition m-1">
-                Edit
+                class="bg-blue-500 text-white px-4 py-2 text-sm rounded-lg shadow hover:bg-blue-600 transition">
+                Edit Profile
             </button>
         </div>
 
+        <!-- Participated Events Section -->
+        <div class="participated-events mb-12">
+            <h3 class="text-2xl font-bold mb-6">Events Participated</h3>
+            @if($participatedEvents && $participatedEvents->count() > 0)
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    @foreach($participatedEvents as $event)
+                        <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+                            <h4 class="text-lg font-semibold mb-2">{{ $event->title }}</h4>
+                            <p class="text-gray-400 text-sm mb-2">{{ $event->date }}</p>
+                            <p class="text-sm mb-4">{{ $event->description }}</p>
+                            <a href="{{ route('user.event.details', $event->id) }}"
+                                class="block bg-blue-500 text-white text-center px-4 py-2 rounded hover:bg-blue-600 transition">
+                                View Details
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <p class="text-gray-400 text-center">You haven't participated in any events yet.</p>
+            @endif
+        </div>
+
+        <!-- Modals (Edit Profile & Crop Modal) -->
         <!-- Edit Profile Modal -->
         <div x-show="isModalOpen && !isCropModalOpen" x-cloak @click.outside="closeModal()" x-transition
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div class="bg-gray-800 rounded-lg p-6 w-full max-w-md">
-                <h2 class="text-2xl font-bold mb-4">Edit Profile</h2>
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-4">
+            <div class="bg-gray-800 rounded-lg p-6 w-full max-w-md shadow-lg">
+                <h2 class="text-2xl font-bold mb-6">Edit Profile</h2>
                 <div class="space-y-4">
                     <input x-model="formData.name" type="text" placeholder="Name"
-                        class="w-full bg-gray-700 rounded p-2">
+                        class="w-full bg-gray-700 rounded p-3">
                     <input x-model="formData.email" type="email" placeholder="Email"
-                        class="w-full bg-gray-700 rounded p-2">
+                        class="w-full bg-gray-700 rounded p-3">
                     <input x-model="formData.password" type="password" placeholder="New Password (optional)"
-                        class="w-full bg-gray-700 rounded p-2">
+                        class="w-full bg-gray-700 rounded p-3">
                     <input @change="handleFileUpload($event)" type="file" accept="image/jpeg,image/png,image/gif"
-                        class="w-full bg-gray-700 rounded p-2">
-                    <div class="flex justify-end space-x-2">
+                        class="w-full bg-gray-700 rounded p-3">
+                    <div class="flex justify-end space-x-4 mt-4">
                         <button @click="closeModal()"
                             class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-500">
                             Cancel
@@ -61,11 +80,11 @@
 
         <!-- Crop Modal -->
         <div x-show="isCropModalOpen" x-cloak
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div class="bg-gray-800 rounded-lg p-6 w-full max-w-md">
-                <h2 class="text-2xl font-bold mb-4">Crop Image</h2>
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-4">
+            <div class="bg-gray-800 rounded-lg p-6 w-full max-w-md shadow-lg">
+                <h2 class="text-2xl font-bold mb-6">Crop Image</h2>
                 <div id="image-cropper" class="mb-4"></div>
-                <div class="flex justify-end space-x-2">
+                <div class="flex justify-end space-x-4">
                     <button @click="closeCropModal()"
                         class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-500">
                         Cancel
@@ -82,34 +101,6 @@
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.css">
-
-    <style>
-        [x-cloak] {
-            display: none !important;
-        }
-    </style>
-
-    <div class="participated-events">
-        <h3 class="text-2xl font-bold mb-4">Events Participated</h3>
-        @if($participatedEvents && $participatedEvents->count() > 0)
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                @foreach($participatedEvents as $event)
-                    <div class="bg-gray-800 rounded-lg p-4">
-                        <h4 class="text-lg font-semibold">{{ $event->title }}</h4>
-                        <p class="text-gray-400">{{ $event->date }}</p>
-                        <p class="text-sm">{{ $event->description }}</p>
-                        <a href="{{ route('user.event.details', $event->id) }}"
-                            class="mt-2 inline-block bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition">
-                            View Details
-                        </a>
-                    </div>
-                @endforeach
-            </div>
-        @else
-            <p class="text-gray-400">You haven't participated in any events yet.</p>
-        @endif
-
-    </div>
     <script>
         function profileManager() {
             return {
