@@ -18,12 +18,11 @@
             </div>
             <h2 class="text-3xl font-bold mt-6">{{ Auth::user()->name }}</h2>
         </div>
-
-        <!-- Edit Profile Button -->
-        <div class="flex justify-center mb-8">
+        
+        <div class="relative flex justify-center items-center h-64">
             <button @click="openEditModal()"
-                class="bg-blue-500 text-white px-4 py-2 text-sm rounded-lg shadow hover:bg-blue-600 transition">
-                Edit Profile
+                class="absolute bg-blue-500 text-white px-6 py-3 text-lg font-semibold rounded-lg hover:bg-blue-600 transition-transform transform hover:scale-105 mb-2">
+                Edit
             </button>
         </div>
 
@@ -101,6 +100,37 @@
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.css">
+
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
+
+    <!-- Events Participated Section -->
+    <div class="participated-events">
+        <h3 class="text-2xl font-bold mb-4">Events Participated</h3>
+        @if($participatedEvents && $participatedEvents->count() > 0)
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                @foreach($participatedEvents as $event)
+                    <div class="bg-gray-800 rounded-lg p-4">
+                        <h4 class="text-lg font-semibold">{{ $event->title }}</h4>
+                        <p class="text-gray-400">{{ $event->date }}</p>
+                        <p class="text-sm">{{ $event->description }}</p>
+                        <a href="{{ route('user.event.details', $event->id) }}"
+                            class="mt-2 inline-block bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition">
+                            View Details
+                        </a>
+                    </div>
+                @endforeach
+            </div>
+        @else
+            <p class="text-gray-400">You haven't participated in any events yet.</p>
+        @endif
+    </div>
+
+</body>
+
     <script>
         function profileManager() {
             return {
