@@ -9,30 +9,20 @@ class EventUser extends Model
 {
     use HasFactory;
 
-    /**
-     * The table associated with the model.
-     */
     protected $table = 'event_user';
 
-    /**
-     * The attributes that are mass assignable.
-     */
     protected $fillable = [
         'event_id',
         'user_id',
     ];
 
-    /**
-     * Define the relationship with the Event model.
-     */
+    // Add this relationship
     public function event()
     {
         return $this->belongsTo(Event::class);
     }
 
-    /**
-     * Define the relationship with the User model.
-     */
+    // Add this if you need the user relationship
     public function user()
     {
         return $this->belongsTo(User::class);
