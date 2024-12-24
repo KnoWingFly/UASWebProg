@@ -570,7 +570,7 @@
                                     </svg>
                                 </div>
                                 <div>
-                                    <h3 class="text-2xl font-bold text-white mb-3">Community and Collaboration</h3>
+                                    <h3 class="text-2xl font-bold text-white mb-3">Community and Collaboration. For students, by students.</h3>
                                     <p class="text-gray-300">Fostering a supportive environment where members learn from
                                         each other and grow together.</p>
                                 </div>
