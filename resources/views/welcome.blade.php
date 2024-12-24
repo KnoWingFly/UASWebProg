@@ -245,7 +245,7 @@
                     @for ($i = 0; $i < 50; $i++)
                         <div class="particle absolute w-1 h-1 bg-white/10 rounded-full"
                             style="left: {{ rand(0, 100) }}%; top: {{ rand(0, 100) }}%; 
-                                                    animation: float {{ rand(15, 25) }}s infinite linear {{ rand(-10, 0) }}s">
+                                                        animation: float {{ rand(15, 25) }}s infinite linear {{ rand(-10, 0) }}s">
                         </div>
                     @endfor
                 </div>
@@ -293,7 +293,7 @@
                 <div class="particle-system absolute inset-0">
                     @for ($i = 0; $i < 50; $i++)
                         <div class="particle absolute w-1 h-1 bg-white/10 rounded-full" style="left: {{ rand(0, 100) }}%; top: {{ rand(0, 100) }}%; 
-                                    animation: float {{ rand(15, 25) }}s infinite linear {{ rand(-10, 0) }}s">
+                                        animation: float {{ rand(15, 25) }}s infinite linear {{ rand(-10, 0) }}s">
                         </div>
                     @endfor
                 </div>
@@ -524,7 +524,9 @@
                                 <div>
                                     <h3 class="text-2xl font-bold text-white mb-3">Programming Mastery</h3>
                                     <p class="text-gray-300">Developing expertise in various programming languages and
-                                        advanced coding techniques.</p>
+                                        advanced coding
+                                        techniques.</p>
+                                        <br>
                                 </div>
                             </div>
                         </div>
@@ -571,7 +573,8 @@
                                     </svg>
                                 </div>
                                 <div>
-                                    <h3 class="text-2xl font-bold text-white mb-3">Community and Collaboration: For students, by students.</h3>
+                                    <h3 class="text-2xl font-bold text-white mb-3">Community and Collaboration: For
+                                        students, by students.</h3>
                                     <p class="text-gray-300">Fostering a supportive environment where members learn from
                                         each other and grow together.</p>
                                 </div>
