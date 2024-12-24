@@ -216,11 +216,11 @@
 
                     <!-- Auth Buttons -->
                     <div class="flex justify-center gap-8">
-                        <a href="{{ route('login') }}"
+                        <a href="{{ route('login') }}?firstPage=login"
                             class="nav-button px-12 py-4 text-xl bg-transparent border-2 border-white text-white rounded-full hover:bg-white hover:text-black transition-all duration-300 opacity-0">
                             Login
                         </a>
-                        <a href="{{ route('register') }}"
+                        <a href="{{ route('register') }}?firstPage=register"
                             class="nav-button px-12 py-4 text-xl bg-[#ff4d4d] text-white rounded-full hover:bg-[#ff3333] transition-all duration-300 opacity-0">
                             Register
                         </a>
@@ -243,8 +243,9 @@
                 <!-- Animated Particles -->
                 <div class="particle-system absolute inset-0">
                     @for ($i = 0; $i < 50; $i++)
-                        <div class="particle absolute w-1 h-1 bg-white/10 rounded-full" style="left: {{ rand(0, 100) }}%; top: {{ rand(0, 100) }}%; 
-                                                animation: float {{ rand(15, 25) }}s infinite linear {{ rand(-10, 0) }}s">
+                        <div class="particle absolute w-1 h-1 bg-white/10 rounded-full"
+                            style="left: {{ rand(0, 100) }}%; top: {{ rand(0, 100) }}%; 
+                                                    animation: float {{ rand(15, 25) }}s infinite linear {{ rand(-10, 0) }}s">
                         </div>
                     @endfor
                 </div>
@@ -292,7 +293,7 @@
                 <div class="particle-system absolute inset-0">
                     @for ($i = 0; $i < 50; $i++)
                         <div class="particle absolute w-1 h-1 bg-white/10 rounded-full" style="left: {{ rand(0, 100) }}%; top: {{ rand(0, 100) }}%; 
-                                animation: float {{ rand(15, 25) }}s infinite linear {{ rand(-10, 0) }}s">
+                                    animation: float {{ rand(15, 25) }}s infinite linear {{ rand(-10, 0) }}s">
                         </div>
                     @endfor
                 </div>
@@ -727,7 +728,7 @@
         </footer>
 
     </div>
-<!--     -->
+    <!--     -->
 
 
     <script>
@@ -1155,6 +1156,13 @@
                     }
                 });
             });
+
+            // Check URL hash to determine initial state
+            if (window.location.hash === '#register') {
+                document.querySelector('.forms-container').classList.add('show-register');
+            } else {
+                document.querySelector('.forms-container').classList.remove('show-register');
+            }
         });
     </script>
 </body>

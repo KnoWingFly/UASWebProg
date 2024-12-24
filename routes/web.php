@@ -23,9 +23,18 @@ Route::get('/', [AuthController::class, 'welcome'])->name('welcome');
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
-    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::get('/login', function () {
+        return view('auth.login', ['firstPage' => 'login']);
+    })->name('login');
+    
+    Route::get('/register', function () {
+        return view('auth.login', ['firstPage' => 'register']);
+    })->name('register');
+    
     Route::post('/login', [AuthController::class, 'login']);
 });
+
+
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/not-approved', [AuthController::class, 'notApproved'])->name('not-approved');
 
