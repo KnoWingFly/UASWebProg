@@ -15,26 +15,35 @@
     @include('components.sidebar')
 
     <!-- Main Content -->
-    <div class="flex-1">
-        <!-- Topbar -->
-        <header class="bg-gray-800 shadow">
-            <div class="flex items-center justify-between p-4">
-                <button id="hamburger" class="text-gray-300 hover:text-white">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6h16M4 12h16m-7 6h7"></path>
+    <header class="bg-[#1a1a1a] shadow-lg fixed top-0 w-full z-30">
+        <div class="flex items-center justify-between p-4">
+            <div class="flex items-center space-x-4">
+                <button id="hamburger" 
+                    class="text-gray-400 hover:text-[#ff4d4d] transition-colors duration-200 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            d="M4 6h16M4 12h16m-7 6h7">
+                        </path>
                     </svg>
                 </button>
-                <h1 class="text-lg font-bold text-gray-100">@yield('header', 'Admin Panel')</h1>
+                <div id="logo-container" class="flex items-center space-x-3">
+                    <img src="{{ asset('images/UMN_Pc.png') }}" alt="Logo" 
+                        class="h-10 w-auto transform transition-transform duration-300 hover:scale-105">
+                    <span class="text-xl font-bold text-[#ff4d4d]">
+                        {{ config('app.name', 'UMN PC') }}
+                    </span>
+                </div>
             </div>
-        </header>
+        </div>
+    </header>
+
 
         <!-- Page Content -->
-        <main class="p-4">
+        <main class="pt-20 p-6 transition-all duration-300">
+        <div class="max-w-7xl mx-auto">
             @yield('content')
-        </main>
-    </div>
+        </div>
+    </main>
 
     <script>
         const sidebar = document.getElementById('sidebar');
