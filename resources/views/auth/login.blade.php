@@ -2,7 +2,8 @@
 
 @section('content')
 <style>
-    body, html {
+    body,
+    html {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
@@ -36,6 +37,16 @@
         width: 50%;
         display: flex;
         align-items: stretch;
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .welcome-text,
+    .auth-form-container,
+    .input-group,
+    .auth-link {
+        opacity: 0;
+        transform: translateY(20px);
     }
 
     .decorative-side {
@@ -132,8 +143,8 @@
         font-size: 14px;
     }
 
-    .form-control:focus + .input-label,
-    .form-control:not(:placeholder-shown) + .input-label {
+    .form-control:focus+.input-label,
+    .form-control:not(:placeholder-shown)+.input-label {
         top: -10px;
         left: 8px;
         font-size: 12px;
@@ -237,8 +248,9 @@
         <div class="split-container">
             <div class="form-side">
                 <a href="/" class="back-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 12H5M12 19l-7-7 7-7" />
                     </svg>
                     Back to Home
                 </a>
@@ -246,16 +258,15 @@
                     <div class="card">
                         <div class="card-body p-4">
                             <h2 class="text-center mb-4 title text-white">Login</h2>
-                            <p class="text-center mb-4 subtitle" style="color: #666;">Welcome back! Please login to your account.</p>
+                            <p class="text-center mb-4 subtitle" style="color: #666;">Welcome back! Please login to your
+                                account.</p>
 
                             <form method="POST" action="{{ route('login') }}">
                                 @csrf
                                 <div class="input-group">
-                                    <input id="login-email" type="email" 
-                                        class="form-control @error('email') is-invalid @enderror" 
-                                        name="email" value="{{ old('email') }}" 
-                                        required autocomplete="email" 
-                                        placeholder=" ">
+                                    <input id="login-email" type="email"
+                                        class="form-control @error('email') is-invalid @enderror" name="email"
+                                        value="{{ old('email') }}" required autocomplete="email" placeholder=" ">
                                     <label class="input-label" for="login-email">Email Address</label>
                                     @error('email')
                                         <span class="invalid-feedback" role="alert">
@@ -265,11 +276,9 @@
                                 </div>
 
                                 <div class="input-group">
-                                    <input id="login-password" type="password" 
-                                        class="form-control @error('password') is-invalid @enderror" 
-                                        name="password" required 
-                                        autocomplete="current-password" 
-                                        placeholder=" ">
+                                    <input id="login-password" type="password"
+                                        class="form-control @error('password') is-invalid @enderror" name="password"
+                                        required autocomplete="current-password" placeholder=" ">
                                     <label class="input-label" for="login-password">Password</label>
                                     @error('password')
                                         <span class="invalid-feedback" role="alert">
@@ -279,8 +288,7 @@
                                 </div>
 
                                 <div class="form-check mb-3 text-start">
-                                    <input class="form-check-input" type="checkbox" name="remember" 
-                                        id="remember" {{ old('remember') ? 'checked' : '' }}>
+                                    <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
                                     <label class="form-check-label ms-2" for="remember">
                                         Remember Me
                                     </label>
@@ -308,7 +316,8 @@
             <div class="decorative-side">
                 <div class="welcome-text">
                     <h1>Welcome Back!</h1>
-                    <p>Log in to access your account and explore the latest in tech with UMN PC. Your journey continues here.</p>
+                    <p>Log in to access your account and explore the latest in tech with UMN PC. Your journey continues
+                        here.</p>
                 </div>
             </div>
         </div>
@@ -318,13 +327,15 @@
             <div class="decorative-side">
                 <div class="welcome-text">
                     <h1>Join Us Today!</h1>
-                    <p>Create an account to start exploring the amazing world of technology with UMN PC. Your adventure begins here.</p>
+                    <p>Create an account to start exploring the amazing world of technology with UMN PC. Your adventure
+                        begins here.</p>
                 </div>
             </div>
             <div class="form-side">
                 <a href="/" class="back-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 12H5M12 19l-7-7 7-7" />
                     </svg>
                     Back to Home
                 </a>
@@ -337,11 +348,9 @@
                             <form method="POST" action="{{ route('register') }}">
                                 @csrf
                                 <div class="input-group">
-                                    <input id="name" type="text" 
-                                        class="form-control @error('name') is-invalid @enderror" 
-                                        name="name" value="{{ old('name') }}" 
-                                        required autocomplete="name" 
-                                        placeholder=" ">
+                                    <input id="name" type="text"
+                                        class="form-control @error('name') is-invalid @enderror" name="name"
+                                        value="{{ old('name') }}" required autocomplete="name" placeholder=" ">
                                     <label class="input-label" for="name">Full Name</label>
                                     @error('name')
                                         <span class="invalid-feedback" role="alert">
@@ -351,11 +360,9 @@
                                 </div>
 
                                 <div class="input-group">
-                                    <input id="register-email" type="email" 
-                                        class="form-control @error('email') is-invalid @enderror" 
-                                        name="email" value="{{ old('email') }}" 
-                                        required autocomplete="email" 
-                                        placeholder=" ">
+                                    <input id="register-email" type="email"
+                                        class="form-control @error('email') is-invalid @enderror" name="email"
+                                        value="{{ old('email') }}" required autocomplete="email" placeholder=" ">
                                     <label class="input-label" for="register-email">Email Address</label>
                                     @error('email')
                                         <span class="invalid-feedback" role="alert">
@@ -365,11 +372,9 @@
                                 </div>
 
                                 <div class="input-group">
-                                    <input id="register-password" type="password" 
-                                        class="form-control @error('password') is-invalid @enderror" 
-                                        name="password" required 
-                                        autocomplete="new-password" 
-                                        placeholder=" ">
+                                    <input id="register-password" type="password"
+                                        class="form-control @error('password') is-invalid @enderror" name="password"
+                                        required autocomplete="new-password" placeholder=" ">
                                     <label class="input-label" for="register-password">Password</label>
                                     @error('password')
                                         <span class="invalid-feedback" role="alert">
@@ -379,10 +384,8 @@
                                 </div>
 
                                 <div class="input-group">
-                                    <input id="password-confirm" type="password" 
-                                        class="form-control" 
-                                        name="password_confirmation" required 
-                                        autocomplete="new-password" 
+                                    <input id="password-confirm" type="password" class="form-control"
+                                        name="password_confirmation" required autocomplete="new-password"
                                         placeholder=" ">
                                     <label class="input-label" for="password-confirm">Confirm Password</label>
                                 </div>
@@ -406,133 +409,116 @@
 </div>
 
 <script>
- document.addEventListener("DOMContentLoaded", function () {
-        const firstPage = "{{ $firstPage ?? 'login' }}"; // Default ke login jika tidak ada parameter
-        toggleForms(firstPage);
+    document.addEventListener("DOMContentLoaded", function () {
+        const firstPage = "{{ $firstPage ?? 'login' }}";
+        let initialized = false;
 
-        function toggleForms(page = 'login') {
-        const loginForm = document.querySelector('.split-container:first-child');
-        const registerForm = document.querySelector('.split-container:last-child');
-
-        if (page === 'register') {
-            loginForm.style.display = 'none';
-            registerForm.style.display = 'flex';
-        } else {
-            loginForm.style.display = 'flex';
-            registerForm.style.display = 'none';
+        // Initial setup
+        if (firstPage === 'register') {
+            document.querySelector('.forms-container').classList.add('show-register');
         }
+
+        // Create animated background circles
+        document.querySelectorAll('.decorative-side').forEach(decorativeSide => {
+            for (let i = 0; i < 5; i++) {
+                const circle = document.createElement('div');
+                circle.className = 'decorative-circle';
+                const size = Math.random() * 300 + 100;
+                circle.style.width = `${size}px`;
+                circle.style.height = `${size}px`;
+                circle.style.left = `${Math.random() * 100}%`;
+                circle.style.top = `${Math.random() * 100}%`;
+                decorativeSide.appendChild(circle);
+            }
+        });
+
+        // Check URL hash on load
+        if (window.location.hash === '#register') {
+            document.querySelector('.forms-container').classList.add('show-register');
+        }
+
+        // Initial animations only
+        if (!initialized) {
+            initializeAnimations();
+            initialized = true;
+        }
+    });
+
+    function toggleForms() {
+        const container = document.querySelector('.forms-container');
+        container.classList.toggle('show-register');
     }
-    
-    // Create animated background circles for both decorative sides
-    document.querySelectorAll('.decorative-side').forEach(decorativeSide => {
-        for (let i = 0; i < 5; i++) {
-            const circle = document.createElement('div');
-            circle.className = 'decorative-circle';
-            const size = Math.random() * 300 + 100;
-            circle.style.width = `${size}px`;
-            circle.style.height = `${size}px`;
-            circle.style.left = `${Math.random() * 100}%`;
-            circle.style.top = `${Math.random() * 100}%`;
-            decorativeSide.appendChild(circle);
-        }
-    });
 
-    // Check URL hash to determine initial state
-    if (window.location.hash === '#register') {
-        document.querySelector('.forms-container').classList.add('show-register');
-    } else {
-        document.querySelector('.forms-container').classList.remove('show-register');
-    }
+    function initializeAnimations() {
+        // Animate circles only once
+        gsap.to('.decorative-circle', {
+            scale: 1.5,
+            duration: 'random(3, 6)',
+            repeat: -1,
+            yoyo: true,
+            ease: 'sine.inOut',
+            stagger: {
+                amount: 2,
+                from: 'random'
+            }
+        });
 
-    // Initial animations
-    animateForm();
-});
+        // Initial animations for content
+        const tl = gsap.timeline();
 
-gsap.to('.back-btn', {
-        opacity: 1,
-        x: 0,
-        duration: 0.6,
-        ease: 'power3.out',
-        delay: 0.2
-    });
+        tl.to('.welcome-text', {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: 'power3.out'
+        })
+            .to('.auth-form-container', {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: 'power3.out'
+            }, '-=0.4')
+            .to('.input-group', {
+                opacity: 1,
+                x: 0,
+                duration: 0.6,
+                stagger: 0.1,
+                ease: 'power3.out'
+            }, '-=0.4')
+            .to('.auth-link', {
+                opacity: 1,
+                y: 0,
+                duration: 0.6,
+                ease: 'power3.out',
+                stagger: 0.1
+            }, '-=0.2');
 
-    // Initial animations
-    animateForm();
+        // Button hover animations
+        document.querySelectorAll('.auth-btn').forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                gsap.to(button, {
+                    scale: 1.02,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            });
 
-function toggleForms() {
-    const container = document.querySelector('.forms-container');
-    container.classList.toggle('show-register');
-    
-    // Reset and replay animations
-    setTimeout(() => {
-        animateForm();
-    }, 400);
-}
-
-function animateForm() {
-    // Animate circles
-    gsap.to('.decorative-circle', {
-        scale: 1.5,
-        duration: 'random(3, 6)',
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut',
-        stagger: {
-            amount: 2,
-            from: 'random'
-        }
-    });
-
-    // Main content animations
-    const tl = gsap.timeline();
-
-    tl.to('.welcome-text', {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        ease: 'power3.out'
-    })
-    .to('.auth-form-container', {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        ease: 'power3.out'
-    }, '-=0.4')
-    .to('.input-group', {
-        opacity: 1,
-        x: 0,
-        duration: 0.6,
-        stagger: 0.1,
-        ease: 'power3.out'
-    }, '-=0.4')
-    .to('.auth-link', {
-        opacity: 1,
-        y: 0,
-        duration: 0.6,
-        ease: 'power3.out',
-        stagger: 0.1
-    }, '-=0.2');
-
-    // Button hover animations
-    document.querySelectorAll('.auth-btn').forEach(button => {
-        button.addEventListener('mouseenter', () => {
-           gsap.to(button, {
-                scale: 1.02,
-                duration: 0.3,
-                ease: 'power2.out'
+            button.addEventListener('mouseleave', () => {
+                gsap.to(button, {
+                    scale: 1,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
             });
         });
 
-        button.addEventListener('mouseleave', () => {
-            gsap.to(button, {
-                scale: 1,
-                duration: 0.3,
-                ease: 'power2.out'
-            });
+        // Set all elements to their final state for smooth transitions
+        gsap.set(['.welcome-text', '.auth-form-container', '.input-group', '.auth-link'], {
+            opacity: 1,
+            y: 0,
+            x: 0,
+            delay: 2 // After all animations complete
         });
-    });
-}
-
-
+    }
 </script>
 @endsection

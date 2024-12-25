@@ -9,6 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <link href="https://unpkg.com/cropperjs/dist/cropper.min.css" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('style')
 </head>
 
 <body class="bg-[#151515] text-gray-200 min-h-screen">
@@ -45,6 +46,7 @@
         </div>
     </main>
 
+    @stack('script')
     <script type="module">
         // Wait for GSAP to be loaded through Vite
         window.addEventListener('load', () => {
