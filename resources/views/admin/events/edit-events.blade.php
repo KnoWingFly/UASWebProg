@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="p-6 space-y-6 bg-gray-900">
+<div class="p-6 space-y-6 bg-[#1a1a1a]">
     <h1 class="text-2xl font-semibold text-gray-200">Edit Event</h1>
 
     <!-- Error Messages -->
@@ -128,19 +128,22 @@
         @error('banner')
             <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
         @enderror
-</div>
+    </div>
 
-<!-- Submit Button -->
-<div class="text-right">
-    <a href="/admin/events" class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none transition-colors duration-200">Cancel</a>
-    <button type="submit"
-        class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none transition-colors duration-200">
-        Update Event
-    </button>
-</div>
+    <!-- Submit Button -->
+    <div class="flex justify-end space-x-8 mt-6">
+        <!-- Cancel Button -->
+        <a href="/admin/events" class="px-6 py-2 bg-[#ff4d4d] text-white font-semibold rounded-lg hover:bg-[#e13e3e] transition-all duration-200 ease-in-out transform hover:scale-105 hover:shadow-lg">
+            Cancel
+        </a>
+        <!-- Update Button -->
+        <button type="submit"
+            class="px-6 py-2 bg-[#ff4d4d] text-white font-semibold rounded-lg hover:bg-[#e13e3e] transition-all duration-200 ease-in-out transform hover:scale-105 hover:shadow-lg">
+            Update Event
+        </button>
+    </div>
 </form>
 </div>
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         // Date and time elements
