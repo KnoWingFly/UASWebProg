@@ -5,7 +5,7 @@
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-semibold text-gray-200">Material Categories</h2>
         <button onclick="openCreateModal()"
-            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
+            class="px-4 py-2 bg-[#ff4d4d] text-white rounded-lg hover:bg-[#e14444] transition-colors duration-200">
             Add New Category
         </button>
     </div>
@@ -18,7 +18,7 @@
     @endif
 
     @if($errors->any())
-        <div class="p-4 mb-4 text-sm text-red-400 rounded-lg bg-gray-800" role="alert">
+        <div class="p-4 mb-4 text-sm text-red-400 rounded-lg bg-[#151515]" role="alert">
             <ul>
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -32,19 +32,18 @@
         <div class="flex gap-4">
             <div class="flex-1">
                 <input type="text" id="searchInput" placeholder="Search categories..."
-                    class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:outline-none focus:border-blue-500"
-                    oninput="filterCategories()">
+                    class="w-full px-4 py-2 bg-[#1a1a1a] border border-[#1a1a1a] rounded-lg text-gray-200 focus:outline-none focus:border-[#ff4d4d]">
             </div>
             <div class="flex gap-2">
                 <select id="parentFilter" onchange="filterCategories()"
-                    class="px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:outline-none focus:border-blue-500">
+                    class="px-4 py-2 bg-[#1a1a1a] border border-[#1a1a1a] rounded-lg text-gray-200 focus:outline-none focus:border-[#ff4d4d]">
                     <option value="">All Categories</option>
                     <option value="uncategorized">Uncategorized</option>
                     <option value="parent">Root Categories</option>
                     <option value="sub">Subcategories</option>
                 </select>
                 <select id="sortFilter" onchange="filterCategories()"
-                    class="px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:outline-none focus:border-blue-500">
+                    class="px-4 py-2 bg-[#1a1a1a] border border-[#1a1a1a] rounded-lg text-gray-200 focus:outline-none focus:border-[#ff4d4d]">
                     <option value="name-asc">Name (A-Z)</option>
                     <option value="name-desc">Name (Z-A)</option>
                     <option value="date-new">Newest First</option>
@@ -57,16 +56,15 @@
     <div id="categoriesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         @foreach($categories as $category)
             <!-- Render only top-level categories -->
-            <div class="category-card bg-gray-800 border border-gray-700 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
+            <div class="category-card bg-[#151515] border border-[#1a1a1a] rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
                 data-name="{{ strtolower($category->name) }}" data-description="{{ strtolower($category->description) }}"
-                data-parent="{{ $category->parent_id ? 'sub' : 'parent' }}"
-                data-date="{{ $category->created_at->format('Y-m-d') }}">
+                data-parent="{{ $category->parent_id ? 'sub' : 'parent' }}" data-date="{{ $category->created_at->format('Y-m-d') }}">
                 <div class="p-5">
                     <div class="flex items-center justify-between mb-4">
-                        <h5 class="text-xl font-bold tracking-tight text-gray-200">
+                        <h5 class="text-xl font-bold tracking-tight text-white">
                             {{ $category->name }}
                         </h5>
-                        <span class="bg-blue-900 text-blue-300 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                        <span class="bg-[#ff4d4d] text-white text-xs font-medium px-2.5 py-0.5 rounded-full">
                             {{ $category->learning_materials_count }} Materials
                         </span>
                     </div>
@@ -74,7 +72,7 @@
                     <div class="text-sm text-gray-400 mb-4">
                         <p class="mb-2">Created: {{ $category->created_at->format('Y-m-d') }}</p>
                         @if($category->parent)
-                            <p class="mb-2">Parent: <span class="text-blue-400">{{ $category->parent->name }}</span></p>
+                            <p class="mb-2">Parent: <span class="text-[#ff4d4d]">{{ $category->parent->name }}</span></p>
                         @endif
                         <p>{{ $category->description }}</p>
                     </div>
@@ -84,9 +82,9 @@
                             <p class="text-sm text-gray-400">Subcategories:</p>
                             <div class="flex flex-wrap gap-2 mt-2">
                                 @foreach($category->children as $child)
-                                    <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">
+                                    <span class="bg-[#1a1a1a] text-gray-300 text-xs px-2 py-1 rounded">
                                         {{ $child->name }}
-                                        <span class="text-blue-300 ml-1">({{ $child->learning_materials_count }} Materials)</span>
+                                        <span class="text-[#ff4d4d] ml-1">({{ $child->learning_materials_count }} Materials)</span>
                                     </span>
                                 @endforeach
                             </div>
@@ -100,7 +98,7 @@
                                     '{{ $category->description }}', 
                                     {{ $category->parent_id ?? 'null' }}
                                 )"
-                            class="px-3 py-2 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-800 transition-colors duration-200">
+                            class="px-3 py-2 text-sm font-medium text-center text-white bg-[#ff4d4d] rounded-lg hover:bg-[#e14444] focus:ring-4 focus:ring-[#ff4d4d] transition-colors duration-200">
                             Edit
                         </button>
 
@@ -117,44 +115,43 @@
                 </div>
             </div>
         @endforeach
-
         <!-- Uncategorized Section -->
-        <div class="category-card bg-gray-800 border border-gray-700 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
-            data-name="uncategorized" data-description="materials without category" data-parent="uncategorized"
-            data-date="0000-00-00">
-            <div class="p-5">
-                <div class="flex items-center justify-between mb-4">
-                    <h5 class="text-xl font-bold tracking-tight text-gray-200">
-                        Uncategorized
-                    </h5>
-                    <span class="bg-blue-900 text-blue-300 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                        {{ $uncategorizedCount }} Materials
-                    </span>
-                </div>
+<div class="category-card bg-[#1a1a1a] border border-[#151515] rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
+    data-name="uncategorized" data-description="materials without category" data-parent="uncategorized"
+    data-date="0000-00-00">
+    <div class="p-5">
+        <div class="flex items-center justify-between mb-4">
+            <h5 class="text-xl font-bold tracking-tight text-gray-200">
+                Uncategorized
+            </h5>
+            <span class="bg-[#ff4d4d] text-white text-xs font-medium px-2.5 py-0.5 rounded-full">
+                {{ $uncategorizedCount }} Materials
+            </span>
+        </div>
 
-                <div class="text-sm text-gray-400 mb-4">
-                    <p class="mb-2">Created: 0000-00-00</p>
-                    <p>Learning materials that haven't been assigned to any category</p>
-                </div>
+        <div class="text-sm text-gray-400 mb-4">
+            <p class="mb-2">Created: 0000-00-00</p>
+            <p>Learning materials that haven't been assigned to any category</p>
+        </div>
 
-                <div class="flex items-center space-x-3 mt-auto">
-                    <a href="{{ route('admin.categories.show', 'uncategorized') }}"
-                        class="px-3 py-2 text-sm font-medium text-center text-white bg-green-600 rounded-lg hover:bg-green-700 focus:ring-4 focus:ring-green-800 transition-colors duration-200">
-                        View the uncategorized
-                    </a>
-                </div>
-            </div>
+        <div class="flex items-center space-x-3 mt-auto">
+            <a href="{{ route('admin.categories.show', 'uncategorized') }}"
+                class="px-3 py-2 text-sm font-medium text-center text-white bg-green-600 rounded-lg hover:bg-green-700 focus:ring-4 focus:ring-green-800 transition-colors duration-200">
+                View the uncategorized
+            </a>
         </div>
     </div>
+</div>
+</div>
 
-    <div class="mt-6">
-        {{ $categories->links() }}
-    </div>
+<div class="mt-6">
+    {{ $categories->links() }}
+</div>
 </div>
 
 <!-- Create/Edit Modal -->
-<div id="categoryModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden items-center justify-center z-50">
-    <div class="bg-gray-800 rounded-lg w-full max-w-md mx-4">
+<div id="categoryModal" class="fixed inset-0 bg-[#151515] bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-[#1a1a1a] rounded-lg w-full max-w-md mx-4">
         <div class="p-6">
             <div class="flex justify-between items-center mb-4">
                 <h3 id="modalTitle" class="text-xl font-semibold text-gray-200"></h3>
@@ -177,7 +174,7 @@
                         Category Name
                     </label>
                     <input type="text" name="name" id="name" required
-                        class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:outline-none focus:border-blue-500"
+                        class="w-full px-3 py-2 bg-[#151515] border border-[#1a1a1a] rounded-lg text-gray-200 focus:outline-none focus:border-[#ff4d4d]"
                         value="{{ old('name') }}">
                 </div>
 
@@ -186,7 +183,7 @@
                         Description
                     </label>
                     <textarea name="description" id="description" rows="3"
-                        class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:outline-none focus:border-blue-500">{{ old('description') }}</textarea>
+                        class="w-full px-3 py-2 bg-[#151515] border border-[#1a1a1a] rounded-lg text-gray-200 focus:outline-none focus:border-[#ff4d4d]">{{ old('description') }}</textarea>
                 </div>
 
                 <div class="mb-6">
@@ -194,18 +191,18 @@
                         Parent Category (Optional)
                     </label>
                     <select name="parent_id" id="parent_id"
-                        class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:outline-none focus:border-blue-500">
+                        class="w-full px-3 py-2 bg-[#151515] border border-[#1a1a1a] rounded-lg text-gray-200 focus:outline-none focus:border-[#ff4d4d]">
                         <option value="">None</option>
                         @foreach($allCategories as $cat)
-                                                @php
-                                                    // Determine if this category can be a parent
-                                                    $canBeParent = !$cat->children->isNotEmpty(); // Cannot be parent if it has subcategories
-                                                @endphp
-                                                @if($canBeParent)
-                                                    <option value="{{ $cat->id }}" {{ old('parent_id') == $cat->id ? 'selected' : '' }}>
-                                                        {{ $cat->name }}
-                                                    </option>
-                                                @endif
+                            @php
+                                // Determine if this category can be a parent
+                                $canBeParent = !$cat->children->isNotEmpty(); // Cannot be parent if it has subcategories
+                            @endphp
+                            @if($canBeParent)
+                                <option value="{{ $cat->id }}" {{ old('parent_id') == $cat->id ? 'selected' : '' }}>
+                                    {{ $cat->name }}
+                                </option>
+                            @endif
                         @endforeach
                     </select>
                 </div>
@@ -216,7 +213,7 @@
                         Cancel
                     </button>
                     <button type="submit"
-                        class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        class="px-4 py-2 bg-[#ff4d4d] text-white text-sm font-medium rounded-lg hover:bg-[#ff4d4d] focus:outline-none focus:ring-2 focus:ring-[#ff4d4d]">
                         Save Category
                     </button>
                 </div>
@@ -226,10 +223,9 @@
 </div>
 </div>
 
-
 <!-- Delete Confirmation Modal -->
-<div id="deleteModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden items-center justify-center z-50">
-    <div class="bg-gray-800 rounded-lg w-full max-w-md mx-4">
+<div id="deleteModal" class="fixed inset-0 bg-[#151515] bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-[#1a1a1a] rounded-lg w-full max-w-md mx-4">
         <div class="p-6">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xl font-semibold text-gray-200">Confirm Delete</h3>
@@ -254,7 +250,7 @@
                         Cancel
                     </button>
                     <button type="submit"
-                        class="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
+                        class="px-4 py-2 bg-[#ff4d4d] text-white text-sm font-medium rounded-lg hover:bg-[#ff4d4d] focus:outline-none focus:ring-2 focus:ring-[#ff4d4d]">
                         Delete Category
                     </button>
                 </div>
@@ -262,7 +258,6 @@
         </div>
     </div>
 </div>
-
 <script>
     // Category Modal Functions
     function openCreateModal() {
