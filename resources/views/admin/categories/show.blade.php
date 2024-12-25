@@ -14,9 +14,9 @@
     @endif
 
     <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-semibold text-gray-200">Materials in {{ $category->name }}</h2>
+        <h2 class="text-2xl font-semibold text-white">Materials in {{ $category->name }}</h2>
         <a href="{{ route('admin.categories.index') }}"
-            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+            class="px-4 py-2 bg-[#ff4d4d] text-white rounded-lg hover:bg-[#ff3333]">
             Back to Categories
         </a>
     </div>
@@ -25,11 +25,11 @@
     <div class="mb-6 flex space-x-4">
         <div class="flex-grow">
             <input type="text" id="search-input" placeholder="Search materials..."
-                class="w-full px-4 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:ring-blue-500 focus:border-blue-500">
+                class="w-full px-4 py-2 bg-[#1a1a1a] text-white rounded-lg border border-[#151515] focus:ring-[#ff4d4d] focus:border-[#ff4d4d]">
         </div>
         <div>
             <select id="type-filter"
-                class="px-4 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:ring-blue-500 focus:border-blue-500">
+                class="px-4 py-2 bg-[#1a1a1a] text-white rounded-lg border border-[#151515] focus:ring-[#ff4d4d] focus:border-[#ff4d4d]">
                 <option value="">All Types</option>
                 <option value="video">Video</option>
                 <option value="pdf">PDF</option>
@@ -45,7 +45,7 @@
         @else
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" id="materials-grid">
                     @foreach($materials as $material)
-                        <div class="material-card bg-gray-800 p-4 rounded-lg shadow-lg"
+                        <div class="material-card bg-[#151515] p-4 rounded-lg shadow-lg"
                             data-title="{{ strtolower($material->title) }}" data-type="{{ $material->type }}">
                             <h3 class="text-lg font-semibold text-white mb-2">
                                 {{ $material->title }}
@@ -57,23 +57,23 @@
                                 <span class="text-sm text-gray-500">
                                     {{ $material->created_at->format('Y-m-d') }}
                                 </span>
-                                <span class="text-sm text-blue-400">
+                                <span class="text-sm text-[#ff4d4d]">
                                     {{ ucfirst($material->type) }}
                                 </span>
                             </div>
                             <div class="flex justify-between items-center">
                             <a href="{{ route('admin.materials.view', ['material' => $material->id]) }}"
-                                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                                    class="px-4 py-2 bg-[#ff4d4d] text-white rounded-lg hover:bg-[#ff3333]">
                                     View
                                 </a>
                                 <button data-modal-target="editModal-{{ $material->id }}"
                                     data-modal-toggle="editModal-{{ $material->id }}"
-                                    class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700">
+                                    class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-500">
                                     Edit
                                 </button>
                                 <button data-modal-target="deleteModal-{{ $material->id }}"
                                     data-modal-toggle="deleteModal-{{ $material->id }}"
-                                    class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                                    class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-500">
                                     Delete
                                 </button>
                             </div>
@@ -83,8 +83,8 @@
                         <div id="editModal-{{ $material->id }}" tabindex="-1" aria-hidden="true"
                             class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
                             <div class="relative w-full max-w-2xl max-h-full">
-                                <div class="relative bg-gray-700 rounded-lg shadow">
-                                    <div class="flex items-start justify-between p-4 border-b border-gray-600 rounded-t">
+                                <div class="relative bg-[#1a1a1a] rounded-lg shadow">
+                                    <div class="flex items-start justify-between p-4 border-b border-[#151515] rounded-t">
                                         <h3 class="text-xl font-semibold text-white">
                                             Edit Learning Material
                                         </h3>
@@ -107,20 +107,20 @@
                                                 <label for="title-{{ $material->id }}"
                                                     class="block mb-2 text-sm font-medium text-white">Title</label>
                                                 <input type="text" name="title" id="title-{{ $material->id }}"
-                                                    class="bg-gray-600 border border-gray-500 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                    class="bg-[#1a1a1a] border border-[#151515] text-white text-sm rounded-lg focus:ring-[#ff4d4d] focus:border-[#ff4d4d] block w-full p-2.5"
                                                     value="{{ $material->title }}" required>
                                             </div>
                                             <div class="mb-4">
                                                 <label for="description-{{ $material->id }}"
                                                     class="block mb-2 text-sm font-medium text-white">Description</label>
                                                 <textarea name="description" id="description-{{ $material->id }}" rows="4"
-                                                    class="bg-gray-600 border border-gray-500 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">{{ $material->description }}</textarea>
+                                                    class="bg-[#1a1a1a] border border-[#151515] text-white text-sm rounded-lg focus:ring-[#ff4d4d] focus:border-[#ff4d4d] block w-full p-2.5">{{ $material->description }}</textarea>
                                             </div>
                                             <div class="mb-4">
                                                 <label for="material_category_id-{{ $material->id }}"
                                                     class="block mb-2 text-sm font-medium text-white">Category</label>
                                                 <select name="material_category_id" id="material_category_id-{{ $material->id }}"
-                                                    class="bg-gray-600 border border-gray-500 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                                                    class="bg-[#1a1a1a] border border-[#151515] text-white text-sm rounded-lg focus:ring-[#ff4d4d] focus:border-[#ff4d4d] block w-full p-2.5">
                                                     <option value="0" {{ $material->material_category_id == 0 ? 'selected' : '' }}>
                                                         Uncategorized</option>
                                                     @foreach($allCategories as $cat)
@@ -134,7 +134,7 @@
                                                 <label for="type-{{ $material->id }}"
                                                     class="block mb-2 text-sm font-medium text-white">Type</label>
                                                 <select name="type" id="type-{{ $material->id }}"
-                                                    class="bg-gray-600 border border-gray-500 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                    class="bg-[#1a1a1a] border border-[#151515] text-white text-sm rounded-lg focus:ring-[#ff4d4d] focus:border-[#ff4d4d] block w-full p-2.5"
                                                     onchange="toggleContentInput({{ $material->id }})">
                                                     <option value="video" {{ $material->type == 'video' ? 'selected' : '' }}>Video
                                                     </option>
@@ -149,19 +149,19 @@
                                                     class="{{ $material->type === 'pdf' ? 'hidden' : '' }}">
                                                     <label for="video_url-{{ $material->id }}"
                                                         class="block mb-2 text-sm font-medium text-white">Video URL</label>
-                                                    <input type="url" name="video_url" id="video_url-{{ $material->id }}"
-                                                        class="bg-gray-600 border border-gray-500 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                    <input type="url" name="video_url" id="video_url-{{ $material->id }} "
+                                                        class="bg-[#1a1a1a] border border-[#151515] text-white text-sm rounded-lg focus:ring-[#ff4d4d] focus:border-[#ff4d4d] block w-full p-2.5"
                                                         value="{{ $material->type === 'video' ? $material->video_url : '' }}"
                                                         placeholder="Enter video URL">
                                                 </div>
 
-                                                <!-- PDF Input -->
-                                                <div id="pdf-input-{{ $material->id }}"
+                                                                                                <!-- PDF Input -->
+                                                                                                <div id="pdf-input-{{ $material->id }}"
                                                     class="{{ $material->type === 'video' ? 'hidden' : '' }}">
                                                     <label for="pdf_file-{{ $material->id }}"
                                                         class="block mb-2 text-sm font-medium text-white">PDF File</label>
                                                     <input type="file" name="file" id="pdf_file-{{ $material->id }}" accept=".pdf"
-                                                        class="block w-full text-sm text-gray-400 border border-gray-500 rounded-lg cursor-pointer bg-gray-600 focus:outline-none">
+                                                        class="block w-full text-sm text-gray-400 border border-[#1a1a1a] rounded-lg cursor-pointer bg-[#151515] focus:outline-none">
                                                     @if($material->type === 'pdf' && $material->file_path)
                                                         <div class="mt-2 text-sm text-gray-400">
                                                             Current file: {{ basename($material->file_path) }}
@@ -171,12 +171,12 @@
                                             </div>
                                         </div>
 
-                                        <div class="flex items-center justify-end space-x-2 border-t border-gray-600 p-4">
+                                        <div class="flex items-center justify-end space-x-2 border-t border-[#1a1a1a] p-4">
                                             <button type="button"
-                                                class="text-gray-300 bg-gray-600 hover:bg-gray-500 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg text-sm font-medium px-5 py-2.5"
+                                                class="text-gray-300 bg-[#151515] hover:bg-[#1a1a1a] focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg text-sm font-medium px-5 py-2.5"
                                                 data-modal-hide="editModal-{{ $material->id }}">Cancel</button>
                                             <button type="submit"
-                                                class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">Update</button>
+                                                class="text-white bg-[#ff4d4d] hover:bg-[#ff4d4d] focus:ring-4 focus:outline-none focus:ring-[#ff4d4d] font-medium rounded-lg text-sm px-5 py-2.5">Update</button>
                                         </div>
                                     </form>
                                 </div>
@@ -187,9 +187,9 @@
                         <div id="deleteModal-{{ $material->id }}" tabindex="-1"
                             class="fixed top-0 left-0 right-0 z-50 hidden p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
                             <div class="relative w-full max-w-md max-h-full">
-                                <div class="relative bg-gray-700 rounded-lg shadow">
+                                <div class="relative bg-[#1a1a1a] rounded-lg shadow">
                                     <button type="button"
-                                        class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-600 hover:text-white rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center"
+                                        class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-[#151515] hover:text-white rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center"
                                         data-modal-hide="deleteModal-{{ $material->id }}">
                                         <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                                             viewBox="0 0 14 14">
@@ -203,18 +203,18 @@
                                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                                 stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                         </svg>
-                                        <h3 class="mb-5 text-lg font-normal text-gray-400">Are you sure you want to delete this
+                                        <h3 class="mb-5 text-lg font-normal text-white">Are you sure you want to delete this
                                             material?</h3>
                                         <form action="{{ route('admin.materials.destroy', $material) }}" method="POST"
                                             class="inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
-                                                class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
+                                                class="text-white bg-[#ff4d4d] hover:bg-[#ff4d4d] focus:ring-4 focus:outline-none focus:ring-[#ff4d4d] font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
                                                 Yes, delete it
                                             </button>
                                             <button type="button"
-                                                class="text-gray-300 bg-gray-600 hover:bg-gray-500 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg text-sm font-medium px-5 py-2.5"
+                                                class="text-gray-300 bg-[#151515] hover:bg-[#1a1a1a] focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg text-sm font-medium px-5 py-2.5"
                                                 data-modal-hide="deleteModal-{{ $material->id }}">
                                                 Cancel
                                             </button>
