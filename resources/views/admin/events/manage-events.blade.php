@@ -1,76 +1,78 @@
 @extends('layouts.admin')
 
 @section('content')
-
-<div class="p-6 space-y-6">
+<div class="p-6 space-y-6 opacity-0" id="mainContent">
     <div class="flex justify-between items-center">
-        <h1 class="text-2xl font-semibold text-gray-200">Manage Events</h1>
+        <h1 class="text-2xl font-semibold text-gray-200 translate-y-4 opacity-0" id="pageTitle">Manage Events</h1>
         <!-- Search Bar and Filter -->
-        <div class="flex space-x-4">
+        <div class="flex space-x-4 translate-y-4 opacity-0" id="controls">
             <input type="text" id="search-bar" placeholder="Search events..."
-                class="px-4 py-2 rounded bg-[#1a1a1a] text-white placeholder-gray-400 focus:ring focus:ring-indigo-500">
+                class="px-4 py-2 rounded bg-[#1a1a1a] text-white placeholder-gray-400 border border-transparent focus:border-[#ff4d4d] transition-colors duration-300">
             <select id="status-filter"
-                class="px-4 py-2 rounded bg-[#1a1a1a] text-white focus:ring focus:ring-indigo-500">
+                class="px-4 py-2 rounded bg-[#1a1a1a] text-white border border-transparent focus:border-[#ff4d4d] transition-colors duration-300">
                 <option value="all">All</option>
                 <option value="open">Open</option>
                 <option value="closed">Closed</option>
             </select>
         </div>
-        <div>
+        <div class="translate-y-4 opacity-0" id="actionButtons">
             <a href="{{ route('admin.events.create') }}"
-                class="px-4 py-2 bg-[#ff4d4d] text-white font-medium rounded hover:bg-[#e13e3e] transition-all duration-200 ease-in-out transform hover:scale-105 hover:shadow-lg">
+                class="px-4 py-2 bg-[#ff4d4d] text-white font-medium rounded hover:bg-opacity-90 transition-all duration-300 inline-block hover:-translate-y-1">
                 Create Event
             </a>
-            <a href="/admin/dashboard" class="mx-2 px-4 py-2 bg-[#ff4d4d] text-white font-medium rounded hover:bg-[#e13e3e] transition-all duration-200 ease-in-out transform hover:scale-105 hover:shadow-lg">
+            <a href="/admin/dashboard" 
+                class="mx-2 px-4 py-2 bg-blue-500 text-white font-medium rounded hover:bg-opacity-90 transition-all duration-300 inline-block hover:-translate-y-1">
                 Back to Dashboard
             </a>
         </div>
     </div>
 
     <!-- Event List -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="eventGrid">
         @if($events->isEmpty())
-            <p class="text-gray-400 col-span-full">No events found. Start by creating one.</p>
+            <p class="text-gray-400 col-span-full opacity-0" id="noEventsMessage">No events found. Start by creating one.</p>
         @else
             @foreach($events as $event)
-                <div class="bg-[#1a1a1a] rounded-lg shadow-md overflow-hidden flex flex-col event-card w-full max-w-xs mx-auto"
-                    data-event-name="{{ $event->name }}">
-                    <img src="{{ Storage::url($event->banner) }}" alt="{{ $event->name }}" class="w-full h-40 object-cover">
-                    <div class="p-4 flex-grow">
-                        <h2 class="text-xl font-semibold text-gray-200">{{ $event->name }}</h2>
-                        <p class="text-gray-400 mt-2">Participants:
-                            <span class="font-medium text-gray-300">
-                                {{ $event->participants->count() }}/{{ $event->participant_limit }}
-                            </span>
-                        </p>
-                        <p class="text-gray-400 mt-2">Registration Start:</p>
-                        <p class="text-sm text-gray-300">
-                            Date: <span
-                                class="font-medium">{{ \Carbon\Carbon::parse($event->registration_start)->format('d M Y') }}</span><br>
-                            Time: <span
-                                class="font-medium">{{ \Carbon\Carbon::parse($event->registration_start)->format('h:i A') }}</span>
-                        </p>
-                        <p class="text-gray-400 mt-2">Registration End:</p>
-                        <p class="text-sm text-gray-300">
-                            Date: <span
-                                class="font-medium">{{ \Carbon\Carbon::parse($event->registration_end)->format('d M Y') }}</span><br>
-                            Time: <span
-                                class="font-medium">{{ \Carbon\Carbon::parse($event->registration_end)->format('h:i A') }}</span>
-                        </p>
-                        <p class="text-gray-400 mt-2">Registration Status:</p>
-                        <p class="text-sm text-gray-300">{{ $event->registration_status }}</p>
+                <div class="bg-[#1a1a1a] rounded-lg shadow-md overflow-hidden flex flex-col event-card w-full max-w-xs mx-auto opacity-0 scale-95"
+                    data-event-name="{{ $event->name }}" data-event-status="{{ strtolower($event->registration_status) }}">
+                    <div class="relative overflow-hidden">
+                        <img src="{{ Storage::url($event->banner) }}" alt="{{ $event->name }}" 
+                            class="w-full h-40 object-cover transform hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#151515] to-transparent opacity-60"></div>
+                    </div>
+                    <div class="p-4 flex-grow bg-gradient-to-b from-[#1a1a1a] to-[#151515]">
+                        <h2 class="text-xl font-semibold text-gray-200 mb-3">{{ $event->name }}</h2>
+                        <div class="space-y-2">
+                            <p class="text-gray-400">Participants: 
+                                <span class="font-medium text-[#ff4d4d]">
+                                    {{ $event->participants->count() }}/{{ $event->participant_limit }}
+                                </span>
+                            </p>
+                            <div class="text-gray-400">
+                                <p class="mb-1">Registration Period:</p>
+                                <div class="text-sm text-gray-300 ml-2 border-l-2 border-[#ff4d4d] pl-2">
+                                    <p>Start: {{ \Carbon\Carbon::parse($event->registration_start)->format('d M Y, h:i A') }}</p>
+                                    <p>End: {{ \Carbon\Carbon::parse($event->registration_end)->format('d M Y, h:i A') }}</p>
+                                </div>
+                            </div>
+                            <p class="text-gray-400">Status: 
+                                <span class="font-medium {{ $event->registration_status === 'Open' ? 'text-green-500' : 'text-red-500' }}">
+                                    {{ $event->registration_status }}
+                                </span>
+                            </p>
+                        </div>
                     </div>
                     <div class="p-4 bg-[#151515] flex justify-between items-center space-x-2">
                         <a href="{{ route('admin.events.edit', $event) }}"
-                            class="px-4 py-2 bg-[#ff4d4d] text-white text-sm rounded hover:bg-[#e13e3e] transition-all duration-200 ease-in-out transform hover:scale-105 hover:shadow-lg">
+                            class="px-4 py-2 bg-[#ff4d4d] text-white text-sm rounded hover:bg-opacity-90 transition-all duration-300 hover:-translate-y-1">
                             Edit
                         </a>
                         <button onclick="openDeleteModal({{ $event->id }})"
-                            class="px-4 py-2 bg-[#e13e3e] text-white text-sm rounded hover:bg-[#ff4d4d] transition-all duration-200 ease-in-out transform hover:scale-105 hover:shadow-lg">
+                            class="px-4 py-2 bg-[#e13e3e] text-white text-sm rounded hover:bg-opacity-90 transition-all duration-300 hover:-translate-y-1">
                             Delete
                         </button>
                         <a href="{{ route('admin.events.participants', $event) }}"
-                            class="px-4 py-2 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-700 transition-all duration-200 ease-in-out transform hover:scale-105 hover:shadow-lg">
+                            class="px-4 py-2 bg-blue-500 text-white text-sm rounded hover:bg-opacity-90 transition-all duration-300 hover:-translate-y-1">
                             Details
                         </a>
                     </div>
@@ -80,22 +82,24 @@
     </div>
 
     <!-- Pagination -->
-    <div class="mt-4">
+    <div class="mt-4 opacity-0" id="pagination">
         {{ $events->links() }}
     </div>
 
     <!-- Delete Modal -->
     <div id="deleteModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center hidden">
-        <div class="bg-[#1a1a1a] rounded-lg p-6 space-y-4 w-96">
+        <div class="bg-[#1a1a1a] rounded-lg p-6 space-y-4 w-96 scale-95 opacity-0" id="modalContent">
             <h2 class="text-xl font-semibold text-gray-200">Are you sure you want to delete this event?</h2>
             <div class="flex justify-between">
-                <button onclick="closeDeleteModal()" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
+                <button onclick="closeDeleteModal()" 
+                    class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-opacity-90 transition-all duration-300">
                     Cancel
                 </button>
                 <form id="deleteForm" action="" method="POST" class="inline">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="px-4 py-2 bg-[#ff4d4d] text-white rounded hover:bg-[#e13e3e] transition-all duration-200 ease-in-out transform hover:scale-105 hover:shadow-lg">
+                    <button type="submit" 
+                        class="px-4 py-2 bg-[#ff4d4d] text-white rounded hover:bg-opacity-90 transition-all duration-300">
                         Confirm
                     </button>
                 </form>
@@ -105,73 +109,129 @@
 </div>
 
 <script>
-    function openDeleteModal(eventId) {
-        const modal = document.getElementById('deleteModal');
-        const form = document.getElementById('deleteForm');
-        form.action = '/admin/events/' + eventId;
-        modal.classList.remove('hidden'); // Show the modal
-    }
+document.addEventListener('DOMContentLoaded', function() {
+    // Initial animations
+    gsap.to('#mainContent', {
+        opacity: 1,
+        duration: 0.5,
+        ease: 'power2.out'
+    });
 
-    function closeDeleteModal() {
-        const modal = document.getElementById('deleteModal');
-        modal.classList.add('hidden');
-    }
-    document.addEventListener('DOMContentLoaded', function () {
+    gsap.to(['#pageTitle', '#controls', '#actionButtons'], {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+        stagger: 0.1,
+        ease: 'power2.out'
+    });
+
+    // Animate event cards
+    gsap.to('.event-card', {
+        opacity: 1,
+        scale: 1,
+        duration: 0.5,
+        stagger: 0.1,
+        ease: 'power2.out'
+    });
+
+    // Animate pagination
+    gsap.to('#pagination', {
+        opacity: 1,
+        duration: 0.5,
+        delay: 0.5
+    });
+
+    // Search and filter functionality
     const searchBar = document.getElementById('search-bar');
     const statusFilter = document.getElementById('status-filter');
+    const eventGrid = document.getElementById('eventGrid');
     const eventCards = document.querySelectorAll('.event-card');
 
     function normalizeText(text) {
         return text.toLowerCase().trim();
     }
 
+    function animateFilteredCards(cards, show) {
+        gsap.to(cards, {
+            opacity: show ? 1 : 0,
+            scale: show ? 1 : 0.95,
+            duration: 0.3,
+            ease: 'power2.out',
+            stagger: show ? 0.1 : 0
+        });
+    }
+
     function filterEvents() {
         const query = normalizeText(searchBar.value);
         const status = statusFilter.value;
-        let visibleCardCount = 0;
+        let visibleCards = [];
+        let hiddenCards = [];
 
         eventCards.forEach(card => {
-            // Extract event name
             const eventName = normalizeText(card.getAttribute('data-event-name') || '');
-
-            // Extract registration status
-            const registrationStatusElement = card.querySelector('p:last-of-type');
-            const eventStatus = registrationStatusElement ? 
-                normalizeText(registrationStatusElement.textContent.replace('Registration Status:', '').trim()) : 
-                '';
+            const eventStatus = card.getAttribute('data-event-status') || '';
 
             const matchesSearch = eventName.includes(query);
-            const matchesStatus = 
-                status === 'all' || 
-                (status === 'open' && eventStatus.includes('open')) ||
-                (status === 'closed' && eventStatus.includes('closed'));
+            const matchesStatus = status === 'all' || status === eventStatus;
 
             if (matchesSearch && matchesStatus) {
-                card.style.display = 'flex';
-                visibleCardCount++;
+                visibleCards.push(card);
             } else {
-                card.style.display = 'none';
+                hiddenCards.push(card);
             }
         });
 
-        // Handle no results message
-        const gridContainer = document.querySelector('.grid');
-        const existingNoResultsMessage = gridContainer.querySelector('.no-results-message');
+        // Hide all cards
+        animateFilteredCards(hiddenCards, false);
 
-        if (visibleCardCount === 0) {
-            if (!existingNoResultsMessage) {
-                const noResultsMessage = document.createElement('p');
-                noResultsMessage.classList.add('text-gray-400', 'col-span-full', 'no-results-message');
-                noResultsMessage.textContent = 'No events found matching your search and filter criteria.';
-                gridContainer.appendChild(noResultsMessage);
+        // Show only visible cards and fill empty spaces
+        animateFilteredCards(visibleCards, true);
+
+        // Rearrange the grid
+        gsap.to(eventGrid, {
+            duration: 0.5,
+            ease: 'power2.out',
+            onComplete: () => {
+                visibleCards.forEach(card => card.style.display = 'block');
+                hiddenCards.forEach(card => card.style.display = 'none');
             }
-        } else if (existingNoResultsMessage) {
-            existingNoResultsMessage.remove();
-        }
+        });
     }
 
     searchBar.addEventListener('input', filterEvents);
     statusFilter.addEventListener('change', filterEvents);
 });
+
+function openDeleteModal(eventId) {
+    const modal = document.getElementById('deleteModal');
+    const modalContent = document.getElementById('modalContent');
+    const form = document.getElementById('deleteForm');
+    form.action = '/admin/events/' + eventId;
+    
+    modal.classList.remove('hidden');
+    gsap.to(modalContent, {
+        opacity: 1,
+        scale: 1,
+        duration: 0.3,
+        ease: 'power2.out'
+    });
+}
+
+function closeDeleteModal() {
+    const modal = document.getElementById('deleteModal');
+    const modalContent = document.getElementById('modalContent');
+    
+    gsap.to(modalContent, {
+        opacity: 0,
+        scale: 0.95,
+        duration: 0.3,
+        ease: 'power2.in',
+        onComplete: () => {
+            modal.classList.add('hidden');
+            modalContent.style.opacity = 0;
+            modalContent.style.transform = 'scale(0.95)';
+        }
+    });
+}
 </script>
 @endsection

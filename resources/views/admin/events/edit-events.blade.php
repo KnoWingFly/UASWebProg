@@ -1,12 +1,12 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="p-6 space-y-6 bg-[#1a1a1a]">
-    <h1 class="text-2xl font-semibold text-gray-200">Edit Event</h1>
+<div class="p-6 space-y-6 bg-[#1a1a1a] opacity-0" id="mainContainer">
+    <h1 class="text-2xl font-semibold text-gray-200 translate-y-4" id="pageTitle">Edit Event</h1>
 
     <!-- Error Messages -->
     @if ($errors->any())
-        <div class="bg-red-500 text-white px-4 py-3 rounded-lg">
+        <div class="bg-red-500 text-white px-4 py-3 rounded-lg opacity-0" id="errorContainer">
             <strong>Whoops! Something went wrong:</strong>
             <ul class="mt-2">
                 @foreach ($errors->all() as $error)
@@ -18,44 +18,44 @@
 
     <!-- Flash Messages -->
     @if (session('error'))
-        <div class="bg-red-500 text-white px-4 py-3 rounded-lg">
+        <div class="bg-red-500 text-white px-4 py-3 rounded-lg opacity-0" id="flashError">
             {{ session('error') }}
         </div>
     @endif
 
     @if (session('success'))
-        <div class="bg-green-500 text-white px-4 py-3 rounded-lg">
+        <div class="bg-green-500 text-white px-4 py-3 rounded-lg opacity-0" id="flashSuccess">
             {{ session('success') }}
         </div>
     @endif
 
     <!-- Event Edit Form -->
     <form action="{{ route('admin.events.update', $event) }}" method="POST" enctype="multipart/form-data"
-        class="space-y-6" id="edit-event-form">
+        class="space-y-6 opacity-0" id="editEventForm">
         @csrf
         @method('PUT')
 
         <!-- Event Name -->
-        <div>
+        <div class="form-group">
             <label class="block text-gray-400 font-medium mb-2">Event Name</label>
             <input type="text" name="name"
-                class="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-600 text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                class="w-full px-4 py-2 rounded-lg bg-[#151515] border border-gray-600 text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-[#ff4d4d] focus:border-transparent transition-all duration-300 hover:border-[#ff4d4d]"
                 required placeholder="Enter event name" value="{{ old('name', $event->name) }}">
         </div>
 
         <!-- Description -->
-        <div>
+        <div class="form-group">
             <label class="block text-gray-400 font-medium mb-2">Description</label>
             <textarea name="description" rows="4"
-                class="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-600 text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                class="w-full px-4 py-2 rounded-lg bg-[#151515] border border-gray-600 text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-[#ff4d4d] focus:border-transparent transition-all duration-300 hover:border-[#ff4d4d]"
                 placeholder="Write a brief description">{{ old('description', $event->description) }}</textarea>
         </div>
 
         <!-- Participant Limit -->
-        <div>
+        <div class="form-group">
             <label class="block text-gray-400 font-medium mb-2">Participant Limit</label>
             <input type="number" name="participant_limit"
-                class="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-600 text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                class="w-full px-4 py-2 rounded-lg bg-[#151515] border border-gray-600 text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-[#ff4d4d] focus:border-transparent transition-all duration-300 hover:border-[#ff4d4d]"
                 min="1" placeholder="Enter participant limit"
                 value="{{ old('participant_limit', $event->participant_limit) }}">
         </div>
@@ -63,46 +63,45 @@
         <!-- Event Date/Time Section -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Event Start -->
-            <div class="space-y-4">
+            <div class="space-y-4 form-group">
                 <label class="block text-gray-400 font-medium">Event Start</label>
                 <div>
                     <label class="text-sm text-gray-500 mb-1 block">Date</label>
                     <input type="date" name="event_start_date" id="event_start_date"
-                        class="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-600 text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        class="w-full px-4 py-2 rounded-lg bg-[#151515] border border-gray-600 text-gray-200 focus:ring-2 focus:ring-[#ff4d4d] focus:border-transparent transition-all duration-300 hover:border-[#ff4d4d] text-white"
                         value="{{ old('event_start_date', $event->event_start_date) }}" required>
                 </div>
                 <div>
                     <label class="text-sm text-gray-500 mb-1 block">Time</label>
                     <input type="time" name="event_start_time" id="event_start_time"
-                        class="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-600 text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        class="w-full px-4 py-2 rounded-lg bg-[#151515] border border-gray-600 text-gray-200 focus:ring-2 focus:ring-[#ff4d4d] focus:border-transparent transition-all duration-300 hover:border-[#ff4d4d] text-white"
                         value="{{ old('event_start_time', $event->event_start_time) }}" required>
                 </div>
-
             </div>
 
             <!-- Event End -->
-            <div class="space-y-4">
+            <div class="space-y-4 form-group">
                 <label class="block text-gray-400 font-medium">Event End</label>
                 <div>
                     <label class="text-sm text-gray-500 mb-1 block">Date</label>
                     <input type="date" name="event_end_date" id="event_end_date"
-                        class="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-600 text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        class="w-full px-4 py-2 rounded-lg bg-[#151515] border border-gray-600 text-gray-200 focus:ring-2 focus:ring-[#ff4d4d] focus:border-transparent transition-all duration-300 hover:border-[#ff4d4d] text-white"
                         value="{{ old('event_end_date', $event->event_end_date) }}" required>
                 </div>
                 <div>
                     <label class="text-sm text-gray-500 mb-1 block">Time</label>
                     <input type="time" name="event_end_time" id="event_end_time"
-                        class="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-600 text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        class="w-full px-4 py-2 rounded-lg bg-[#151515] border border-gray-600 text-gray-200 focus:ring-2 focus:ring-[#ff4d4d] focus:border-transparent transition-all duration-300 hover:border-[#ff4d4d] text-white"
                         value="{{ old('event_end_time', $event->event_end_time) }}" required>
                 </div>
             </div>
         </div>
 
-        <!-- Banner input (file upload) -->
-        <div>
+        <!-- Banner input -->
+        <div class="form-group">
             <label class="block text-gray-400 font-medium mb-2">Event Banner</label>
             <div id="dropzone-container"
-                class="relative w-full h-96 border-2 border-dashed border-gray-600 bg-gray-700 rounded-lg cursor-pointer hover:border-gray-500 transition-colors duration-200">
+                class="relative w-full h-96 border-2 border-dashed border-gray-600 bg-[#151515] rounded-lg cursor-pointer hover:border-[#ff4d4d] transition-all duration-300">
                 <div class="absolute inset-0 flex flex-col items-center justify-center p-4 mt-5">
                     <img id="preview-image" src="{{ Storage::url($event->banner) }}" alt="Preview"
                         class="max-h-48 max-w-[90%] object-contain mb-4">
@@ -120,32 +119,115 @@
                 <input id="dropzone-file" type="file" name="banner"
                     class="absolute inset-0 opacity-0 cursor-pointer z-20" accept="image/*" {{ $event->banner ? '' : 'required' }}>
             </div>
-            @error('banner')
-                <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
-            @enderror
         </div>
 
-        @error('banner')
-            <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
-        @enderror
-    </div>
-
-    <!-- Submit Button -->
-    <div class="flex justify-end space-x-8 mt-6">
-        <!-- Cancel Button -->
-        <a href="/admin/events" class="px-6 py-2 bg-[#ff4d4d] text-white font-semibold rounded-lg hover:bg-[#e13e3e] transition-all duration-200 ease-in-out transform hover:scale-105 hover:shadow-lg">
-            Cancel
-        </a>
-        <!-- Update Button -->
-        <button type="submit"
-            class="px-6 py-2 bg-[#ff4d4d] text-white font-semibold rounded-lg hover:bg-[#e13e3e] transition-all duration-200 ease-in-out transform hover:scale-105 hover:shadow-lg">
-            Update Event
-        </button>
-    </div>
-</form>
+        <!-- Submit Buttons -->
+        <div class="flex justify-end space-x-8 mt-6">
+            <a href="/admin/events"
+                class="px-6 py-2 bg-gray-600 text-white font-semibold rounded-lg transition-all duration-300 hover:bg-gray-700 transform hover:scale-105 hover:shadow-lg button-animation">
+                Cancel
+            </a>
+            <button type="submit"
+                class="px-6 py-2 bg-[#ff4d4d] text-white font-semibold rounded-lg transition-all duration-300 hover:bg-[#e13e3e] transform hover:scale-105 hover:shadow-lg button-animation">
+                Update Event
+            </button>
+        </div>
+    </form>
 </div>
+
 <script>
+
     document.addEventListener('DOMContentLoaded', function () {
+        // GSAP Animations
+        const tl = gsap.timeline();
+
+        // Fade in and slide up main container
+        tl.to('#mainContainer', {
+            opacity: 1,
+            duration: 0.5,
+            ease: 'power2.out'
+        })
+            .to('#pageTitle', {
+                y: 0,
+                opacity: 1,
+                duration: 0.5,
+                ease: 'back.out(1.7)'
+            })
+            .to('#editEventForm', {
+                opacity: 1,
+                y: 0,
+                duration: 0.5,
+                ease: 'power2.out'
+            });
+
+        // Stagger form groups animation
+        gsap.from('.form-group', {
+            opacity: 0,
+            y: 20,
+            duration: 0.5,
+            stagger: 0.1,
+            ease: 'power2.out',
+            scrollTrigger: {
+                trigger: '#editEventForm',
+                start: 'top center+=100',
+                toggleActions: 'play none none reverse'
+            }
+        });
+
+        // Button hover animations
+        const buttons = document.querySelectorAll('.button-animation');
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                gsap.to(button, {
+                    scale: 1.05,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            });
+
+            button.addEventListener('mouseleave', () => {
+                gsap.to(button, {
+                    scale: 1,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // Error/Success messages animation
+        ['#errorContainer', '#flashError', '#flashSuccess'].forEach(selector => {
+            const element = document.querySelector(selector);
+            if (element) {
+                gsap.to(element, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.5,
+                    ease: 'power2.out',
+                    delay: 0.5
+                });
+            }
+        });
+
+        // Dropzone animation
+        const dropzone = document.getElementById('dropzone-container');
+
+        dropzone.addEventListener('dragenter', () => {
+            gsap.to(dropzone, {
+                scale: 1.02,
+                borderColor: '#ff4d4d',
+                duration: 0.3,
+                ease: 'power2.out'
+            });
+        });
+
+        dropzone.addEventListener('dragleave', () => {
+            gsap.to(dropzone, {
+                scale: 1,
+                borderColor: '#4b5563',
+                duration: 0.3,
+                ease: 'power2.out'
+            });
+        });
         // Date and time elements
         const startDateInput = document.querySelector('input[name="event_start_date"]');
         const startTimeInput = document.querySelector('input[name="event_start_time"]');
