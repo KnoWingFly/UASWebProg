@@ -31,7 +31,8 @@
     @endif
 
     <!-- Event Creation Form -->
-    <form action="{{ route('admin.events.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6 opacity-0" id="create-event-form">
+    <form action="{{ route('admin.events.store') }}" method="POST" enctype="multipart/form-data"
+        class="space-y-6 opacity-0" id="create-event-form">
         @csrf
 
         <!-- Event Name -->
@@ -136,273 +137,273 @@
     </form>
 </div>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    // GSAP Animations
-    const tl = gsap.timeline();
+    document.addEventListener('DOMContentLoaded', function () {
+        // GSAP Animations
+        const tl = gsap.timeline();
 
-    // Fade in and slide up main container
-    tl.to('#mainContainer', {
-        opacity: 1,
-        duration: 0.5,
-        ease: 'power2.out'
-    })
-        .to('#pageTitle', {
-            y: 0,
+        // Fade in and slide up main container
+        tl.to('#mainContainer', {
             opacity: 1,
-            duration: 0.5,
-            ease: 'back.out(1.7)'
-        })
-        .to('#create-event-form', {
-            opacity: 1,
-            y: 0,
             duration: 0.5,
             ease: 'power2.out'
-        });
-
-    // Stagger form groups animation
-    gsap.from('.form-group', {
-        opacity: 0,
-        y: 20,
-        duration: 0.5,
-        stagger: 0.1,
-        ease: 'power2.out',
-        scrollTrigger: {
-            trigger: '#create-event-form',
-            start: 'top center+=100',
-            toggleActions: 'play none none reverse'
-        }
-    });
-
-    // Button hover animations
-    const buttons = document.querySelectorAll('.button-animation');
-    buttons.forEach(button => {
-        button.addEventListener('mouseenter', () => {
-            gsap.to(button, {
-                scale: 1.05,
-                duration: 0.3,
-                ease: 'power2.out'
-            });
-        });
-
-        button.addEventListener('mouseleave', () => {
-            gsap.to(button, {
-                scale: 1,
-                duration: 0.3,
-                ease: 'power2.out'
-            });
-        });
-    });
-
-    // Error/Success messages animation
-    ['#errorContainer', '#flashError', '#flashSuccess'].forEach(selector => {
-        const element = document.querySelector(selector);
-        if (element) {
-            gsap.to(element, {
+        })
+            .to('#pageTitle', {
+                y: 0,
+                opacity: 1,
+                duration: 0.5,
+                ease: 'back.out(1.7)'
+            })
+            .to('#create-event-form', {
                 opacity: 1,
                 y: 0,
                 duration: 0.5,
-                ease: 'power2.out',
-                delay: 0.5
+                ease: 'power2.out'
             });
+
+        // Stagger form groups animation
+        gsap.from('.form-group', {
+            opacity: 0,
+            y: 20,
+            duration: 0.5,
+            stagger: 0.1,
+            ease: 'power2.out',
+            scrollTrigger: {
+                trigger: '#create-event-form',
+                start: 'top center+=100',
+                toggleActions: 'play none none reverse'
+            }
+        });
+
+        // Button hover animations
+        const buttons = document.querySelectorAll('.button-animation');
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                gsap.to(button, {
+                    scale: 1.05,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            });
+
+            button.addEventListener('mouseleave', () => {
+                gsap.to(button, {
+                    scale: 1,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // Error/Success messages animation
+        ['#errorContainer', '#flashError', '#flashSuccess'].forEach(selector => {
+            const element = document.querySelector(selector);
+            if (element) {
+                gsap.to(element, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.5,
+                    ease: 'power2.out',
+                    delay: 0.5
+                });
+            }
+        });
+
+        // Dropzone animation
+        const dropzone = document.getElementById('dropzone-container');
+
+        dropzone.addEventListener('dragenter', () => {
+            gsap.to(dropzone, {
+                scale: 1.02,
+                borderColor: '#ff4d4d',
+                duration: 0.3,
+                ease: 'power2.out'
+            });
+        });
+
+        dropzone.addEventListener('dragleave', () => {
+            gsap.to(dropzone, {
+                scale: 1,
+                borderColor: '#4b5563',
+                duration: 0.3,
+                ease: 'power2.out'
+            });
+        });
+
+        // Date and time elements
+        const startDateInput = document.querySelector('input[name="event_start_date"]');
+        const startTimeInput = document.querySelector('input[name="event_start_time"]');
+        const endDateInput = document.querySelector('input[name="event_end_date"]');
+        const endTimeInput = document.querySelector('input[name="event_end_time"]');
+
+        // Dropzone elements
+        const dropzoneFile = document.getElementById('dropzone-file');
+        const previewImage = document.getElementById('preview-image');
+        const placeholder = document.getElementById('dropzone-placeholder');
+        const placeholderSvg = placeholder.querySelector('svg');
+        const placeholderText = Array.from(placeholder.querySelectorAll('p'));
+        const dropzoneContainer = document.getElementById('dropzone-container');
+
+        // Utility function to validate date format (YYYY-MM-DD)
+        function isValidDate(date) {
+            return /^\d{4}-\d{2}-\d{2}$/.test(date);
         }
-    });
 
-    // Dropzone animation
-    const dropzone = document.getElementById('dropzone-container');
+        // Utility function to validate time format (HH:MM)
+        function isValidTime(time) {
+            return /^([01]\d|2[0-3]):([0-5]\d)$/.test(time);
+        }
 
-    dropzone.addEventListener('dragenter', () => {
-        gsap.to(dropzone, {
-            scale: 1.02,
-            borderColor: '#ff4d4d',
-            duration: 0.3,
-            ease: 'power2.out'
+        // Utility function for date formatting
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // Utility function for time formatting
+        function formatTime(date) {
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${hours}:${minutes}`;
+        }
+
+        // Set current date and time restrictions
+        const now = new Date();
+        const currentDate = formatDate(now);
+
+        startDateInput.setAttribute('min', currentDate);
+        endDateInput.setAttribute('min', currentDate);
+
+        // Update the min value for end date and time based on start date and time
+        function updateEndDateAndTime() {
+            if (isValidDate(startDateInput.value) && isValidTime(startTimeInput.value)) {
+                const startDateTime = new Date(`${startDateInput.value}T${startTimeInput.value}`);
+                let endDateTime;
+
+                // If the start date and time are on the same day, set end time to +1 hour
+                if (startDateTime.toDateString() === new Date().toDateString()) {
+                    endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000); // 1 hour after start time
+                } else {
+                    endDateTime = new Date(startDateTime.getTime() + 30 * 60 * 1000); // 30 minutes after start time
+                }
+
+                endDateInput.setAttribute('min', startDateInput.value);
+                endTimeInput.setAttribute('min', formatTime(endDateTime));
+            }
+        }
+
+        // Handle keyboard input for time fields
+        function handleTimeInput(input) {
+            let value = input.value.replace(/[^\d:]/g, '');
+
+            if (value.length === 2 && !value.includes(':')) {
+                value += ':';
+            }
+
+            if (value.length >= 4) {
+                if (!value.includes(':')) {
+                    value = value.slice(0, 2) + ':' + value.slice(2);
+                }
+
+                const [hours, minutes] = value.split(':');
+                const hoursNum = parseInt(hours, 10);
+                const minutesNum = parseInt(minutes, 10);
+
+                if (hoursNum >= 0 && hoursNum < 24 && minutesNum >= 0 && minutesNum < 60) {
+                    input.value = `${String(hoursNum).padStart(2, '0')}:${String(minutesNum).padStart(2, '0')}`;
+                }
+            }
+        }
+
+        // Event listeners for start and end date inputs
+        startDateInput.addEventListener('input', updateEndDateAndTime);
+
+        startTimeInput.addEventListener('input', function () {
+            handleTimeInput(this);
+            updateEndDateAndTime();
         });
-    });
 
-    dropzone.addEventListener('dragleave', () => {
-        gsap.to(dropzone, {
-            scale: 1,
-            borderColor: '#4b5563',
-            duration: 0.3,
-            ease: 'power2.out'
+        startTimeInput.addEventListener('blur', function () {
+            if (!isValidTime(this.value)) {
+                alert('Please enter a valid start time (HH:MM)');
+                this.value = '';
+            }
+            updateEndDateAndTime();
         });
-    });
 
-    // Date and time elements
-    const startDateInput = document.querySelector('input[name="event_start_date"]');
-    const startTimeInput = document.querySelector('input[name="event_start_time"]');
-    const endDateInput = document.querySelector('input[name="event_end_date"]');
-    const endTimeInput = document.querySelector('input[name="event_end_time"]');
+        endDateInput.addEventListener('input', function () {
+            if (!isValidDate(this.value)) {
+                alert('Please enter a valid end date (YYYY-MM-DD)');
+                this.value = '';
+            }
+        });
 
-    // Dropzone elements
-    const dropzoneFile = document.getElementById('dropzone-file');
-    const previewImage = document.getElementById('preview-image');
-    const placeholder = document.getElementById('dropzone-placeholder');
-    const placeholderSvg = placeholder.querySelector('svg');
-    const placeholderText = Array.from(placeholder.querySelectorAll('p'));
-    const dropzoneContainer = document.getElementById('dropzone-container');
+        endTimeInput.addEventListener('input', function () {
+            handleTimeInput(this);
+        });
 
-    // Utility function to validate date format (YYYY-MM-DD)
-    function isValidDate(date) {
-        return /^\d{4}-\d{2}-\d{2}$/.test(date);
-    }
+        endTimeInput.addEventListener('blur', function () {
+            if (!isValidTime(this.value)) {
+                alert('Please enter a valid end time (HH:MM)');
+                this.value = '';
+            }
+        });
 
-    // Utility function to validate time format (HH:MM)
-    function isValidTime(time) {
-        return /^([01]\d|2[0-3]):([0-5]\d)$/.test(time);
-    }
+        // Dropzone functionality
+        function handleFileSelect(file) {
+            if (file) {
+                const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                if (!validTypes.includes(file.type)) {
+                    alert('Please select a valid image file (JPG, PNG, or GIF)');
+                    return;
+                }
 
-    // Utility function for date formatting
-    function formatDate(date) {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    }
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImage.src = e.target.result;
+                    previewImage.classList.remove('hidden');
+                    placeholderSvg.classList.add('hidden');
+                    placeholderText.forEach(text => text.classList.add('opacity-30'));
+                };
 
-    // Utility function for time formatting
-    function formatTime(date) {
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        return `${hours}:${minutes}`;
-    }
-
-    // Set current date and time restrictions
-    const now = new Date();
-    const currentDate = formatDate(now);
-
-    startDateInput.setAttribute('min', currentDate);
-    endDateInput.setAttribute('min', currentDate);
-
-    // Update the min value for end date and time based on start date and time
-    function updateEndDateAndTime() {
-        if (isValidDate(startDateInput.value) && isValidTime(startTimeInput.value)) {
-            const startDateTime = new Date(`${startDateInput.value}T${startTimeInput.value}`);
-            let endDateTime;
-
-            // If the start date and time are on the same day, set end time to +1 hour
-            if (startDateTime.toDateString() === new Date().toDateString()) {
-                endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000); // 1 hour after start time
+                reader.readAsDataURL(file);
             } else {
-                endDateTime = new Date(startDateTime.getTime() + 30 * 60 * 1000); // 30 minutes after start time
-            }
-
-            endDateInput.setAttribute('min', startDateInput.value);
-            endTimeInput.setAttribute('min', formatTime(endDateTime));
-        }
-    }
-
-    // Handle keyboard input for time fields
-    function handleTimeInput(input) {
-        let value = input.value.replace(/[^\d:]/g, '');
-
-        if (value.length === 2 && !value.includes(':')) {
-            value += ':';
-        }
-
-        if (value.length >= 4) {
-            if (!value.includes(':')) {
-                value = value.slice(0, 2) + ':' + value.slice(2);
-            }
-
-            const [hours, minutes] = value.split(':');
-            const hoursNum = parseInt(hours, 10);
-            const minutesNum = parseInt(minutes, 10);
-
-            if (hoursNum >= 0 && hoursNum < 24 && minutesNum >= 0 && minutesNum < 60) {
-                input.value = `${String(hoursNum).padStart(2, '0')}:${String(minutesNum).padStart(2, '0')}`;
+                previewImage.src = '';
+                previewImage.classList.add('hidden');
+                placeholderSvg.classList.remove('hidden');
+                placeholderText.forEach(text => text.classList.remove('opacity-30'));
             }
         }
-    }
 
-    // Event listeners for start and end date inputs
-    startDateInput.addEventListener('input', updateEndDateAndTime);
+        dropzoneFile.addEventListener('change', function () {
+            const file = this.files[0];
+            handleFileSelect(file);
+        });
 
-    startTimeInput.addEventListener('input', function () {
-        handleTimeInput(this);
-        updateEndDateAndTime();
-    });
+        // Prevent default drag behaviors
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropzoneContainer.addEventListener(eventName, function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        });
 
-    startTimeInput.addEventListener('blur', function () {
-        if (!isValidTime(this.value)) {
-            alert('Please enter a valid start time (HH:MM)');
-            this.value = '';
-        }
-        updateEndDateAndTime();
-    });
+        // Handle drag and drop
+        dropzoneContainer.addEventListener('dragenter', function () {
+            this.classList.add('border-blue-500');
+        });
 
-    endDateInput.addEventListener('input', function () {
-        if (!isValidDate(this.value)) {
-            alert('Please enter a valid end date (YYYY-MM-DD)');
-            this.value = '';
-        }
-    });
+        dropzoneContainer.addEventListener('dragleave', function () {
+            this.classList.remove('border-blue-500');
+        });
 
-    endTimeInput.addEventListener('input', function () {
-        handleTimeInput(this);
-    });
-
-    endTimeInput.addEventListener('blur', function () {
-        if (!isValidTime(this.value)) {
-            alert('Please enter a valid end time (HH:MM)');
-            this.value = '';
-        }
-    });
-
-    // Dropzone functionality
-    function handleFileSelect(file) {
-        if (file) {
-            const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
-            if (!validTypes.includes(file.type)) {
-                alert('Please select a valid image file (JPG, PNG, or GIF)');
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                previewImage.src = e.target.result;
-                previewImage.classList.remove('hidden');
-                placeholderSvg.classList.add('hidden');
-                placeholderText.forEach(text => text.classList.add('opacity-30'));
-            };
-
-            reader.readAsDataURL(file);
-        } else {
-            previewImage.src = '';
-            previewImage.classList.add('hidden');
-            placeholderSvg.classList.remove('hidden');
-            placeholderText.forEach(text => text.classList.remove('opacity-30'));
-        }
-    }
-
-    dropzoneFile.addEventListener('change', function () {
-        const file = this.files[0];
-        handleFileSelect(file);
-    });
-
-    // Prevent default drag behaviors
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        dropzoneContainer.addEventListener(eventName, function (e) {
-            e.preventDefault();
-            e.stopPropagation();
+        dropzoneContainer.addEventListener('drop', function (e) {
+            this.classList.remove('border-blue-500');
+            const file = e.dataTransfer.files[0];
+            dropzoneFile.files = e.dataTransfer.files;
+            handleFileSelect(file);
         });
     });
-
-    // Handle drag and drop
-    dropzoneContainer.addEventListener('dragenter', function () {
-        this.classList.add('border-blue-500');
-    });
-
-    dropzoneContainer.addEventListener('dragleave', function () {
-        this.classList.remove('border-blue-500');
-    });
-
-    dropzoneContainer.addEventListener('drop', function (e) {
-        this.classList.remove('border-blue-500');
-        const file = e.dataTransfer.files[0];
-        dropzoneFile.files = e.dataTransfer.files;
-        handleFileSelect(file);
-    });
-});
 </script>
 @endsection
