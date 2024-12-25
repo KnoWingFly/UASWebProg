@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="p-6 space-y-6 bg-gray-900">
+<div class="p-6 space-y-6 bg-[#1a1a1a]">
     <h1 class="text-2xl font-semibold text-gray-200">Create Event</h1>
 
     <!-- Error Messages -->
@@ -118,9 +118,13 @@
         </div>
 
         <!-- Submit Button -->
-        <div class="text-right">
-            <a href="/admin/events" class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none transition-colors duration-200">Cancel</a>
-            <button type="submit" class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none transition-colors duration-200">
+        <div class="text-right flex justify-end items-center space-x-8">
+            <!-- Cancel Button -->
+            <a href="/admin/events" class="px-6 py-2 bg-[#ff4d4d] text-white font-semibold rounded-lg hover:bg-[#e13e3e] focus:ring-2 focus:ring-[#ff4d4d] focus:ring-offset-2 focus:outline-none transition-colors duration-200">
+                Cancel
+            </a>
+            <!-- Create Event Button -->
+            <button type="submit" class="px-6 py-2 bg-[#ff4d4d] text-white font-semibold rounded-lg hover:bg-[#e13e3e] focus:ring-2 focus:ring-[#ff4d4d] focus:ring-offset-2 focus:outline-none transition-colors duration-200">
                 Create Event
             </button>
         </div>
