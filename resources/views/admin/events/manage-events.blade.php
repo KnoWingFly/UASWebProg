@@ -8,9 +8,9 @@
         <!-- Search Bar and Filter -->
         <div class="flex space-x-4">
             <input type="text" id="search-bar" placeholder="Search events..."
-                class="px-4 py-2 rounded bg-gray-700 text-white placeholder-gray-400 focus:ring focus:ring-indigo-500">
+                class="px-4 py-2 rounded bg-[#1a1a1a] text-white placeholder-gray-400 focus:ring focus:ring-indigo-500">
             <select id="status-filter"
-                class="px-4 py-2 rounded bg-gray-700 text-white focus:ring focus:ring-indigo-500">
+                class="px-4 py-2 rounded bg-[#1a1a1a] text-white focus:ring focus:ring-indigo-500">
                 <option value="all">All</option>
                 <option value="open">Open</option>
                 <option value="closed">Closed</option>
@@ -18,10 +18,12 @@
         </div>
         <div>
             <a href="{{ route('admin.events.create') }}"
-                    class="px-4 py-2 bg-blue-600 text-white font-medium rounded hover:bg-blue-700">
-                    Create Event
+                class="px-4 py-2 bg-[#ff4d4d] text-white font-medium rounded hover:bg-[#e13e3e] transition-all duration-200 ease-in-out transform hover:scale-105 hover:shadow-lg">
+                Create Event
             </a>
-            <a href="/admin/dashboard" class="mx-2 px-4 py-2 bg-blue-600 text-white font-medium rounded hover:bg-blue-700">Back to Dashboard</a>
+            <a href="/admin/dashboard" class="mx-2 px-4 py-2 bg-[#ff4d4d] text-white font-medium rounded hover:bg-[#e13e3e] transition-all duration-200 ease-in-out transform hover:scale-105 hover:shadow-lg">
+                Back to Dashboard
+            </a>
         </div>
     </div>
 
@@ -31,9 +33,9 @@
             <p class="text-gray-400 col-span-full">No events found. Start by creating one.</p>
         @else
             @foreach($events as $event)
-                <div class="bg-gray-800 rounded-lg shadow-md overflow-hidden flex flex-col event-card"
+                <div class="bg-[#1a1a1a] rounded-lg shadow-md overflow-hidden flex flex-col event-card w-full max-w-xs mx-auto"
                     data-event-name="{{ $event->name }}">
-                    <img src="{{ Storage::url($event->banner) }}" alt="{{ $event->name }}" class="w-full h-48 object-cover">
+                    <img src="{{ Storage::url($event->banner) }}" alt="{{ $event->name }}" class="w-full h-40 object-cover">
                     <div class="p-4 flex-grow">
                         <h2 class="text-xl font-semibold text-gray-200">{{ $event->name }}</h2>
                         <p class="text-gray-400 mt-2">Participants:
@@ -58,17 +60,17 @@
                         <p class="text-gray-400 mt-2">Registration Status:</p>
                         <p class="text-sm text-gray-300">{{ $event->registration_status }}</p>
                     </div>
-                    <div class="p-4 bg-gray-700 flex justify-between items-center space-x-2">
+                    <div class="p-4 bg-[#151515] flex justify-between items-center space-x-2">
                         <a href="{{ route('admin.events.edit', $event) }}"
-                            class="px-4 py-2 bg-green-600 text-white text-sm rounded hover:bg-green-700">
+                            class="px-4 py-2 bg-[#ff4d4d] text-white text-sm rounded hover:bg-[#e13e3e] transition-all duration-200 ease-in-out transform hover:scale-105 hover:shadow-lg">
                             Edit
                         </a>
                         <button onclick="openDeleteModal({{ $event->id }})"
-                            class="px-4 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700">
+                            class="px-4 py-2 bg-[#e13e3e] text-white text-sm rounded hover:bg-[#ff4d4d] transition-all duration-200 ease-in-out transform hover:scale-105 hover:shadow-lg">
                             Delete
                         </button>
                         <a href="{{ route('admin.events.participants', $event) }}"
-                            class="px-4 py-2 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-700">
+                            class="px-4 py-2 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-700 transition-all duration-200 ease-in-out transform hover:scale-105 hover:shadow-lg">
                             Details
                         </a>
                     </div>
@@ -84,7 +86,7 @@
 
     <!-- Delete Modal -->
     <div id="deleteModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center hidden">
-        <div class="bg-gray-800 rounded-lg p-6 space-y-4 w-96">
+        <div class="bg-[#1a1a1a] rounded-lg p-6 space-y-4 w-96">
             <h2 class="text-xl font-semibold text-gray-200">Are you sure you want to delete this event?</h2>
             <div class="flex justify-between">
                 <button onclick="closeDeleteModal()" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
@@ -93,7 +95,7 @@
                 <form id="deleteForm" action="" method="POST" class="inline">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
+                    <button type="submit" class="px-4 py-2 bg-[#ff4d4d] text-white rounded hover:bg-[#e13e3e] transition-all duration-200 ease-in-out transform hover:scale-105 hover:shadow-lg">
                         Confirm
                     </button>
                 </form>
