@@ -102,7 +102,7 @@
                         </div>
                         <p class="text-sm text-gray400">Learning materials that haven't been assigned to any category.</p>
                         <a href="{{ route('user.categories.show', 'uncategorized') }}"
-                            class="inline-block mt-4 px-6 py-2 text-sm font-medium text-white bg-[#ff4d4d] rounded-lg hover:bg-opacity-90 focus:ring-4 focus:ring-[#ff4d4d] focus:ring-opacity-50 transition-all duration-200">
+                            class=  "inline-block mt-4 px-6 py-2 text-sm font-medium text-white bg-[#ff4d4d] rounded-lg hover:bg-opacity-90 focus:ring-4 focus:ring-[#ff4d4d] focus:ring-opacity-50 transition-all duration-200">
                             View Uncategorised </a>
                     </div>
                 </div>
