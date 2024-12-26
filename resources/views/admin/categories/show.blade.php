@@ -233,8 +233,12 @@
         @endif
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // GSAP animation
+        gsap.from(".container", { duration: 1, opacity: 0, y: -50 });
+
         const searchInput = document.getElementById('search-input');
         const typeFilter = document.getElementById('type-filter');
         const materialsGrid = document.getElementById('materials-grid');
@@ -249,9 +253,9 @@
                 const typeMatch = selectedType === '' || card.dataset.type === selectedType;
 
                 if (titleMatch && typeMatch) {
-                    card.style.display = 'block';
+                        gsap.to(card, { duration: 0.5, opacity: 1, y: 0, display: 'block' });
                 } else {
-                    card.style.display = 'none';
+                    gsap.to(card, { duration: 0.5, opacity: 0, y: 20, display: 'none' });
                 }
             });
 
@@ -297,7 +301,7 @@
     }
 
     // Initialize the correct input state for each modal when the page loads
-    document.addEventListener('DOMContentLoad   ed', function () {
+    document.addEventListener('DOMContentLoaded', function () {
         const modals = document.querySelectorAll('[id^="editModal-"]');
         modals.forEach(modal => {
             const materialId = modal.id.split('-')[1];

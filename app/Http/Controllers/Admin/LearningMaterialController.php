@@ -16,7 +16,7 @@ class LearningMaterialController extends Controller
     public function index()
     {
         $recentMaterials = LearningMaterial::with('category')->orderBy('created_at', 'desc')->take(10)->get();
-        $materials = LearningMaterial::with('category')->latest()->paginate(10);
+        $materials = LearningMaterial::with('category')->latest()->paginate(9);
         $categories = MaterialCategory::all();
         return view('admin.materials.dashboard', compact('recentMaterials', 'materials', 'categories'));
     }

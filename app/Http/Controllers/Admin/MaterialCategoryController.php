@@ -174,7 +174,7 @@ class MaterialCategoryController extends Controller
     {
         if ($id === 'uncategorized') {
             // Fetch uncategorized materials with material_category_id = 0
-            $materials = LearningMaterial::where('material_category_id', 0)->paginate(10);
+            $materials = LearningMaterial::where('material_category_id', 0)->paginate(9);
 
             // Get all categories for the dropdown
             $allCategories = MaterialCategory::all();
@@ -192,7 +192,7 @@ class MaterialCategoryController extends Controller
 
         // Logic for other categories
         $category = MaterialCategory::with('learningMaterials')->findOrFail($id);
-        $materials = $category->learningMaterials()->paginate(10);
+        $materials = $category->learningMaterials()->paginate(9);
 
         // Get all categories for the dropdown
         $allCategories = MaterialCategory::all();
