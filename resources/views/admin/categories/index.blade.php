@@ -1,24 +1,24 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
+<div class="container mx-auto px-4 py-8" id="mainContainer">
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-semibold text-gray-200">Material Categories</h2>
         <button onclick="openCreateModal()"
-            class="px-4 py-2 bg-[#ff4d4d] text-white rounded-lg hover:bg-[#e14444] transition-colors duration-200">
+            class="px-4 py-2 bg-[#ff4d4d] text-white rounded-lg hover:bg-[#e14444] transition-colors duration-200 transform hover:scale-105">
             Add New Category
         </button>
     </div>
 
     @if(session('success'))
         <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200"
-            role="alert">
+            id="successAlert" role="alert">
             {{ session('success') }}
         </div>
     @endif
 
     @if($errors->any())
-        <div class="p-4 mb-4 text-sm text-red-400 rounded-lg bg-[#151515]" role="alert">
+        <div class="p-4 mb-4 text-sm text-red-400 rounded-lg bg-[#151515]" id="errorAlert" role="alert">
             <ul>
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -28,22 +28,22 @@
     @endif
 
     <!-- Search and Filter Section -->
-    <div class="mb-6 space-y-4">
-        <div class="flex gap-4">
-            <div class="flex-1">
+    <div class="mb-6 space-y-4" id="filterSection">
+        <div class="flex gap-4 flex-wrap">
+            <div class="flex-1 min-w-[200px]">
                 <input type="text" id="searchInput" placeholder="Search categories..."
-                    class="w-full px-4 py-2 bg-[#1a1a1a] border border-[#1a1a1a] rounded-lg text-gray-200 focus:outline-none focus:border-[#ff4d4d]">
+                    class="w-full px-4 py-2 bg-[#1a1a1a] border border-[#1a1a1a] rounded-lg text-gray-200 focus:outline-none focus:border-[#ff4d4d] transition-all duration-300 hover:border-[#ff4d4d]">
             </div>
-            <div class="flex gap-2">
+            <div class="flex gap-2 flex-wrap">
                 <select id="parentFilter" onchange="filterCategories()"
-                    class="px-4 py-2 bg-[#1a1a1a] border border-[#1a1a1a] rounded-lg text-gray-200 focus:outline-none focus:border-[#ff4d4d]">
+                    class="px-4 py-2 bg-[#1a1a1a] border border-[#1a1a1a] rounded-lg text-gray-200 focus:outline-none focus:border-[#ff4d4d] transition-all duration-300 hover:border-[#ff4d4d]">
                     <option value="">All Categories</option>
                     <option value="uncategorized">Uncategorized</option>
                     <option value="parent">Root Categories</option>
                     <option value="sub">Subcategories</option>
                 </select>
                 <select id="sortFilter" onchange="filterCategories()"
-                    class="px-4 py-2 bg-[#1a1a1a] border border-[#1a1a1a] rounded-lg text-gray-200 focus:outline-none focus:border-[#ff4d4d]">
+                    class="px-4 py-2 bg-[#1a1a1a] border border-[#1a1a1a] rounded-lg text-gray-200 focus:outline-none focus:border-[#ff4d4d] transition-all duration-300 hover:border-[#ff4d4d]">
                     <option value="name-asc">Name (A-Z)</option>
                     <option value="name-desc">Name (Z-A)</option>
                     <option value="date-new">Newest First</option>
@@ -55,16 +55,17 @@
 
     <div id="categoriesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         @foreach($categories as $category)
-            <!-- Render only top-level categories -->
-            <div class="category-card bg-[#151515] border border-[#1a1a1a] rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
+            <div class="category-card bg-[#151515] border border-[#1a1a1a] rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
                 data-name="{{ strtolower($category->name) }}" data-description="{{ strtolower($category->description) }}"
-                data-parent="{{ $category->parent_id ? 'sub' : 'parent' }}" data-date="{{ $category->created_at->format('Y-m-d') }}">
+                data-parent="{{ $category->parent_id ? 'sub' : 'parent' }}"
+                data-date="{{ $category->created_at->format('Y-m-d') }}">
                 <div class="p-5">
                     <div class="flex items-center justify-between mb-4">
                         <h5 class="text-xl font-bold tracking-tight text-white">
                             {{ $category->name }}
                         </h5>
-                        <span class="bg-[#ff4d4d] text-white text-xs font-medium px-2.5 py-0.5 rounded-full">
+                        <span
+                            class="bg-[#ff4d4d] text-white text-xs font-medium px-2.5 py-0.5 rounded-full transform hover:scale-105 transition-transform">
                             {{ $category->learning_materials_count }} Materials
                         </span>
                     </div>
@@ -92,23 +93,19 @@
                     @endif
 
                     <div class="flex items-center space-x-3 mt-auto">
-                        <button onclick="openEditModal(
-                                    {{ $category->id }}, 
-                                    '{{ $category->name }}', 
-                                    '{{ $category->description }}', 
-                                    {{ $category->parent_id ?? 'null' }}
-                                )"
-                            class="px-3 py-2 text-sm font-medium text-center text-white bg-[#ff4d4d] rounded-lg hover:bg-[#e14444] focus:ring-4 focus:ring-[#ff4d4d] transition-colors duration-200">
+                        <button
+                            onclick="openEditModal({{ $category->id }}, '{{ $category->name }}', '{{ $category->description }}', {{ $category->parent_id ?? 'null' }})"
+                            class="px-3 py-2 text-sm font-medium text-center text-white bg-[#ff4d4d] rounded-lg hover:bg-[#e14444] focus:ring-4 focus:ring-[#ff4d4d] transition-all duration-200 transform hover:scale-105">
                             Edit
                         </button>
 
                         <a href="{{ route('admin.categories.show', $category) }}"
-                            class="px-3 py-2 text-sm font-medium text-center text-white bg-green-600 rounded-lg hover:bg-green-700 focus:ring-4 focus:ring-green-800 transition-colors duration-200">
+                            class="px-3 py-2 text-sm font-medium text-center text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:ring-4 focus:ring-blue-800 transition-all duration-200 transform hover:scale-105">
                             View
                         </a>
 
                         <button onclick="openDeleteModal({{ $category->id }}, '{{ $category->name }}')"
-                            class="px-3 py-2 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:ring-red-800 transition-colors duration-200">
+                            class="px-3 py-2 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:ring-red-800 transition-all duration-200 transform hover:scale-105">
                             Delete
                         </button>
                     </div>
@@ -116,37 +113,37 @@
             </div>
         @endforeach
         <!-- Uncategorized Section -->
-<div class="category-card bg-[#1a1a1a] border border-[#151515] rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
-    data-name="uncategorized" data-description="materials without category" data-parent="uncategorized"
-    data-date="0000-00-00">
-    <div class="p-5">
-        <div class="flex items-center justify-between mb-4">
-            <h5 class="text-xl font-bold tracking-tight text-gray-200">
-                Uncategorized
-            </h5>
-            <span class="bg-[#ff4d4d] text-white text-xs font-medium px-2.5 py-0.5 rounded-full">
-                {{ $uncategorizedCount }} Materials
-            </span>
-        </div>
+        <div class="category-card bg-[#151515] border border-[#1a1a1a] rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+            data-name="uncategorized" data-description="materials without category" data-parent="uncategorized"
+            data-date="0000-00-00">
+            <div class="p-5">
+                <div class="flex items-center justify-between mb-4">
+                    <h5 class="text-xl font-bold tracking-tight text-gray-200">
+                        Uncategorized
+                    </h5>
+                    <span class="bg-[#ff4d4d] text-white text-xs font-medium px-2.5 py-0.5 rounded-full">
+                        {{ $uncategorizedCount }} Materials
+                    </span>
+                </div>
 
-        <div class="text-sm text-gray-400 mb-4">
-            <p class="mb-2">Created: 0000-00-00</p>
-            <p>Learning materials that haven't been assigned to any category</p>
-        </div>
+                <div class="text-sm text-gray-400 mb-4">
+                    <p class="mb-2">Created: None</p>
+                    <p>Learning materials that haven't been assigned to any category</p>
+                </div>
 
-        <div class="flex items-center space-x-3 mt-auto">
-            <a href="{{ route('admin.categories.show', 'uncategorized') }}"
-                class="px-3 py-2 text-sm font-medium text-center text-white bg-green-600 rounded-lg hover:bg-green-700 focus:ring-4 focus:ring-green-800 transition-colors duration-200">
-                View the uncategorized
-            </a>
+                <div class="flex items-center space-x-3 mt-auto">
+                    <a href="{{ route('admin.categories.show', 'uncategorized') }}"
+                        class="px-3 py-2 text-sm font-medium text-center text-white bg-green-600 rounded-lg hover:bg-green-700 focus:ring-4 focus:ring-green-800 transition-colors duration-200">
+                        View the uncategorized
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-</div>
 
-<div class="mt-6">
-    {{ $categories->links() }}
-</div>
+    <div class="mt-6">
+        {{ $categories->links() }}
+    </div>
 </div>
 
 <!-- Create/Edit Modal -->
@@ -187,36 +184,37 @@
                 </div>
 
                 <div class="mb-6">
-                    <label class="block text-gray-200 text-sm font-medium mb-2" for="parent_id">
-                        Parent Category (Optional)
-                    </label>
-                    <select name="parent_id" id="parent_id"
-                        class="w-full px-3 py-2 bg-[#151515] border border-[#1a1a1a] rounded-lg text-gray-200 focus:outline-none focus:border-[#ff4d4d]">
-                        <option value="">None</option>
-                        @foreach($allCategories as $cat)
-                            @php
-                                // Determine if this category can be a parent
-                                $canBeParent = !$cat->children->isNotEmpty(); // Cannot be parent if it has subcategories
-                            @endphp
-                            @if($canBeParent)
-                                <option value="{{ $cat->id }}" {{ old('parent_id') == $cat->id ? 'selected' : '' }}>
-                                    {{ $cat->name }}
-                                </option>
-                            @endif
-                        @endforeach
-                    </select>
-                </div>
+                    <div class="mb-6">
+                        <label class="block text-gray-200 text-sm font-medium mb-2" for="parent_id">
+                            Parent Category (Optional)
+                        </label>
+                        <select name="parent_id" id="parent_id"
+                            class="w-full px-3 py-2 bg-[#151515] border border-[#1a1a1a] rounded-lg text-gray-200 focus:outline-none focus:border-[#ff4d4d]">
+                            <option value="">None</option>
+                            @foreach($allCategories as $cat)
+                                                        @php
+                                                            // Determine if this category can be a parent
+                                                            $canBeParent = !$cat->children->isNotEmpty(); // Cannot be parent if it has subcategories
+                                                        @endphp
+                                                        @if($canBeParent)
+                                                            <option value="{{ $cat->id }}" {{ old('parent_id') == $cat->id ? 'selected' : '' }}>
+                                                                {{ $cat->name }}
+                                                            </option>
+                                                        @endif
+                            @endforeach
+                        </select>
+                    </div>
 
-                <div class="flex justify-end space-x-3">
-                    <button type="button" onclick="closeCategoryModal()"
-                        class="px-4 py-2 text-sm font-medium text-gray-400 hover:text-gray-200">
-                        Cancel
-                    </button>
-                    <button type="submit"
-                        class="px-4 py-2 bg-[#ff4d4d] text-white text-sm font-medium rounded-lg hover:bg-[#ff4d4d] focus:outline-none focus:ring-2 focus:ring-[#ff4d4d]">
-                        Save Category
-                    </button>
-                </div>
+                    <div class="flex justify-end space-x-3">
+                        <button type="button" onclick="closeCategoryModal()"
+                            class="px-4 py-2 text-sm font-medium text-gray-400 hover:text-gray-200">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                            class="px-4 py-2 bg-[#ff4d4d] text-white text-sm font-medium rounded-lg hover:bg-[#ff4d4d] focus:outline-none focus:ring-2 focus:ring-[#ff4d4d]">
+                            Save Category
+                        </button>
+                    </div>
             </form>
         </div>
     </div>
@@ -224,7 +222,8 @@
 </div>
 
 <!-- Delete Confirmation Modal -->
-<div id="deleteModal" class="fixed inset-0 bg-[#151515] bg-opacity-50 hidden items-center justify-center z-50">
+<div id="deleteModal"
+    class="fixed inset-0 bg-[#151515] bg-opacity-50 hidden items-center justify-center z-50 opacity-0">
     <div class="bg-[#1a1a1a] rounded-lg w-full max-w-md mx-4">
         <div class="p-6">
             <div class="flex justify-between items-center mb-4">
@@ -259,7 +258,6 @@
     </div>
 </div>
 <script>
-    // Category Modal Functions
     function openCreateModal() {
         const modal = document.getElementById('categoryModal');
         const form = document.getElementById('categoryForm');
@@ -278,8 +276,7 @@
         methodField.value = ''; // Clear method field
         categoryId.value = ''; // Clear category ID
 
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
+        showModal(modal);
     }
 
     function openEditModal(id, name, description, parentId) {
@@ -300,7 +297,7 @@
 
         // Reset all options first
         Array.from(parentSelect.options).forEach(option => {
-            option.style.display = option.value ? 'block' : 'block';
+            option.style.display = 'block';
         });
 
         // Prevent the current category from being selected as a parent
@@ -310,30 +307,9 @@
         }
 
         parentSelect.value = parentId || '';
-
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
+        showModal(modal);
     }
 
-    function closeCategoryModal() {
-        const modal = document.getElementById('categoryModal');
-        modal.classList.remove('flex');
-        modal.classList.add('hidden');
-    }
-
-    function closeCategoryModal() {
-        const modal = document.getElementById('categoryModal');
-        modal.classList.remove('flex');
-        modal.classList.add('hidden');
-    }
-
-    function closeCategoryModal() {
-        const modal = document.getElementById('categoryModal');
-        modal.classList.remove('flex');
-        modal.classList.add('hidden');
-    }
-
-    // Delete Modal Functions
     function openDeleteModal(id, name) {
         const modal = document.getElementById('deleteModal');
         const form = document.getElementById('deleteForm');
@@ -341,80 +317,197 @@
 
         form.action = `/admin/categories/${id}`;
         categoryName.textContent = name;
+        showModal(modal);
+    }
 
+    // Shared modal functions
+    function showModal(modal) {
+        modal.style.display = 'flex';
         modal.classList.remove('hidden');
-        modal.classList.add('flex');
+
+        // Reset position and opacity before animation
+        gsap.set(modal, { opacity: 0 });
+        gsap.set(modal.children[0], { y: -50, opacity: 0 });
+
+        // Animate modal background
+        gsap.to(modal, {
+            opacity: 1,
+            duration: 0.3,
+            ease: 'power2.out'
+        });
+
+        // Animate modal content
+        gsap.to(modal.children[0], {
+            y: 0,
+            opacity: 1,
+            duration: 0.3,
+            delay: 0.1,
+            ease: 'back.out(1.7)'
+        });
+    }
+
+    function hideModal(modal) {
+        // Animate modal content out
+        gsap.to(modal.children[0], {
+            y: -50,
+            opacity: 0,
+            duration: 0.2,
+            ease: 'power2.in'
+        });
+
+        // Animate modal background out
+        gsap.to(modal, {
+            opacity: 0,
+            duration: 0.2,
+            ease: 'power2.in',
+            onComplete: () => {
+                modal.classList.add('hidden');
+                modal.style.display = 'none';
+            }
+        });
+    }
+
+    function closeCategoryModal() {
+        hideModal(document.getElementById('categoryModal'));
     }
 
     function closeDeleteModal() {
-        const modal = document.getElementById('deleteModal');
-        modal.classList.remove('flex');
-        modal.classList.add('hidden');
+        hideModal(document.getElementById('deleteModal'));
     }
 
-    // Close modals when clicking outside
-    window.onclick = function (event) {
-        const categoryModal = document.getElementById('categoryModal');
-        const deleteModal = document.getElementById('deleteModal');
-
-        if (event.target === categoryModal) {
-            closeCategoryModal();
-        }
-        if (event.target === deleteModal) {
-            closeDeleteModal();
-        }
-    }
-
+    // Improved filtering system
     function filterCategories() {
-        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
         const parentFilter = document.getElementById('parentFilter').value;
         const sortFilter = document.getElementById('sortFilter').value;
+        const grid = document.getElementById('categoriesGrid');
         const cards = Array.from(document.getElementsByClassName('category-card'));
 
-        // Filter cards based on search term and parent filter
-        cards.forEach(card => {
-            const name = card.dataset.name;
-            const description = card.dataset.description;
-            const parentType = card.dataset.parent;
+        // Create or get no results message
+        let noResultsMessage = document.getElementById('noResultsMessage');
+        if (!noResultsMessage) {
+            noResultsMessage = document.createElement('div');
+            noResultsMessage.id = 'noResultsMessage';
+            noResultsMessage.className = 'col-span-full text-center py-8 text-gray-400';
+            noResultsMessage.innerHTML = `
+            <p class="text-xl mb-2">No categories found</p>
+            <p class="text-sm">Try adjusting your search or filter criteria</p>
+        `;
+            grid.appendChild(noResultsMessage);
+        }
 
-            const matchesSearch = name.includes(searchTerm) || description.includes(searchTerm);
-            const matchesParentFilter = parentFilter === '' ||
-                (parentFilter === 'parent' && parentType === 'parent') ||
-                (parentFilter === 'sub' && parentType === 'sub') ||
+        // Filter cards
+        const visibleCards = cards.filter(card => {
+            const name = card.dataset.name || '';
+            const description = card.dataset.description || '';
+            const parentType = card.dataset.parent || '';
+
+            const matchesSearch = !searchTerm ||
+                name.includes(searchTerm) ||
+                description.includes(searchTerm);
+
+            const matchesParentFilter = !parentFilter ||
+                parentFilter === parentType ||
                 (parentFilter === 'uncategorized' && parentType === 'uncategorized');
 
-            card.style.display = matchesSearch && matchesParentFilter ? 'block' : 'none';
+            return matchesSearch && matchesParentFilter;
         });
 
-        // Sort filtered cards
-        const visibleCards = cards.filter(card => card.style.display !== 'none');
-        sortCards(visibleCards, sortFilter);
-    }
-
-    function sortCards(cards, sortFilter) {
-        const grid = document.getElementById('categoriesGrid');
-
-        cards.sort((a, b) => {
+        // Sort visible cards
+        visibleCards.sort((a, b) => {
             switch (sortFilter) {
                 case 'name-asc':
-                    return a.dataset.name.localeCompare(b.dataset.name);
+                    return (a.dataset.name || '').localeCompare(b.dataset.name || '');
                 case 'name-desc':
-                    return b.dataset.name.localeCompare(a.dataset.name);
+                    return (b.dataset.name || '').localeCompare(a.dataset.name || '');
                 case 'date-new':
-                    return new Date(b.dataset.date) - new Date(a.dataset.date);
+                    return new Date(b.dataset.date || 0) - new Date(a.dataset.date || 0);
                 case 'date-old':
-                    return new Date(a.dataset.date) - new Date(b.dataset.date);
+                    return new Date(a.dataset.date || 0) - new Date(b.dataset.date || 0);
                 default:
                     return 0;
             }
         });
 
-        // Reorder cards in the DOM
-        cards.forEach(card => grid.appendChild(card));
+        // Animation timeline
+        const tl = gsap.timeline();
+
+        // Hide all cards initially
+        cards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.display = 'none';
+        });
+
+        if (visibleCards.length > 0) {
+            // Hide no results message
+            noResultsMessage.style.display = 'none';
+
+            // Show and animate visible cards
+            visibleCards.forEach((card, index) => {
+                card.style.display = 'block';
+                card.style.order = index; // Maintain sort order
+                tl.to(card, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.3,
+                    delay: index * 0.05,
+                    ease: 'power2.out',
+                    clearProps: 'transform'
+                }, index * 0.05);
+            });
+        } else {
+            // Show no results message with animation
+            noResultsMessage.style.display = 'block';
+            tl.to(noResultsMessage, {
+                opacity: 1,
+                y: 0,
+                duration: 0.3,
+                ease: 'power2.out'
+            });
+        }
     }
 
-    // Initialize filtering on page load
+    // Debounced search function
+    const debounce = (func, wait) => {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    };
+
+    // Event listeners
     document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('searchInput');
+        const parentFilter = document.getElementById('parentFilter');
+        const sortFilter = document.getElementById('sortFilter');
+
+        // Initialize with debounced filter
+        const debouncedFilter = debounce(filterCategories, 300);
+
+        // Add event listeners
+        searchInput?.addEventListener('input', debouncedFilter);
+        parentFilter?.addEventListener('change', filterCategories);
+        sortFilter?.addEventListener('change', filterCategories);
+
+        // Handle modal closes on outside click
+        window.onclick = function (event) {
+            const categoryModal = document.getElementById('categoryModal');
+            const deleteModal = document.getElementById('deleteModal');
+
+            if (event.target === categoryModal) {
+                closeCategoryModal();
+            }
+            if (event.target === deleteModal) {
+                closeDeleteModal();
+            }
+        };
+
+        // Initial filter
         filterCategories();
     });
 </script>
