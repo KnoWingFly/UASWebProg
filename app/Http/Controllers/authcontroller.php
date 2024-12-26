@@ -6,30 +6,23 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
-class authcontroller extends Controller
+class AuthController extends Controller
 {
     public function welcome()
     {
         if (Auth::check()) {
             $user = Auth::user();
 
-            // Cek apakah pengguna sudah disetujui
             if (!$user->is_approved) {
                 return redirect()->route('not-approved');
             }
 
-            // Redirect berdasarkan role pengguna
-            return $user->roles === 'admin' 
-                ? redirect()->route('admin.dashboard') 
-                : redirect()->route('user.dashboard');
+            return $user->roles === 'admin'
+                ? redirect()->route('admin.dashboard')
+                : redirect()->route('user.profile');
         }
 
         return view('welcome');
-    }
-
-    public function showLoginForm()
-    {
-        return view('auth.login');
     }
 
     public function login(Request $request)
@@ -48,9 +41,9 @@ class authcontroller extends Controller
                     ->with('error', 'Akun Anda belum disetujui.');
             }
 
-            return $user->roles === 'admin' 
-                ? redirect()->route('admin.dashboard') 
-                : redirect()->route('user.dashboard');
+            return $user->roles === 'admin'
+                ? redirect()->route('admin.dashboard')
+                : redirect()->route('user.profile');
         }
 
         return redirect()->back()
@@ -69,14 +62,6 @@ class authcontroller extends Controller
         return view('not-approved');
     }
 
-    public function dashboard()
-    {
-        $user = Auth::user();
-        return $user->roles === 'admin'
-            ? redirect()->route('admin.dashboard')
-            : view('user.dashboard', compact('user'));
-    }
-
     public function fallback()
     {
         if (!Auth::check()) {
@@ -87,6 +72,6 @@ class authcontroller extends Controller
             return redirect()->route('not-approved');
         }
 
-        return redirect()->route('user.dashboard');
+        return redirect()->route('user.profile');
     }
 }

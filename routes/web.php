@@ -8,7 +8,7 @@ use App\Http\Controllers\Admin\LearningMaterialController as AdminLearningMateri
 use App\Http\Controllers\Admin\MaterialCategoryController as AdminMaterialCategoryController;
 use App\Http\Controllers\User\LearningMaterialController as UserLearningMaterialController;
 use App\Http\Controllers\User\MaterialCategoryController as UserMaterialCategoryController;
-Use App\Http\controllers\ProfileController;
+use App\Http\controllers\ProfileController;
 use App\Http\Controllers\Admin\ActivityHistoryController;
 use App\Http\Controllers\User\LearningMaterialController;
 use App\Http\Controllers\User\UserProfileController;
@@ -26,11 +26,11 @@ Route::middleware('guest')->group(function () {
     Route::get('/login', function () {
         return view('auth.login', ['firstPage' => 'login']);
     })->name('login');
-    
+
     Route::get('/register', function () {
         return view('auth.login', ['firstPage' => 'register']);
     })->name('register');
-    
+
     Route::post('/login', [AuthController::class, 'login']);
 });
 
@@ -41,17 +41,14 @@ Route::get('/not-approved', [AuthController::class, 'notApproved'])->name('not-a
 // ============================= Authenticated Routes =============================
 Route::middleware(['auth', 'approve'])->group(function () {
     Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-    // ========================= User-Specific Routes =========================
-    Route::prefix('user')->name('user.')->group(function () {
-        // Dashboard
-        Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
 
-        // Events
+    Route::prefix('user')->name('user.')->group(function () {
         Route::get('/events', [UserController::class, 'events'])->name('events');
         Route::get('/event/details/{event_id}', [UserController::class, 'eventdetails'])->name('event.details');
         Route::post('/events/{event}/participate', [UserController::class, 'participate'])->name('events.participate');
         Route::get('/register_event/{id}', [UserController::class, 'registerEvent'])->name('register_event');
         Route::delete('/events/{event}/cancel-registration', [UserController::class, 'cancelRegistration'])->name('cancel_registration');
+        Route::get('/profile', [UserController::class, 'profile'])->name('profile');
 
         // Learning Materials
         Route::prefix('materials')->name('materials.')->group(function () {

@@ -28,7 +28,7 @@ class UserController extends Controller
     public function events()
     {
         $user = auth()->user();
-        
+
         if (!$user) {
             return redirect()->route('login');
         }
@@ -181,7 +181,9 @@ class UserController extends Controller
             return redirect()->route('login');
         }
 
+        $userActivities = $user->activityHistories()->latest()->paginate(10);
+        $participatedEvents = $user->eventUsers()->with('event')->latest()->paginate(6);
 
-        return view('user.profile', compact('user', 'userAchievements', 'userActivities'));
+        return view('user.profile.index', compact('user',  'userActivities', 'participatedEvents'));
     }
 }

@@ -17,7 +17,7 @@ class LearningMaterialController extends Controller
         $materials = LearningMaterial::where('is_published', true)
             ->with('category')
             ->latest()
-            ->paginate(10);
+            ->paginate(9);
 
         return view('user.materials.index', compact('materials'));
     }

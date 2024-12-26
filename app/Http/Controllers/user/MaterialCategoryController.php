@@ -27,7 +27,7 @@ public function show($id)
     {
         if ($id === 'uncategorized') {
             // Fetch uncategorized materials with material_category_id = 0
-            $materials = LearningMaterial::where('material_category_id', 0)->paginate(10);
+            $materials = LearningMaterial::where('material_category_id', 0)->paginate(9);
 
             // Get all categories for the dropdown
             $allCategories = MaterialCategory::all();
