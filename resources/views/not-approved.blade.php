@@ -27,7 +27,6 @@
         z-index: 1; 
     }
 
-  
     .alert-warning {
         background-color: #1a1a1a; 
         border: none;
@@ -122,23 +121,7 @@
             .fromTo('.alert', { opacity: 0 }, { opacity: 1, duration: 1 }, '-=0.5')
             .fromTo('.btn', { opacity: 0 }, { opacity: 1, duration: 1 }, '-=0.5')
             .fromTo('.mt-3 small', { opacity: 0 }, { opacity: 1, duration: 1 }, '-=0.5');
-
-        setInterval(() => {
-            gsap.to('.card, .alert, .btn, .mt-3 small', {
-                opacity: 0,
-                duration: 1,
-                ease: 'power3.inOut',
-                onComplete: () => {
-                    gsap.to('.card, .alert, .btn, .mt-3 small', {
-                        opacity: 1,
-                        duration: 1,
-                        ease: 'power3.inOut'
-                    });
-                }
-            });
-        }, 5000);
     });
 </script>
-
 
 @endsection
