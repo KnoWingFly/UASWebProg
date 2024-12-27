@@ -190,6 +190,35 @@
         background-color: #1a1a1a;
         padding: 0 4px;
     }
+.captcha-label {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+#captcha:focus + .captcha-label,
+#captcha:not(:placeholder-shown) + .captcha-label {
+    top: -10px;
+    left: 8px;
+    font-size: 12px;
+    color: #ff4d4d;
+    background-color: #1a1a1a;
+    padding: 0 4px;
+}
+
+#captcha.is-invalid + .captcha-label {
+    color: #ff4d4d;
+    font-size: 12px;
+    background-color: #1a1a1a;
+    padding: 0 4px;
+    top: -10px;
+    left: 8px;
+}
 
     .form-check-input {
         background-color: #1a1a1a;
@@ -439,7 +468,7 @@
                                         <input id="captcha" type="text"
                                             class="form-control @error('captcha') is-invalid @enderror" name="captcha"
                                             placeholder=" " required>
-                                        <label class="input-label" for="captcha">Enter Captcha</label>
+                                        <label class="captcha-label" for="captcha">Enter Captcha</label> <!-- Modified here -->
                                     </div>
                                     @error('captcha')
                                         <span class="invalid-feedback" role="alert">
@@ -447,7 +476,6 @@
                                         </span>
                                     @enderror
                                 </div>
-
                                 <button type="submit" class="btn auth-btn w-100 mb-3">
                                     Create Account
                                 </button>
@@ -473,6 +501,13 @@
 
         // Initial setup
         if (firstPage === 'register') {
+            document.querySelector('.forms-container').classList.add('show-register');
+        }
+
+        // Check if there are any errors in the registration form (Laravel will set the session with error data)
+        const registrationErrors = @json($errors->any());
+        if (registrationErrors) {
+            // If there are errors, ensure the registration form is displayed
             document.querySelector('.forms-container').classList.add('show-register');
         }
 
@@ -517,7 +552,7 @@
     }
 
     function initializeAnimations() {
-        // Animate circles only once
+       
         gsap.to('.decorative-circle', {
             scale: 1.5,
             duration: 'random(3, 6)',
@@ -530,7 +565,6 @@
             }
         });
 
-        // Initial animations for content
         const tl = gsap.timeline();
 
         tl.to('.welcome-text', {
@@ -560,7 +594,6 @@
                 stagger: 0.1
             }, '-=0.2');
 
-        // Button hover animations
         document.querySelectorAll('.auth-btn').forEach(button => {
             button.addEventListener('mouseenter', () => {
                 gsap.to(button, {
@@ -578,13 +611,11 @@
                 });
             });
         });
-
-        // Set all elements to their final state for smooth transitions
         gsap.set(['.welcome-text', '.auth-form-container', '.input-group', '.auth-link'], {
             opacity: 1,
             y: 0,
             x: 0,
-            delay: 2 // After all animations complete
+            delay: 2 
         });
     }
 </script>
