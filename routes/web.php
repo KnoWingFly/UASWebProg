@@ -12,12 +12,15 @@ use App\Http\controllers\ProfileController;
 use App\Http\Controllers\Admin\ActivityHistoryController;
 use App\Http\Controllers\User\LearningMaterialController;
 use App\Http\Controllers\User\UserProfileController;
+use App\Http\Controllers\Auth\TestRegisterController;
+
 Route::get('/learning-materials', [LearningMaterialController::class, 'index'])->name('user.learning-materials');
 Route::get('/learning-materials/published', [LearningMaterialController::class, 'showPublished'])->name('user.learning-materials.published');
 Route::get('/learning-material/{material}', [LearningMaterialController::class, 'show'])->name('user.learning-material.show');
 Route::get('/learning-material/{material}/download', [LearningMaterialController::class, 'download'])->name('user.learning-material.download');
 Route::get('/profile', [UserProfileController::class, 'index'])->name('user.profile.index');
 
+Route::post('/register', [TestRegisterController::class, 'register'])->name('register');
 // ============================= Public Routes =============================
 Route::get('/', [AuthController::class, 'welcome'])->name('welcome');
 
@@ -32,6 +35,10 @@ Route::middleware('guest')->group(function () {
     })->name('register');
 
     Route::post('/login', [AuthController::class, 'login']);
+});
+
+Route::get('/reload-captcha', function () {
+    return response()->json(['captcha' => captcha_img()]);
 });
 
 

@@ -2,6 +2,44 @@
 
 @section('content')
 <style>
+    .captcha {
+        display: flex;
+        flex-direction: column;
+        /* Stack elements vertically */
+        gap: 1rem;
+        /* Add space between elements */
+        margin-bottom: 1rem;
+    }
+
+    .captcha-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        /* Space between image and reload button */
+    }
+
+    .captcha img {
+        border-radius: 4px;
+        border: 1px solid #333;
+        max-width: 200px;
+        /* Control image width */
+    }
+
+    .reload-captcha {
+        padding: 8px 12px;
+        border-radius: 4px;
+        background: #ff4d4d;
+        border: none;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        height: fit-content;
+    }
+
+    .reload-captcha:hover {
+        background: #ff6666;
+    }
+
     body,
     html {
         margin: 0;
@@ -390,6 +428,26 @@
                                     <label class="input-label" for="password-confirm">Confirm Password</label>
                                 </div>
 
+                                <div class="input-group">
+                                    <div class="captcha">
+                                        <div class="captcha-row">
+                                            <span>{!! captcha_img() !!}</span>
+                                            <button type="button" class="btn btn-danger reload-captcha" id="reload">
+                                                ↻
+                                            </button>
+                                        </div>
+                                        <input id="captcha" type="text"
+                                            class="form-control @error('captcha') is-invalid @enderror" name="captcha"
+                                            placeholder=" " required>
+                                        <label class="input-label" for="captcha">Enter Captcha</label>
+                                    </div>
+                                    @error('captcha')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+
                                 <button type="submit" class="btn auth-btn w-100 mb-3">
                                     Create Account
                                 </button>
@@ -442,6 +500,15 @@
             initializeAnimations();
             initialized = true;
         }
+
+        document.getElementById('reload').addEventListener('click', function () {
+            fetch('/reload-captcha')
+                .then(response => response.json())
+                .then(data => {
+                    document.querySelector('.captcha span').innerHTML = data.captcha;
+                });
+        });
+
     });
 
     function toggleForms() {
