@@ -23,6 +23,10 @@ Route::get('/profile', [UserProfileController::class, 'index'])->name('user.prof
 Route::post('/register', [TestRegisterController::class, 'register'])->name('register');
 // ============================= Public Routes =============================
 Route::get('/', [AuthController::class, 'welcome'])->name('welcome');
+Route::get('/admin/activity-history/users/{activity}', [ActivityHistoryController::class, 'loadUsers'])->name('admin.activity-history.load-users');
+Route::get('/activity/{activity}/users', [ActivityHistoryController::class, 'manageUsers']);
+Route::get('/admin/activity-history/{id}', [ActivityHistoryController::class, 'show'])->name('admin.activity-history.show');
+Route::get('admin/activity-history/{activity}/show', [ActivityHistoryController::class, 'show'])->name('admin.activity-history.show');
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
@@ -131,6 +135,9 @@ Route::middleware(['auth', 'approve'])->group(function () {
             Route::post('/activity-history/{activityHistory}/add-users', 'addUsers')->name('activity-history.add-users');
             Route::post('/activity-history/{activityHistory}/manage-users', 'manageUsers')->name('activity-history.manage-users');
             Route::put('/activity-history/{activityHistory}', 'update')->name('activity-history.update');
+            Route::post('/admin/activity-history/{activity}/manage-users', [ActivityHistoryController::class, 'manageUsers'])
+    ->name('admin.activity-history.manage-users');
+
         });
     });
 });
