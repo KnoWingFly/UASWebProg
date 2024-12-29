@@ -35,13 +35,13 @@
             <div class="flex justify-between items-center mb-2">
                 <h3 class="text-lg font-semibold text-white">{{ $activity->activity_type }}</h3>
                 <div class="flex items-center space-x-2">
-                    <button data-modal-target="manage-users-modal-{{ $activity->id }}"
-                        data-modal-toggle="manage-users-modal-{{ $activity->id }}"
-                        class="text-[#ff4d4d] hover:text-[#e04343] transform hover:scale-110 transition-transform duration-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
-                        </svg>
-                    </button>
+                <a href="{{ route('admin.activity-history.show', $activity) }}"
+   class="text-[#ff4d4d] hover:text-[#e04343] transform hover:scale-110 transition-transform duration-200">
+   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+       <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
+   </svg>
+</a>
+
 
                     <button data-modal-target="edit-activity-modal-{{ $activity->id }}"
                         data-modal-toggle="edit-activity-modal-{{ $activity->id }}"
@@ -76,78 +76,6 @@
                 {{ Str::limit($activity->description, 100) }}
             </p>
             @endif
-        </div>
-
-        {{-- Manage Users Modal --}}
-        <div id="manage-users-modal-{{ $activity->id }}" tabindex="-1" aria-hidden="true"
-            class="modal-container hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full opacity-0 scale-95">
-            <div class="relative bg-[#1a1a1a] dark:bg-[#1a1a1a] rounded-lg shadow">
-                <div class="flex items-center justify-between p-4 md:p-5 border-b border-gray-600 rounded-t">
-                    <h3 class="text-lg font-semibold text-white">
-                        Manage Users for Activity
-                    </h3>
-                    <button type="button"
-                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600"
-                        data-modal-toggle="manage-users-modal-{{ $activity->id }}">
-                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                        </svg>
-                        <span class="sr-only">Close modal</span>
-                    </button>
-                </div>
-                <form action="{{ route('admin.activity-history.manage-users', $activity) }}" method="POST" class="p-4 md:p-5">
-                    @csrf
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm text-left text-gray-500">
-                            <thead class="text-xs text-gray-700 uppercase bg-[#1a1a1a] dark:bg-[#1a1a1a] text-gray-400">
-                                <tr>
-                                    <th scope="col" class="p-4">
-                                        <div class="flex items-center">
-                                            <input id="checkbox-all-users-{{ $activity->id }}" type="checkbox" 
-                                                class="w-4 h-4 text-[#ff4d4d] bg-[#1a1a1a] border-gray-300 rounded focus:ring-[#ff4d4d] dark:focus:ring-[#ff4d4d] dark:ring-offset-[#1a1a1a] dark:focus:ring-offset-[#1a1a1a] focus:ring-2 dark:bg-[#1a1a1a] dark:border-gray-600">
-                                            <label for="checkbox-all-users-{{ $activity->id }}" class="sr-only">checkbox</label>
-                                        </div>
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">Name</th>
-                                    <th scope="col" class="px-6 py-3">Email</th>
-                                    <th scope="col" class="px-6 py-3">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($users as $user)
-                                <tr class="bg-[#1a1a1a] border-b dark:bg-[#1a1a1a] dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-[#333333]">
-                                    <td class="w-4 p-4">
-                                        <div class="flex items-center">
-                                            <input id="checkbox-user-{{ $user->id }}-{{ $activity->id }}" type="checkbox" 
-                                                name="user_ids[]" 
-                                                value="{{ $user->id }}"
-                                                {{ $activity->users->contains($user->id) ? 'checked' : '' }}
-                                                class="user-checkbox w-4 h-4 text-[#ff4d4d] bg-[#1a1a1a] border-gray-300 rounded focus:ring-[#ff4d4d] dark:focus:ring-[#ff4d4d] dark:ring-offset-[#1a1a1a] dark:focus:ring-offset-[#1a1a1a] focus:ring-2 dark:bg-[#1a1a1a] dark:border-gray-600">
-                                            <label for="checkbox-user-{{ $user->id }}-{{ $activity->id }}" class="sr-only">checkbox</label>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 text-white">{{ $user->name }}</td>
-                                    <td class="px-6 py-4 text-white">{{ $user->email }}</td>
-                                    <td class="px-6 py-4">
-                                        @if($activity->users->contains($user->id))
-                                        <span class="text-green-600">In Activity</span>
-                                        @else
-                                        <span class="text-gray-400">Not in Activity</span>
-                                        @endif
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="mt-4 flex justify-end">
-                        <button type="submit"
-                            class="text-white inline-flex items-center bg-[#ff4d4d] hover:bg-[#e04343] focus:ring-4 focus:outline-none focus:ring-[#e04343] font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                            Update Users
-                        </button>
-                    </div>
-                </form>
-            </div>
         </div>
         {{-- Edit Activity Modal --}}
         <div id="edit-activity-modal-{{ $activity->id }}" tabindex="-1" aria-hidden="true"
