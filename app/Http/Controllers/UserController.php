@@ -145,31 +145,35 @@ class UserController extends Controller
         }
     }
 
-    public function cancelRegistration($eventId)
+    public function cancelRegistration(Event $event)
     {
         $user = auth()->user();
+
         if (!$user) {
             return redirect()->route('login');
         }
 
-        $event = Event::findOrFail($eventId);
-        if (!$event) {
+        // Check if the event exists
+        if (!$event->exists) {
             return redirect()->route('user.events')
                 ->with('error', 'Event not found.');
         }
 
-        if (!$user->eventUsers()->where('event_id', $event->id)->exists()) {
-            return redirect()->route('user.event.details', ['event_id' => $eventId])
+        // Check if user is actually registered for this event
+        if (!$event->participants()->where('user_id', $user->id)->exists()) {
+            return redirect()->route('user.event.details', $event->id)
                 ->with('error', 'You are not registered for this event.');
         }
 
         try {
-            $user->eventUsers()->detach($event->id);
-            return redirect()->route('user.event.details', ['event_id' => $eventId])
-                ->with('success', 'Registration canceled successfully.');
+            // Detach only this specific user from the event
+            $event->participants()->detach($user->id);
+
+            return redirect()->route('user.event.details', $event->id)
+                ->with('success', 'Your registration has been cancelled successfully.');
         } catch (\Exception $e) {
             \Log::error('Failed to cancel event registration: ' . $e->getMessage());
-            return redirect()->route('user.event.details', ['event_id' => $eventId])
+            return redirect()->route('user.event.details', $event->id)
                 ->with('error', 'An error occurred while canceling your registration. Please try again.');
         }
     }
@@ -184,6 +188,6 @@ class UserController extends Controller
         $userActivities = $user->activityHistories()->latest()->paginate(10);
         $participatedEvents = $user->eventUsers()->with('event')->latest()->paginate(6);
 
-        return view('user.profile.index', compact('user',  'userActivities', 'participatedEvents'));
+        return view('user.profile.index', compact('user', 'userActivities', 'participatedEvents'));
     }
 }
