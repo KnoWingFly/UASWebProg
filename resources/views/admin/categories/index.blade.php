@@ -60,19 +60,21 @@
                 data-parent="{{ $category->parent_id ? 'sub' : ($category->id == 0 ? 'uncategorized' : 'parent') }}"
                 data-date="{{ $category->created_at ? $category->created_at->format('Y-m-d') : '0000-00-00' }}">
                 <div class="p-5">
-                    <div class="flex items-center justify-between mb-4">
-                        <h5 class="text-xl font-bold tracking-tight text-white">
-                            {{ $category->name }}
-                        </h5>
-                        <span
-                            class="bg-[#ff4d4d] text-white text-xs font-medium px-2.5 py-0.5 rounded-full transform hover:scale-105 transition-transform">
-                            {{ $category->learning_materials_count }} Materials
-                        </span>
+                    <div class="mb-4">
+                        <div class="flex flex-col gap-2">
+                            <h5 class="text-xl font-bold tracking-tight text-white break-words">
+                                {{ $category->name }}
+                            </h5>
+                            <span class="bg-[#ff4d4d] text-white text-xs font-medium px-2.5 py-0.5 rounded-full w-fit transform hover:scale-105 transition-transform">
+                                {{ $category->learning_materials_count }} Materials
+                            </span>
+                        </div>
                     </div>
 
                     <div class="text-sm text-gray-400 mb-4">
                         <p class="mb-2">Created:
-                            {{ $category->created_at ? $category->created_at->format('Y-m-d') : 'N/A' }}</p>
+                            {{ $category->created_at ? $category->created_at->format('Y-m-d') : 'N/A' }}
+                        </p>
                         @if($category->parent)
                             <p class="mb-2">Parent: <span class="text-[#ff4d4d]">{{ $category->parent->name }}</span></p>
                         @endif
@@ -125,75 +127,75 @@
 </div>
 
 <div id="categoryModal" class="fixed inset-0 bg-[#151515] bg-opacity-50 hidden items-center justify-center z-50">
-        <div class="bg-[#1a1a1a] rounded-lg w-full max-w-md mx-4">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 id="modalTitle" class="text-xl font-semibold text-gray-200"></h3>
-                    <button onclick="closeCategoryModal()" class="text-gray-400 hover:text-gray-200">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                            </path>
-                        </svg>
-                    </button>
+    <div class="bg-[#1a1a1a] rounded-lg w-full max-w-md mx-4">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="modalTitle" class="text-xl font-semibold text-gray-200"></h3>
+                <button onclick="closeCategoryModal()" class="text-gray-400 hover:text-gray-200">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <form id="categoryForm" method="POST" action="{{ route('admin.categories.store') }}">
+                @csrf
+                <input type="hidden" id="methodField" name="_method">
+                <input type="hidden" id="categoryId" name="id">
+
+                <!-- Category Fields -->
+                <div class="mb-4">
+                    <label class="block text-gray-200 text-sm font-medium mb-2" for="name">
+                        Category Name
+                    </label>
+                    <input type="text" name="name" id="name" required
+                        class="w-full px-3 py-2 bg-[#151515] border border-[#1a1a1a] rounded-lg text-gray-200 focus:outline-none focus:border-[#ff4d4d]"
+                        value="{{ old('name') }}">
                 </div>
 
-                <form id="categoryForm" method="POST" action="{{ route('admin.categories.store') }}">
-                    @csrf
-                    <input type="hidden" id="methodField" name="_method">
-                    <input type="hidden" id="categoryId" name="id">
+                <div class="mb-4">
+                    <label class="block text-gray-200 text-sm font-medium mb-2" for="description">
+                        Description
+                    </label>
+                    <textarea name="description" id="description" rows="3"
+                        class="w-full px-3 py-2 bg-[#151515] border border-[#1a1a1a] rounded-lg text-gray-200 focus:outline-none focus:border-[#ff4d4d]">{{ old('description') }}</textarea>
+                </div>
 
-                    <!-- Category Fields -->
-                    <div class="mb-4">
-                        <label class="block text-gray-200 text-sm font-medium mb-2" for="name">
-                            Category Name
-                        </label>
-                        <input type="text" name="name" id="name" required
-                            class="w-full px-3 py-2 bg-[#151515] border border-[#1a1a1a] rounded-lg text-gray-200 focus:outline-none focus:border-[#ff4d4d]"
-                            value="{{ old('name') }}">
-                    </div>
+                <div class="mb-6">
+                    <label class="block text-gray-200 text-sm font-medium mb-2" for="parent_id">
+                        Parent Category (Optional)
+                    </label>
+                    <select name="parent_id" id="parent_id"
+                        class="w-full px-3 py-2 bg-[#151515] border border-[#1a1a1a] rounded-lg text-gray-200 focus:outline-none focus:border-[#ff4d4d]">
+                        <option value="">None</option>
+                        @foreach($allCategories as $cat)
+                                                @php
+                                                    $canBeParent = !$cat->children->isNotEmpty() && $cat->id != 0;
+                                                @endphp
+                                                @if($canBeParent)
+                                                    <option value="{{ $cat->id }}" {{ old('parent_id') == $cat->id ? 'selected' : '' }}>
+                                                        {{ $cat->name }}
+                                                    </option>
+                                                @endif
+                        @endforeach
+                    </select>
+                </div>
 
-                    <div class="mb-4">
-                        <label class="block text-gray-200 text-sm font-medium mb-2" for="description">
-                            Description
-                        </label>
-                        <textarea name="description" id="description" rows="3"
-                            class="w-full px-3 py-2 bg-[#151515] border border-[#1a1a1a] rounded-lg text-gray-200 focus:outline-none focus:border-[#ff4d4d]">{{ old('description') }}</textarea>
-                    </div>
-
-                    <div class="mb-6">
-                        <label class="block text-gray-200 text-sm font-medium mb-2" for="parent_id">
-                            Parent Category (Optional)
-                        </label>
-                        <select name="parent_id" id="parent_id"
-                            class="w-full px-3 py-2 bg-[#151515] border border-[#1a1a1a] rounded-lg text-gray-200 focus:outline-none focus:border-[#ff4d4d]">
-                            <option value="">None</option>
-                            @foreach($allCategories as $cat)
-                                @php
-                                    $canBeParent = !$cat->children->isNotEmpty() && $cat->id != 0;
-                                @endphp
-                                @if($canBeParent)
-                                    <option value="{{ $cat->id }}" {{ old('parent_id') == $cat->id ? 'selected' : '' }}>
-                                        {{ $cat->name }}
-                                    </option>
-                                @endif
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="flex justify-end space-x-3">
-                        <button type="button" onclick="closeCategoryModal()"
-                            class="px-4 py-2 text-sm font-medium text-gray-400 hover:text-gray-200">
-                            Cancel
-                        </button>
-                        <button type="submit"
-                            class="px-4 py-2 bg-[#ff4d4d] text-white text-sm font-medium rounded-lg hover:bg-[#ff4d4d] focus:outline-none focus:ring-2 focus:ring-[#ff4d4d]">
-                            Save Category
-                        </button>
-                    </div>
-                </form>
-            </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeCategoryModal()"
+                        class="px-4 py-2 text-sm font-medium text-gray-400 hover:text-gray-200">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="px-4 py-2 bg-[#ff4d4d] text-white text-sm font-medium rounded-lg hover:bg-[#ff4d4d] focus:outline-none focus:ring-2 focus:ring-[#ff4d4d]">
+                        Save Category
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 </div>
 
 <!-- Delete Confirmation Modal -->
