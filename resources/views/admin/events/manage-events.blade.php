@@ -1,20 +1,22 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="p-6 space-y-6 opacity-0" id="mainContent">
-    <div class="flex justify-between items-center">
-        <h1 class="text-2xl font-semibold text-gray-200 translate-y-4 opacity-0" id="pageTitle">Manage Events</h1>
-        <!-- Search Bar and Filter -->
-        <div class="flex space-x-4 translate-y-4 opacity-0" id="controls">
+<div class="p-3 sm:p-6 space-y-4 sm:space-y-6 opacity-0" id="mainContent">
+    
+    <div class="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:justify-between sm:items-center">
+        <h1 class="text-xl sm:text-2xl font-semibold text-gray-200 translate-y-4 opacity-0" id="pageTitle">Manage Events</h1>
+        
+        <div class="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-4 translate-y-4 opacity-0 w-full sm:w-auto" id="controls">
             <input type="text" id="search-bar" placeholder="Search events..."
-                class="px-4 py-2 rounded bg-[#1a1a1a] text-white placeholder-gray-400 border border-transparent focus:border-[#ff4d4d] transition-colors duration-300">
+                class="w-full sm:w-64 px-4 py-2 rounded bg-[#1a1a1a] text-white placeholder-gray-400 border border-transparent focus:border-[#ff4d4d] transition-colors duration-300">
             <select id="status-filter"
-                class="px-4 py-2 rounded bg-[#1a1a1a] text-white border border-transparent focus:border-[#ff4d4d] transition-colors duration-300">
+                class="w-full sm:w-32 px-4 py-2 rounded bg-[#1a1a1a] text-white border border-transparent focus:border-[#ff4d4d] transition-colors duration-300">
                 <option value="all">All</option>
                 <option value="open">Open</option>
                 <option value="closed">Closed</option>
             </select>
         </div>
+
         <div class="translate-y-4 opacity-0" id="actionButtons">
             <a href="{{ route('admin.events.create') }}"
                 class="px-4 py-2 bg-[#ff4d4d] text-white font-medium rounded hover:bg-opacity-90 transition-all duration-300 inline-block hover:-translate-y-1">
@@ -23,7 +25,7 @@
             <a href="/admin/dashboard" 
                 class="mx-2 px-4 py-2 bg-blue-500 text-white font-medium rounded hover:bg-opacity-90 transition-all duration-300 inline-block hover:-translate-y-1">
                 Back to Dashboard
-            </a>
+        </a>
         </div>
     </div>
 
