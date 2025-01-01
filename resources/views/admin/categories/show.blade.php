@@ -62,7 +62,7 @@
                                 </span>
                             </div>
                             <div class="flex justify-between items-center">
-                            <a href="{{ route('admin.materials.view', ['material' => $material->id]) }}"
+                                <a href="{{ route('admin.materials.view', ['material' => $material->id]) }}"
                                     class="px-4 py-2 bg-[#ff4d4d] text-white rounded-lg hover:bg-[#ff3333]">
                                     View
                                 </a>
@@ -155,8 +155,8 @@
                                                         placeholder="Enter video URL">
                                                 </div>
 
-                                                                                                <!-- PDF Input -->
-                                                                                                <div id="pdf-input-{{ $material->id }}"
+                                                <!-- PDF Input -->
+                                                <div id="pdf-input-{{ $material->id }}"
                                                     class="{{ $material->type === 'video' ? 'hidden' : '' }}">
                                                     <label for="pdf_file-{{ $material->id }}"
                                                         class="block mb-2 text-sm font-medium text-white">PDF File</label>
@@ -243,6 +243,26 @@
         const typeFilter = document.getElementById('type-filter');
         const materialsGrid = document.getElementById('materials-grid');
         const materialCards = document.querySelectorAll('.material-card');
+        const modalButtons = document.querySelectorAll('[data-modal-toggle]'); \
+
+        modalButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const modalId = this.getAttribute('data-modal-target');
+                const modal = document.getElementById(modalId);
+                const modalInstance = new Modal(modal);
+                modalInstance.toggle();
+            });
+        });
+
+        const closeButtons = document.querySelectorAll('[data-modal-hide]');
+        closeButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const modalId = this.getAttribute('data-modal-hide');
+                const modal = document.getElementById(modalId);
+                const modalInstance = new Modal(modal);
+                modalInstance.hide();
+            });
+        });
 
         function filterMaterials() {
             const searchTerm = searchInput.value.toLowerCase().trim();
@@ -253,7 +273,7 @@
                 const typeMatch = selectedType === '' || card.dataset.type === selectedType;
 
                 if (titleMatch && typeMatch) {
-                        gsap.to(card, { duration: 0.5, opacity: 1, y: 0, display: 'block' });
+                    gsap.to(card, { duration: 0.5, opacity: 1, y: 0, display: 'block' });
                 } else {
                     gsap.to(card, { duration: 0.5, opacity: 0, y: 20, display: 'none' });
                 }
@@ -280,12 +300,10 @@
             }
         }
 
-        // Add event listeners for real-time filtering
         searchInput.addEventListener('input', filterMaterials);
         typeFilter.addEventListener('change', filterMaterials);
     });
 
-    // Existing toggleContentInput function remains the same
     function toggleContentInput(materialId) {
         const type = document.getElementById('type-' + materialId).value;
         const videoInput = document.getElementById('video-input-' + materialId);
@@ -300,7 +318,6 @@
         }
     }
 
-    // Initialize the correct input state for each modal when the page loads
     document.addEventListener('DOMContentLoaded', function () {
         const modals = document.querySelectorAll('[id^="editModal-"]');
         modals.forEach(modal => {
