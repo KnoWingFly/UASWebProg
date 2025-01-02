@@ -297,7 +297,7 @@
                     noResultsMessage.remove();
                 }
                 materialsGrid.style.display = 'grid';
-            }
+            }       
         }
 
         searchInput.addEventListener('input', filterMaterials);
